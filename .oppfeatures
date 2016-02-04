@@ -1,0 +1,14 @@
+<features cppSourceRoots="src">
+    <feature
+        id="PostgreSQL_common"
+        name="PostgreSQL Common"
+        description = "The common part of the AVB implementation"
+        initiallyEnabled = "true"
+        requires = ""
+        labels = ""
+        nedPackages = ""
+        extraSourceFolders = "PostgreSQL"
+        compileFlags = "-DWITH_POSTGRESQL_COMMON"
+        linkerFlags = "-lpqxx -lpq"
+        />
+</features>

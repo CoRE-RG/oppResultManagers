@@ -1,0 +1,3 @@
+package oppresultmanagers;
+
+@license(LGPL);

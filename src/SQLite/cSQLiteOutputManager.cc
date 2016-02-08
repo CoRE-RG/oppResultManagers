@@ -2,7 +2,7 @@
 
 Register_GlobalConfigOption(CFGID_SQLITEOUTMGR_FILE, "sqliteoutputmanager-file", CFG_STRING,
         "${resultdir}/${configname}-${runnumber}.sqlite3", "Object name of database connection parameters");
-Register_GlobalConfigOption(CFGID_SQLITEMGR_COMMIT_FREQ, "sqliteoutputmanager-commit-freq", CFG_INT, "10",
+Register_GlobalConfigOption(CFGID_SQLITEMGR_COMMIT_FREQ, "sqliteoutputmanager-commit-freq", CFG_INT, "10000",
         "COMMIT every n INSERTs, default=10");
 
 #define SQL_SELECT_MODULE "SELECT * FROM module;"

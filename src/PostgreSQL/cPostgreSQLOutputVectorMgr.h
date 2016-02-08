@@ -1,12 +1,9 @@
-#ifndef __MYSQLOUTPUTSCALARMGR_H
-#define __MYSQLOUTPUTSCALARMGR_H
+#ifndef __CPOSTGRESQLOUTPUTMGR_H
+#define __CPOSTGRESQLOUTPUTMGR_H
 
-#include <pqxx/pqxx>
-#include <unordered_map>
+#include <cPorstgreSQLOutputManager.h>
 
-#include <omnetpp.h>
-
-class cPostgreSQLOutputVectorMgr : public cOutputVectorManager
+class cPostgreSQLOutputVectorMgr : public cOutputVectorManager, cPorstgreSQLOutputManager
 {
     protected:
         struct sVectorData
@@ -19,28 +16,8 @@ class cPostgreSQLOutputVectorMgr : public cOutputVectorManager
                 bool enabled;        // write to the output file can be enabled/disabled
                 bool recordEventNumbers;  // write to the output file can be enabled/disabled
         };
-    private:
-        pqxx::connection* connection;
-        pqxx::nontransaction *transaction;
-
-        size_t commitFreq;
-        size_t insertCount;
-        size_t runid;
-
-        std::unordered_map<std::string, size_t> moduleIDMap;
-        std::unordered_map<std::string,size_t> nameIDMap;
 
     public:
-        /**
-         * Constructor.
-         */
-        explicit cPostgreSQLOutputVectorMgr();
-
-        /**
-         * Destructor.
-         */
-        virtual ~cPostgreSQLOutputVectorMgr();
-
         /**
          * Opens collecting. Called at the beginning of a simulation run.
          */
@@ -74,19 +51,12 @@ class cPostgreSQLOutputVectorMgr : public cOutputVectorManager
         /**
          * Returns NULL, because this class doesn't use a file.
          */
-        const char *getFileName() const override
-        {
-            return NULL;
-        }
+        const char *getFileName() const override;
 
         /**
          * Performs a database commit.
          */
         virtual void flush() override;
-
-    private:
-        size_t getModuleID(std::string module);
-        size_t getNameID(std::string name);
 };
 
 #endif

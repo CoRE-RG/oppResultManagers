@@ -1,69 +1,41 @@
 #ifndef __MYSQLOUTPUTSCALARMGR_H
 #define __MYSQLOUTPUTSCALARMGR_H
 
-#include <pqxx/pqxx>
-#include <unordered_map>
+#include <cPorstgreSQLOutputManager.h>
 
-#include <omnetpp.h>
-
-class cPostgreSQLOutputScalarMgr : public cOutputScalarManager
+class cPostgreSQLOutputScalarMgr : public cOutputScalarManager, cPorstgreSQLOutputManager
 {
-  private:
-    pqxx::connection* connection;
-    pqxx::nontransaction *transaction;
 
-    size_t commitFreq;
-    size_t insertCount;
-    size_t runid;
+    public:
+        /**
+         * Opens collecting. Called at the beginning of a simulation run.
+         */
+        virtual void startRun() override;
 
-    std::unordered_map<std::string,size_t> moduleIDMap;
-    std::unordered_map<std::string,size_t> nameIDMap;
+        /**
+         * Closes collecting. Called at the end of a simulation run.
+         */
+        virtual void endRun() override;
 
-  public:
-    /**
-     * Constructor.
-     */
-    explicit cPostgreSQLOutputScalarMgr();
+        /**
+         * Records a double scalar result into the scalar result file.
+         */
+        virtual void recordScalar(cComponent *component, const char *name, double value, opp_string_map *attributes =
+                NULL) override;
 
-    /**
-     * Destructor.
-     */
-    virtual ~cPostgreSQLOutputScalarMgr();
+        /**
+         * Records a histogram or statistic object into the scalar result file.
+         */
+        virtual void recordStatistic(cComponent *component, const char *name, cStatistic *statistic,
+                opp_string_map *attributes = NULL) override;
 
-    /**
-     * Opens collecting. Called at the beginning of a simulation run.
-     */
-    virtual void startRun() override;
+        virtual void flush() override;
 
-    /**
-     * Closes collecting. Called at the end of a simulation run.
-     */
-    virtual void endRun() override;
+        /**
+         * Returns NULL, because this class doesn't use a file.
+         */
+        const char *getFileName() const override;
 
-
-    /**
-     * Records a double scalar result into the scalar result file.
-     */
-    virtual void recordScalar(cComponent *component, const char *name, double value, opp_string_map *attributes=NULL) override;
-
-    /**
-     * Records a histogram or statistic object into the scalar result file.
-     */
-    virtual void recordStatistic(cComponent *component, const char *name, cStatistic *statistic, opp_string_map *attributes=NULL) override;
-
-    /**
-     * Returns NULL, because this class doesn't use a file.
-     */
-    const char *getFileName() const override {return NULL;}
-
-    /**
-     * Performs a database commit.
-     */
-    virtual void flush() override;
-
-  private:
-    size_t getModuleID(std::string module);
-    size_t getNameID(std::string name);
 };
 
 #endif

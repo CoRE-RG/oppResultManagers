@@ -30,6 +30,7 @@ void cSQLiteOutputScalarMgr::startRun()
 
 void cSQLiteOutputScalarMgr::endRun()
 {
+    //TODO create index if parameter (TBD) is true
     cSQLiteOutputManager::endRun();
 }
 
@@ -78,7 +79,7 @@ void cSQLiteOutputScalarMgr::recordScalar(cComponent *component, const char *nam
     sqlite3_reset(stmt);
 
     // commit every once in a while
-    if ((++insertCount % commitFreq) == 0)
+    if (commitFreq && ((++insertCount % commitFreq) == 0))
     {
         flush();
     }

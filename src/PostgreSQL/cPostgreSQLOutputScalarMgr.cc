@@ -23,6 +23,7 @@ void cPostgreSQLOutputScalarMgr::startRun()
 
 void cPostgreSQLOutputScalarMgr::endRun()
 {
+    //TODO create index if parameter (TBD) is true
     cPorstgreSQLOutputManager::endRun();
 }
 
@@ -34,7 +35,7 @@ void cPostgreSQLOutputScalarMgr::recordScalar(cComponent *component, const char 
             value).exec();
 
     // commit every once in a while
-    if ((++insertCount % commitFreq) == 0)
+    if (commitFreq && ((++insertCount % commitFreq) == 0))
     {
         if (transaction)
         {

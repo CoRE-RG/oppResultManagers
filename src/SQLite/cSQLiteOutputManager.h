@@ -9,7 +9,9 @@
 class cSQLiteOutputManager
 {
     protected:
-        sqlite3* connection;
+        static sqlite3* connection;
+        static bool hasTransaction;
+        static size_t users;
 
         size_t commitFreq;
         size_t insertCount;

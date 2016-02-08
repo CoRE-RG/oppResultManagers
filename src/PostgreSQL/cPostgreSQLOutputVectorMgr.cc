@@ -42,6 +42,7 @@ void cPostgreSQLOutputVectorMgr::startRun()
 
 void cPostgreSQLOutputVectorMgr::endRun()
 {
+    //TODO create index if parameter (TBD) is true
     cPorstgreSQLOutputManager::endRun();
 }
 
@@ -94,7 +95,7 @@ bool cPostgreSQLOutputVectorMgr::record(void *vectorhandle, simtime_t t, double 
     transaction->parameterized(SQL_INSERT_VECTOR_DATA)(vp->id)(SIMTIME_DBL(t))(value).exec();
 
     // commit every once in a while
-    if ((++insertCount % commitFreq) == 0)
+    if (commitFreq && ((++insertCount % commitFreq) == 0))
     {
         if (transaction)
         {

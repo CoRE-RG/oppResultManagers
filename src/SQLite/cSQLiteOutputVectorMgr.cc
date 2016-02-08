@@ -64,6 +64,7 @@ void cSQLiteOutputVectorManager::startRun()
 
 void cSQLiteOutputVectorManager::endRun()
 {
+    //TODO create index if parameter (TBD) is true
     cSQLiteOutputManager::endRun();
 }
 
@@ -206,7 +207,7 @@ bool cSQLiteOutputVectorManager::record(void *vectorhandle, simtime_t t, double 
     sqlite3_reset (stmt);
 
     // commit every once in a while
-    if ((++insertCount % commitFreq) == 0)
+    if (commitFreq && ((++insertCount % commitFreq) == 0))
     {
         flush();
     }

@@ -11,15 +11,20 @@ Register_GlobalConfigOption(CFGID_SQLITEMGR_COMMIT_FREQ, "sqliteoutputmanager-co
 #define SQL_INSERT_NAME "INSERT INTO name(name) VALUES(?);"
 #define SQL_INSERT_RUN "INSERT INTO run(runnumber,network) VALUES(?,?);"
 
+sqlite3* cSQLiteOutputManager::connection = nullptr;
+bool cSQLiteOutputManager::hasTransaction = false;
+size_t cSQLiteOutputManager::users = 0;
+
 cSQLiteOutputManager::cSQLiteOutputManager()
 {
-    connection = nullptr;
     runid = 0;
+    users++;
 }
 
 cSQLiteOutputManager::~cSQLiteOutputManager()
 {
-    if (connection)
+    users--;
+    if (connection && users == 0)
     {
         sqlite3_close(connection);
     }
@@ -35,6 +40,25 @@ void cSQLiteOutputManager::startRun()
         {
             sqlite3_close(connection);
             throw cRuntimeError("SQLiteOutputManager:: Can't open database: %s", sqlite3_errmsg(connection));
+        }
+        char * zErrMsg = nullptr;
+        rc = sqlite3_exec(connection, "PRAGMA synchronous = OFF;", nullptr, nullptr, &zErrMsg);
+        if (rc != SQLITE_OK)
+        {
+            sqlite3_close(connection);
+            throw cRuntimeError("SQLiteOutputManager:: Can't set PRAGMA synchronous = OFF: %s", zErrMsg);
+        }
+        rc = sqlite3_exec(connection, "PRAGMA journal_mode = MEMORY;", nullptr, nullptr, &zErrMsg);
+        if (rc != SQLITE_OK)
+        {
+            sqlite3_close(connection);
+            throw cRuntimeError("SQLiteOutputManager:: Can't set PRAGMA journal_mode = MEMORY: %s", zErrMsg);
+        }
+        rc = sqlite3_exec(connection, "PRAGMA cache_size = -16768;", nullptr, nullptr, &zErrMsg);
+        if (rc != SQLITE_OK)
+        {
+            sqlite3_close(connection);
+            throw cRuntimeError("SQLiteOutputManager:: Can't set PRAGMA cache_size: %s", zErrMsg);
         }
     }
 
@@ -103,7 +127,8 @@ void cSQLiteOutputManager::startRun()
     if (rc != SQLITE_DONE)
     {
         sqlite3_close(connection);
-        throw cRuntimeError("SQLiteOutputManager:: Could not execute statement (SQL_INSERT_RUN): %s",sqlite3_errmsg(connection));
+        throw cRuntimeError("SQLiteOutputManager:: Could not execute statement (SQL_INSERT_RUN): %s",
+                sqlite3_errmsg(connection));
     }
     runid = sqlite3_last_insert_rowid(connection);
     sqlite3_reset(stmt);
@@ -141,41 +166,45 @@ void cSQLiteOutputManager::startRun()
         throw cRuntimeError("SQLiteOutputManager:: Error in select (SQL_SELECT_NAME): %s", zErrMsg);
     }
 
-//    rc = sqlite3_exec(connection, "BEGIN;", nullptr, nullptr, &zErrMsg);
-//    if (rc != SQLITE_OK)
-//    {
-//        sqlite3_close(connection);
-//        throw cRuntimeError("SQLiteOutputManager:: Can't begin transaction: %s", zErrMsg);
-//    }
+    if (!hasTransaction)
+    {
+        rc = sqlite3_exec(connection, "BEGIN;", nullptr, nullptr, &zErrMsg);
+        if (rc != SQLITE_OK)
+        {
+            sqlite3_close(connection);
+            throw cRuntimeError("SQLiteOutputManager:: Can't begin transaction: %s", zErrMsg);
+        }
+        hasTransaction = true;
+    }
 }
 
 void cSQLiteOutputManager::endRun()
 {
-    if (connection)
+    if (connection && hasTransaction)
     {
-//        char * zErrMsg = nullptr;
-//        int rc = sqlite3_exec(connection, "COMMIT;", nullptr, nullptr, &zErrMsg);
-//        if (rc != SQLITE_OK)
-//        {
-//            sqlite3_close(connection);
-//            throw cRuntimeError("SQLiteOutputManager:: Can't commit: %s", zErrMsg);
-//        }
-        sqlite3_close(connection);
+        char * zErrMsg = nullptr;
+        int rc = sqlite3_exec(connection, "COMMIT;", nullptr, nullptr, &zErrMsg);
+        if (rc != SQLITE_OK)
+        {
+            sqlite3_close(connection);
+            throw cRuntimeError("SQLiteOutputManager:: Can't commit: %s", zErrMsg);
+        }
+        hasTransaction = false;
     }
 }
 
 void cSQLiteOutputManager::flush()
 {
-//    if (connection)
-//    {
-//        char * zErrMsg = nullptr;
-//        int rc = sqlite3_exec(connection, "COMMIT; BEGIN;", nullptr, nullptr, &zErrMsg);
-//        if (rc != SQLITE_OK)
-//        {
-//            sqlite3_close(connection);
-//            throw cRuntimeError("SQLiteOutputManager:: Can't commit: %s", zErrMsg);
-//        }
-//    }
+    if (connection)
+    {
+        char * zErrMsg = nullptr;
+        int rc = sqlite3_exec(connection, "COMMIT; BEGIN;", nullptr, nullptr, &zErrMsg);
+        if (rc != SQLITE_OK)
+        {
+            sqlite3_close(connection);
+            throw cRuntimeError("SQLiteOutputManager:: Can't commit: %s", zErrMsg);
+        }
+    }
 }
 
 size_t cSQLiteOutputManager::getModuleID(std::string module)
@@ -204,7 +233,8 @@ size_t cSQLiteOutputManager::getModuleID(std::string module)
         if (rc != SQLITE_DONE)
         {
             sqlite3_close(connection);
-            throw cRuntimeError("SQLiteOutputManager:: Could not execute statement (SQL_INSERT_MODULE): %s",sqlite3_errmsg(connection));
+            throw cRuntimeError("SQLiteOutputManager:: Could not execute statement (SQL_INSERT_MODULE): %s",
+                    sqlite3_errmsg(connection));
         }
         size_t id = sqlite3_last_insert_rowid(connection);
         moduleIDMap[module] = id;
@@ -241,7 +271,8 @@ size_t cSQLiteOutputManager::getNameID(std::string name)
         if (rc != SQLITE_DONE)
         {
             sqlite3_close(connection);
-            throw cRuntimeError("SQLiteOutputManager:: Could not execute statement (SQL_INSERT_NAME): %s",sqlite3_errmsg(connection));
+            throw cRuntimeError("SQLiteOutputManager:: Could not execute statement (SQL_INSERT_NAME): %s",
+                    sqlite3_errmsg(connection));
         }
         size_t id = sqlite3_last_insert_rowid(connection);
         nameIDMap[name] = id;

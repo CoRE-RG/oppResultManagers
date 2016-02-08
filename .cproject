@@ -29,6 +29,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1711841259" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -39,6 +41,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1221698086" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -65,6 +69,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1528727127" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -75,6 +81,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1771476340" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -96,6 +104,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1911649790" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -106,6 +116,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.925333529" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -152,6 +164,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.2020978174" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -162,6 +176,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.417557408" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -188,6 +204,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.311188515" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -198,6 +216,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.248185939" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -219,6 +239,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.97415844" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -229,6 +251,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.574586158" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>

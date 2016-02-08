@@ -2,7 +2,7 @@
     <feature
         id="PostgreSQL_common"
         name="PostgreSQL Common"
-        description = "The common part of the AVB implementation"
+        description = "The common part of the PostgreSQL result output implementation (requires libpqxx)"
         initiallyEnabled = "true"
         requires = ""
         labels = ""
@@ -10,5 +10,29 @@
         extraSourceFolders = "PostgreSQL"
         compileFlags = "-DWITH_POSTGRESQL_COMMON"
         linkerFlags = "-lpqxx -lpq"
+        />
+    <feature
+        id="SQLite_common"
+        name="SQLite Common"
+        description = "The common part of the SQLite result output implementation (requires libsqlite3)"
+        initiallyEnabled = "true"
+        requires = ""
+        labels = ""
+        nedPackages = ""
+        extraSourceFolders = "SQLite"
+        compileFlags = "-DWITH_SQLITE_COMMON"
+        linkerFlags = "-lsqlite3"
+        />
+    <feature
+        id="Multiple_common"
+        name="Multiple Common"
+        description = "The common part of the multiple result output implementation"
+        initiallyEnabled = "true"
+        requires = ""
+        labels = ""
+        nedPackages = ""
+        extraSourceFolders = "Multiple"
+        compileFlags = "-DWITH_MULTIPLE_COMMON"
+        linkerFlags = ""
         />
 </features>

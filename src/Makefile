@@ -9,7 +9,7 @@
 TARGET = liboppResultManagers$(SHARED_LIB_SUFFIX)
 
 # C++ include paths (with -I)
-INCLUDE_PATH = -I. -IMultiple -ISQLite
+INCLUDE_PATH = -I. -ICheck -IMultiple -ISQLite
 
 # Additional object and library files to link with
 EXTRA_OBJS =
@@ -23,7 +23,13 @@ PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
-OBJS = $O/Multiple/cMultipleOutputScalarManager.o $O/Multiple/cMultipleOutputVectorManager.o $O/SQLite/cSQLiteOutputManager.o $O/SQLite/cSQLiteOutputScalarManager.o $O/SQLite/cSQLiteOutputVectorManager.o
+OBJS = \
+    $O/Check/cCheckOutputVectorManager.o \
+    $O/Multiple/cMultipleOutputScalarManager.o \
+    $O/Multiple/cMultipleOutputVectorManager.o \
+    $O/SQLite/cSQLiteOutputManager.o \
+    $O/SQLite/cSQLiteOutputScalarManager.o \
+    $O/SQLite/cSQLiteOutputVectorManager.o
 
 # Message files
 MSGFILES =
@@ -101,6 +107,7 @@ clean:
 	$(Q)-rm -rf $O
 	$(Q)-rm -f oppResultManagers oppResultManagers.exe liboppResultManagers.so liboppResultManagers.a liboppResultManagers.dll liboppResultManagers.dylib
 	$(Q)-rm -f ./*_m.cc ./*_m.h
+	$(Q)-rm -f Check/*_m.cc Check/*_m.h
 	$(Q)-rm -f Multiple/*_m.cc Multiple/*_m.h
 	$(Q)-rm -f SQLite/*_m.cc SQLite/*_m.h
 
@@ -109,9 +116,11 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc Multiple/*.cc SQLite/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc Check/*.cc Multiple/*.cc SQLite/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
+$O/Check/cCheckOutputVectorManager.o: Check/cCheckOutputVectorManager.cc \
+	Check/cCheckOutputVectorManager.h
 $O/Multiple/cMultipleOutputScalarManager.o: Multiple/cMultipleOutputScalarManager.cc \
 	Multiple/cMultipleOutputScalarManager.h
 $O/Multiple/cMultipleOutputVectorManager.o: Multiple/cMultipleOutputVectorManager.cc \

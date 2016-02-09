@@ -19,6 +19,7 @@ void cCheckOutputVectorManager::startRun()
 
 void cCheckOutputVectorManager::endRun()
 {
+    //Write violation
 }
 
 void *cCheckOutputVectorManager::registerVector(const char *modulename, const char *vectorname)
@@ -39,6 +40,8 @@ bool cCheckOutputVectorManager::record(void *vectorhandle, simtime_t t, double v
     static int test = 0;
     test++;
     if(test==100)
+        //Write violation start/end
+        //Optional terminate
         throw cTerminationException("module lala violates range check");
     return true;
 }

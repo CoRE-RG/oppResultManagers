@@ -17,6 +17,11 @@ class cSQLiteOutputVectorManager : public cOutputVectorManager, cSQLiteOutputMan
                 bool recordEventNumbers;  // write to the output file can be enabled/disabled
         };
 
+        sqlite3_stmt *insertVectorStmt;
+        sqlite3_stmt *insertVectorAttrStmt;
+        sqlite3_stmt *insertVectorDataStmt;
+
+
     public:
         /**
          * Opens collecting. Called at the beginning of a simulation run.

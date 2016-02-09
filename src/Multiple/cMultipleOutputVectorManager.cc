@@ -99,8 +99,7 @@ bool cMultipleOutputVectorManager::record(void *vectorhandle, simtime_t t, doubl
     std::vector<void*>::const_iterator vectorOutputManagerHandle = vp->vectorhandles.begin();
     while ((vectorOutputManager != vectorOutputManagers.end()) && (vectorOutputManagerHandle != vp->vectorhandles.end()))
     {
-        returnValue = returnValue || (*vectorOutputManager)->record((*vectorOutputManagerHandle), t, value);
-
+        returnValue = (*vectorOutputManager)->record((*vectorOutputManagerHandle), t, value) || returnValue;
         ++vectorOutputManager;
         ++vectorOutputManagerHandle;
     }

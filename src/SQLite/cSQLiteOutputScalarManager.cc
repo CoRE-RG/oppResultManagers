@@ -1,10 +1,10 @@
-#include "cSQLiteOutputScalarMgr.h"
+#include "cSQLiteOutputScalarManager.h"
 
-Register_Class(cSQLiteOutputScalarMgr);
+Register_Class(cSQLiteOutputScalarManager);
 
-#define SQL_INSERT_SCALAR_RESULT  "INSERT INTO scalar(runid,moduleid,nameid,value) VALUES(?,?,?,?)"
+#define SQL_INSERT_SCALAR_RESULT  "INSERT INTO scalar(runid,moduleid,nameid,value) VALUES(?,?,?,?);"
 
-void cSQLiteOutputScalarMgr::startRun()
+void cSQLiteOutputScalarManager::startRun()
 {
     cSQLiteOutputManager::startRun();
     char * zErrMsg = nullptr;
@@ -14,7 +14,7 @@ void cSQLiteOutputScalarMgr::startRun()
                      runid INT NOT NULL,\
                      moduleid INT NOT NULL,\
                      nameid INT NOT NULL,\
-                     value DOUBLE PRECISION NOT NULL,\
+                     value DOUBLE PRECISION,\
                      PRIMARY KEY (runid,moduleid,nameid),\
                      FOREIGN KEY (runid) REFERENCES run(id),\
                      FOREIGN KEY (moduleid) REFERENCES module(id),\
@@ -28,53 +28,52 @@ void cSQLiteOutputScalarMgr::startRun()
     }
 }
 
-void cSQLiteOutputScalarMgr::endRun()
+void cSQLiteOutputScalarManager::endRun()
 {
     //TODO create index if parameter (TBD) is true
     cSQLiteOutputManager::endRun();
 }
 
-void cSQLiteOutputScalarMgr::recordScalar(cComponent *component, const char *name, double value,
+void cSQLiteOutputScalarManager::recordScalar(cComponent *component, const char *name, double value,
         opp_string_map *attributes)
 {
 
     sqlite3_stmt *stmt;
-    int rc = sqlite3_prepare(connection, SQL_INSERT_SCALAR_RESULT, -1, &stmt, 0);
+    int rc = sqlite3_prepare(connection, SQL_INSERT_SCALAR_RESULT, strlen(SQL_INSERT_SCALAR_RESULT), &stmt, 0);
     if (rc != SQLITE_OK)
     {
-        sqlite3_close(connection);
-        throw cRuntimeError("SQLiteOutputManager:: Could not prepare statement.");
+        throw cRuntimeError("cSQLiteOutputScalarManager:: Could not prepare statement: %s", sqlite3_errmsg(connection));
     }
     rc = sqlite3_bind_int(stmt, 1, runid);
     if (rc != SQLITE_OK)
     {
-        sqlite3_close(connection);
-        throw cRuntimeError("SQLiteOutputManager:: Could not bind active runnumber.");
+        throw cRuntimeError("cSQLiteOutputScalarManager:: Could not bind active runnumber: %s", sqlite3_errmsg(connection));
     }
     rc = sqlite3_bind_int(stmt, 2, getModuleID(component->getFullPath()));
     if (rc != SQLITE_OK)
     {
-        sqlite3_close(connection);
-        throw cRuntimeError("SQLiteOutputManager:: Could not bind active runnumber.");
+        throw cRuntimeError("cSQLiteOutputScalarManager:: Could not bind module id: %s", sqlite3_errmsg(connection));
     }
     rc = sqlite3_bind_int(stmt, 3, getNameID(name));
     if (rc != SQLITE_OK)
     {
-        sqlite3_close(connection);
-        throw cRuntimeError("SQLiteOutputManager:: Could not bind active runnumber.");
+        throw cRuntimeError("cSQLiteOutputScalarManager:: Could not bind scalar name: %s", sqlite3_errmsg(connection));
     }
-    rc = sqlite3_bind_double(stmt, 4, value);
+    if(isnan(value)){
+        sqlite3_bind_null(stmt, 4);
+    }
+    else{
+        rc = sqlite3_bind_double(stmt, 4, value);
+    }
     if (rc != SQLITE_OK)
     {
-        sqlite3_close(connection);
-        throw cRuntimeError("SQLiteOutputManager:: Could not bind active runnumber.");
+        throw cRuntimeError("cSQLiteOutputScalarManager:: Could not bind value: %s", sqlite3_errmsg(connection));
     }
 
     rc = sqlite3_step(stmt);
     if (rc != SQLITE_DONE)
     {
-        sqlite3_close(connection);
-        throw cRuntimeError("SQLiteOutputManager:: Could not execute statement.");
+        throw cRuntimeError("cSQLiteOutputScalarManager:: Could not execute statement (SQL_INSERT_SCALAR_RESULT): %s", sqlite3_errmsg(connection));
     }
     sqlite3_reset(stmt);
 
@@ -85,18 +84,18 @@ void cSQLiteOutputScalarMgr::recordScalar(cComponent *component, const char *nam
     }
 }
 
-void cSQLiteOutputScalarMgr::recordStatistic(cComponent *component, const char *name, cStatistic *statistic,
+void cSQLiteOutputScalarManager::recordStatistic(cComponent *component, const char *name, cStatistic *statistic,
         opp_string_map *attributes)
 {
     throw cRuntimeError("cPostgreSQLOutputScalarMgr: recording cStatistics objects not supported yet");
 }
 
-void cSQLiteOutputScalarMgr::flush()
+void cSQLiteOutputScalarManager::flush()
 {
     cSQLiteOutputManager::flush();
 }
 
-const char *cSQLiteOutputScalarMgr::getFileName() const
+const char *cSQLiteOutputScalarManager::getFileName() const
 {
     return cSQLiteOutputManager::getFileName();
 }

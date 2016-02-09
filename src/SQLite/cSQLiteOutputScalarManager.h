@@ -3,7 +3,7 @@
 
 #include <cSQLiteOutputManager.h>
 
-class cSQLiteOutputScalarMgr : public cOutputScalarManager, cSQLiteOutputManager
+class cSQLiteOutputScalarManager : public cOutputScalarManager, cSQLiteOutputManager
 {
 
     public:

@@ -2,20 +2,20 @@
 # OMNeT++/OMNEST Makefile for liboppResultManagers
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep --make-so -lpqxx -lpq -lsqlite3 -DWITH_AVB_COMMON -DWITH_AS6802_COMMON -DWITH_IEEE8021Q_COMMON -DWITH_IPORE -DWITH_POSTGRESQL_COMMON -DWITH_MULTIPLE_COMMON -DWITH_SQLITE_COMMON
+#  opp_makemake -f --deep --make-so -e cc -XPostgreSQL -lsqlite3 -DWITH_MULTIPLE_COMMON -DWITH_SQLITE_COMMON
 #
 
 # Name of target to be created (-o option)
 TARGET = liboppResultManagers$(SHARED_LIB_SUFFIX)
 
 # C++ include paths (with -I)
-INCLUDE_PATH = -I. -IMultiple -IPostgreSQL -ISQLite
+INCLUDE_PATH = -I. -IMultiple -ISQLite
 
 # Additional object and library files to link with
 EXTRA_OBJS =
 
 # Additional libraries (-L, -l options)
-LIBS =  -lpqxx -lpq -lsqlite3
+LIBS =  -lsqlite3
 
 # Output directory
 PROJECT_OUTPUT_DIR = ../out
@@ -23,15 +23,7 @@ PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
-OBJS = \
-    $O/Multiple/cMultipleOutputVectorManager.o \
-    $O/Multiple/cMultipleOutputScalarManager.o \
-    $O/PostgreSQL/cPostgreSQLOutputScalarMgr.o \
-    $O/PostgreSQL/cPostgreSQLOutputVectorMgr.o \
-    $O/PostgreSQL/cPorstgreSQLOutputManager.o \
-    $O/SQLite/cSQLiteOutputScalarMgr.o \
-    $O/SQLite/cSQLiteOutputManager.o \
-    $O/SQLite/cSQLiteOutputVectorMgr.o
+OBJS = $O/Multiple/cMultipleOutputScalarManager.o $O/Multiple/cMultipleOutputVectorManager.o $O/SQLite/cSQLiteOutputManager.o $O/SQLite/cSQLiteOutputScalarManager.o $O/SQLite/cSQLiteOutputVectorManager.o
 
 # Message files
 MSGFILES =
@@ -60,14 +52,7 @@ include $(CONFIGFILE)
 OMNETPP_LIB_SUBDIR = $(OMNETPP_LIB_DIR)/$(TOOLCHAIN_NAME)
 OMNETPP_LIBS = -L"$(OMNETPP_LIB_SUBDIR)" -L"$(OMNETPP_LIB_DIR)" -loppenvir$D $(KERNEL_LIBS) $(SYS_LIBS)
 
-COPTS = $(CFLAGS) \
-    -DWITH_AVB_COMMON \
-    -DWITH_AS6802_COMMON \
-    -DWITH_IEEE8021Q_COMMON \
-    -DWITH_IPORE \
-    -DWITH_POSTGRESQL_COMMON \
-    -DWITH_MULTIPLE_COMMON \
-    -DWITH_SQLITE_COMMON $(INCLUDE_PATH) -I$(OMNETPP_INCL_DIR)
+COPTS = $(CFLAGS) -DWITH_MULTIPLE_COMMON -DWITH_SQLITE_COMMON $(INCLUDE_PATH) -I$(OMNETPP_INCL_DIR)
 MSGCOPTS = $(INCLUDE_PATH)
 
 # we want to recompile everything if COPTS changes,
@@ -117,7 +102,6 @@ clean:
 	$(Q)-rm -f oppResultManagers oppResultManagers.exe liboppResultManagers.so liboppResultManagers.a liboppResultManagers.dll liboppResultManagers.dylib
 	$(Q)-rm -f ./*_m.cc ./*_m.h
 	$(Q)-rm -f Multiple/*_m.cc Multiple/*_m.h
-	$(Q)-rm -f PostgreSQL/*_m.cc PostgreSQL/*_m.h
 	$(Q)-rm -f SQLite/*_m.cc SQLite/*_m.h
 
 cleanall: clean
@@ -125,27 +109,19 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc Multiple/*.cc PostgreSQL/*.cc SQLite/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc Multiple/*.cc SQLite/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/Multiple/cMultipleOutputScalarManager.o: Multiple/cMultipleOutputScalarManager.cc \
 	Multiple/cMultipleOutputScalarManager.h
 $O/Multiple/cMultipleOutputVectorManager.o: Multiple/cMultipleOutputVectorManager.cc \
 	Multiple/cMultipleOutputVectorManager.h
-$O/PostgreSQL/cPorstgreSQLOutputManager.o: PostgreSQL/cPorstgreSQLOutputManager.cc \
-	PostgreSQL/cPorstgreSQLOutputManager.h
-$O/PostgreSQL/cPostgreSQLOutputScalarMgr.o: PostgreSQL/cPostgreSQLOutputScalarMgr.cc \
-	PostgreSQL/cPorstgreSQLOutputManager.h \
-	PostgreSQL/cPostgreSQLOutputScalarMgr.h
-$O/PostgreSQL/cPostgreSQLOutputVectorMgr.o: PostgreSQL/cPostgreSQLOutputVectorMgr.cc \
-	PostgreSQL/cPorstgreSQLOutputManager.h \
-	PostgreSQL/cPostgreSQLOutputVectorMgr.h
 $O/SQLite/cSQLiteOutputManager.o: SQLite/cSQLiteOutputManager.cc \
 	SQLite/cSQLiteOutputManager.h
-$O/SQLite/cSQLiteOutputScalarMgr.o: SQLite/cSQLiteOutputScalarMgr.cc \
+$O/SQLite/cSQLiteOutputScalarManager.o: SQLite/cSQLiteOutputScalarManager.cc \
 	SQLite/cSQLiteOutputManager.h \
-	SQLite/cSQLiteOutputScalarMgr.h
-$O/SQLite/cSQLiteOutputVectorMgr.o: SQLite/cSQLiteOutputVectorMgr.cc \
+	SQLite/cSQLiteOutputScalarManager.h
+$O/SQLite/cSQLiteOutputVectorManager.o: SQLite/cSQLiteOutputVectorManager.cc \
 	SQLite/cSQLiteOutputManager.h \
-	SQLite/cSQLiteOutputVectorMgr.h
+	SQLite/cSQLiteOutputVectorManager.h
 

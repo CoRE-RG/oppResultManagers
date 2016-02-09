@@ -17,8 +17,8 @@ class cSQLiteOutputManager
         size_t insertCount;
         size_t runid;
 
-        std::unordered_map<std::string, size_t> moduleIDMap;
-        std::unordered_map<std::string, size_t> nameIDMap;
+        static std::unordered_map<std::string, size_t> moduleIDMap;
+        static std::unordered_map<std::string, size_t> nameIDMap;
 
     public:
         /**

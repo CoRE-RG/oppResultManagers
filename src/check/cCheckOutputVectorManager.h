@@ -2,6 +2,7 @@
 #define CCHECKOUTPUTVECTORMANAGER_H
 
 #include <omnetpp.h>
+#include <limits>
 
 //Std
 #include <vector>
@@ -11,7 +12,12 @@ class cCheckOutputVectorManager : public cOutputVectorManager
     protected:
         struct sVectorData
         {
+                bool minEnabled = false;
+                double min = std::numeric_limits<double>::min();
+                bool maxEnabled = false;
+                double max = std::numeric_limits<double>::max();
         };
+        cXMLElement * xmlConfiguration;
     public:
         /**
          * Constructor.

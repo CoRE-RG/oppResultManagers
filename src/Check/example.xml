@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<constraints xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="constraints.xsd">
+	<constraint module="smallNetworkTTE.node3.vl_100" name="rc(\\d)QueueLength:vector" nameIsRegex="true">
+		<min>0</min>
+		<max>100</max>
+		<avg_min samples="10">0</avg_min>
+		<avg_max samples="10">50</avg_max>
+	</constraint>
+	<constraint module="(.*)\.node(\\d+).app\[(\\d+)\]" moduleIsRegex="true" name="latency:vector">
+		<max>0.001</max>
+		<min>0.0002</min>
+		<interval_min>0.0049</interval_min>
+		<interval_max>0.0051</interval_max>
+	</constraint>
+	<constraint module="smallNetworkTTE.node3.vl_100_ctc" name="dropped:vector">
+		<sum_max>12</sum_max>
+	</constraint>
+	<constraint module="smallNetworkTTE.node3.vl_100_ctc" name="dropped:vector">
+	</constraint>
+</constraints>

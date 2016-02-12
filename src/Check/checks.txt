@@ -1,1 +1,0 @@
-min,max,summax, avgovermin(n), avgovermax(n), intervalmin, intervalmax

@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:annotation>
+		<xs:appinfo>Simulation Metric Constraints</xs:appinfo>
+		<xs:documentation xml:lang="en">
+			This Schema defines a configuration for simulation metric constraints!
+		</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="avg">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				Defines an average.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:integer">
+				<xs:attribute type="xs:integer" name="samples" use="required">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">
+							Average is calculated over the last number of samples.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:element name="constraints">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">
+				List of constraints
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="constraint" maxOccurs="unbounded" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">
+							Constraint definition. Due to regexes there can be multiple definitions for the same vector/scalar. If there
+							are multiple definitions the most severe is taken.
+						</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:all>
+							<xs:element type="xs:float" name="min" minOccurs="0" maxOccurs="1">
+								<xs:annotation>
+									<xs:documentation xml:lang="en">
+										Checks for minimum. Result is not allowed to be lower.
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element type="xs:float" name="max" minOccurs="0" maxOccurs="1">
+								<xs:annotation>
+									<xs:documentation xml:lang="en">
+										Checks for maximum. Result is not allowed to be higher.
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element type="avg" name="avg_min" minOccurs="0" maxOccurs="1">
+								<xs:annotation>
+									<xs:documentation xml:lang="en">
+										Checks for mininum using an average over X samples. Result is not allowed to be lower. Only applicable to
+										vectors!
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element type="avg" name="avg_max" minOccurs="0" maxOccurs="1">
+								<xs:annotation>
+									<xs:documentation xml:lang="en">
+										Checks for maximum using an average over X samples. Result is not allowed to be higher. Only applicable to
+										vectors!
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element type="xs:float" name="interval_min" minOccurs="0" maxOccurs="1">
+								<xs:annotation>
+									<xs:documentation xml:lang="en">
+										Checks for minimum time between two vector events. Result is not allowed to be lower. Only applicable to
+										vectors!
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element type="xs:float" name="interval_max" minOccurs="0" maxOccurs="1">
+								<xs:annotation>
+									<xs:documentation xml:lang="en">
+										Checks for maximum time between two vector events. Result is not allowed to be higher. Only applicable to
+										vectors!
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element type="xs:float" name="sum_max" minOccurs="0" maxOccurs="1">
+								<xs:annotation>
+									<xs:documentation xml:lang="en">
+										Checks for maximum sum over all events in vector. Result is not allowed to be higher. Only applicable to
+										vectors!
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:all>
+						<xs:attribute type="xs:string" name="module" use="required">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">
+									Defines the module to which the constraint applies. Can be either an OMNeT++ path, or a regex. If using a
+									regex, the attribute moduleIsRegex must be "true".
+								</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute type="xs:boolean" name="moduleIsRegex" use="optional" default="false">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">
+									Must be set to true if module attribute should be evaluated as regex.
+								</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute type="xs:string" name="name" use="required">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">
+									Defines the vector/scalar to which the constraint applies. Can be either a vector/scalar name or a regex. If
+									using a regex, the attribute nameIsRegex must be "true".
+								</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute type="xs:boolean" name="nameIsRegex" use="optional" default="false">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">
+									Must be set to true if name attribute should be evaluated as regex.
+								</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

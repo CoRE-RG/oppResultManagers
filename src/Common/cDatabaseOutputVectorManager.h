@@ -15,6 +15,7 @@ class cDatabaseOutputVectorManager : public cOutputVectorManager
                 bool initialised;    // true if the "label" line is already written out
                 bool enabled;        // write to the output file can be enabled/disabled
                 bool recordEventNumbers;  // write to the output file can be enabled/disabled
+                std::vector<std::pair<simtime_t, simtime_t>> intervals; // write begins at starttime
         };
 
     public:

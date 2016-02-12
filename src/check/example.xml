@@ -15,6 +15,4 @@
 	<constraint module="smallNetworkTTE.node3.vl_100_ctc" name="dropped:vector">
 		<sum_max>12</sum_max>
 	</constraint>
-	<constraint module="smallNetworkTTE.node3.vl_100_ctc" name="dropped:vector">
-	</constraint>
 </constraints>

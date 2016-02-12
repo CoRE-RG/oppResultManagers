@@ -1,5 +1,7 @@
 #include "cSQLiteOutputVectorManager.h"
 
+#include "HelperFunctions.h"
+
 Register_Class(cSQLiteOutputVectorManager);
 
 #define SQL_INSERT_VECTOR "INSERT INTO vector(runid, moduleid, nameid) VALUES(?,?,?);"
@@ -96,101 +98,105 @@ bool cSQLiteOutputVectorManager::record(void *vectorhandle, simtime_t t, double 
 {
     sVectorData *vp = (sVectorData *) vectorhandle;
 
-    if (!vp->enabled)
-        return false;
-
-    if (!vp->initialised)
+    if (vp->enabled && inIntervals(t, vp->intervals))
     {
-        int rc = sqlite3_bind_int(insertVectorStmt, 1, runid);
-        if (rc != SQLITE_OK)
+        if (!vp->initialised)
         {
-            throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind active runid.");
-        }
-        rc = sqlite3_bind_int(insertVectorStmt, 2, getModuleID(vp->modulename.c_str()));
-        if (rc != SQLITE_OK)
-        {
-            throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind active moduleid.");
-        }
-        rc = sqlite3_bind_int(insertVectorStmt, 3, getNameID(vp->vectorname.c_str()));
-        if (rc != SQLITE_OK)
-        {
-            throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind active nameid.");
-        }
-
-        rc = sqlite3_step(insertVectorStmt);
-        if (rc != SQLITE_DONE)
-        {
-            throw cRuntimeError("cSQLiteOutputVectorManager:: Could not execute statement (SQL_INSERT_VECTOR): %s",
-                    sqlite3_errmsg(connection));
-        }
-        vp->id = sqlite3_last_insert_rowid(connection);
-        sqlite3_clear_bindings(insertVectorStmt);
-        sqlite3_reset(insertVectorStmt);
-        vp->initialised = true;
-        for (opp_string_map::iterator it = vp->attributes.begin(); it != vp->attributes.end(); ++it)
-        {
-            rc = sqlite3_bind_int(insertVectorAttrStmt, 1, vp->id);
+            int rc = sqlite3_bind_int(insertVectorStmt, 1, runid);
             if (rc != SQLITE_OK)
             {
-                throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind vectorid.");
+                throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind active runid.");
             }
-            int rc = sqlite3_bind_int(insertVectorAttrStmt, 2, getNameID(it->first.c_str()));
+            rc = sqlite3_bind_int(insertVectorStmt, 2, getModuleID(vp->modulename.c_str()));
             if (rc != SQLITE_OK)
             {
-                throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind nameid.");
+                throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind active moduleid.");
             }
-            rc = sqlite3_bind_text(insertVectorAttrStmt, 3, it->second.c_str(), -1, SQLITE_STATIC);
+            rc = sqlite3_bind_int(insertVectorStmt, 3, getNameID(vp->vectorname.c_str()));
             if (rc != SQLITE_OK)
             {
-                throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind value.");
+                throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind active nameid.");
             }
 
-            rc = sqlite3_step(insertVectorAttrStmt);
+            rc = sqlite3_step(insertVectorStmt);
             if (rc != SQLITE_DONE)
             {
-                throw cRuntimeError(
-                        "cSQLiteOutputVectorManager:: Could not execute statement (SQL_INSERT_VECTOR_ATTR): %s",
+                throw cRuntimeError("cSQLiteOutputVectorManager:: Could not execute statement (SQL_INSERT_VECTOR): %s",
                         sqlite3_errmsg(connection));
             }
             vp->id = sqlite3_last_insert_rowid(connection);
-            sqlite3_clear_bindings(insertVectorAttrStmt);
-            sqlite3_reset(insertVectorAttrStmt);
+            sqlite3_clear_bindings(insertVectorStmt);
+            sqlite3_reset(insertVectorStmt);
+            vp->initialised = true;
+            for (opp_string_map::iterator it = vp->attributes.begin(); it != vp->attributes.end(); ++it)
+            {
+                rc = sqlite3_bind_int(insertVectorAttrStmt, 1, vp->id);
+                if (rc != SQLITE_OK)
+                {
+                    throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind vectorid.");
+                }
+                int rc = sqlite3_bind_int(insertVectorAttrStmt, 2, getNameID(it->first.c_str()));
+                if (rc != SQLITE_OK)
+                {
+                    throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind nameid.");
+                }
+                rc = sqlite3_bind_text(insertVectorAttrStmt, 3, it->second.c_str(), -1, SQLITE_STATIC);
+                if (rc != SQLITE_OK)
+                {
+                    throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind value.");
+                }
+
+                rc = sqlite3_step(insertVectorAttrStmt);
+                if (rc != SQLITE_DONE)
+                {
+                    throw cRuntimeError(
+                            "cSQLiteOutputVectorManager:: Could not execute statement (SQL_INSERT_VECTOR_ATTR): %s",
+                            sqlite3_errmsg(connection));
+                }
+                vp->id = sqlite3_last_insert_rowid(connection);
+                sqlite3_clear_bindings(insertVectorAttrStmt);
+                sqlite3_reset(insertVectorAttrStmt);
+            }
         }
-    }
 
-    // fill in prepared statement parameters, and fire off the statement
-    int rc = sqlite3_bind_int(insertVectorDataStmt, 1, vp->id);
-    if (rc != SQLITE_OK)
-    {
-        throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind vectorid.");
-    }
-    rc = sqlite3_bind_double(insertVectorDataStmt, 2, SIMTIME_DBL(t));
-    if (rc != SQLITE_OK)
-    {
-        throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind time.");
-    }
-    rc = sqlite3_bind_double(insertVectorDataStmt, 3, value);
-    if (rc != SQLITE_OK)
-    {
-        throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind value.");
-    }
+        // fill in prepared statement parameters, and fire off the statement
+        int rc = sqlite3_bind_int(insertVectorDataStmt, 1, vp->id);
+        if (rc != SQLITE_OK)
+        {
+            throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind vectorid.");
+        }
+        rc = sqlite3_bind_double(insertVectorDataStmt, 2, SIMTIME_DBL(t));
+        if (rc != SQLITE_OK)
+        {
+            throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind time.");
+        }
+        rc = sqlite3_bind_double(insertVectorDataStmt, 3, value);
+        if (rc != SQLITE_OK)
+        {
+            throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind value.");
+        }
 
-    rc = sqlite3_step(insertVectorDataStmt);
-    if (rc != SQLITE_DONE)
-    {
-        throw cRuntimeError("cSQLiteOutputVectorManager:: Could not execute statement (SQL_INSERT_VECTOR_DATA): %s",
-                sqlite3_errmsg(connection));
-    }
-    vp->id = sqlite3_last_insert_rowid(connection);
-    sqlite3_clear_bindings(insertVectorDataStmt);
-    sqlite3_reset(insertVectorDataStmt);
+        rc = sqlite3_step(insertVectorDataStmt);
+        if (rc != SQLITE_DONE)
+        {
+            throw cRuntimeError("cSQLiteOutputVectorManager:: Could not execute statement (SQL_INSERT_VECTOR_DATA): %s",
+                    sqlite3_errmsg(connection));
+        }
+        vp->id = sqlite3_last_insert_rowid(connection);
+        sqlite3_clear_bindings(insertVectorDataStmt);
+        sqlite3_reset(insertVectorDataStmt);
 
-    // commit every once in a while
-    if (commitFreq && ((++insertCount % commitFreq) == 0))
-    {
-        flush();
+        // commit every once in a while
+        if (commitFreq && ((++insertCount % commitFreq) == 0))
+        {
+            flush();
+        }
+        return true;
     }
-    return true;
+    else
+    {
+        return false;
+    }
 }
 
 void cSQLiteOutputVectorManager::flush()

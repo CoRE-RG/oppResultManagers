@@ -1,5 +1,7 @@
 #include "cPostgreSQLOutputVectorManager.h"
 
+#include "HelperFunctions.h"
+
 Register_Class(cPostgreSQLOutputVectorMgr);
 
 #define SQL_INSERT_VECTOR "INSERT INTO vector(runid, moduleid, nameid) VALUES($1,$2,$3) RETURNING id"
@@ -50,38 +52,43 @@ bool cPostgreSQLOutputVectorMgr::record(void *vectorhandle, simtime_t t, double 
 {
     sVectorData *vp = (sVectorData *) vectorhandle;
 
-    if (!vp->enabled)
+    if (vp->enabled && inIntervals(t, vp->intervals))
+    {
+        if (!vp->initialised)
+        {
+            pqxx::result result = transaction->parameterized(SQL_INSERT_VECTOR)(runid)(
+                    getModuleID(vp->modulename.c_str()))(getNameID(vp->vectorname.c_str())).exec();
+            if (result.size() != 1)
+            {
+                throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
+            }
+            vp->id = result[0][0].as<long>();
+            vp->initialised = true;
+
+            for (opp_string_map::iterator it = vp->attributes.begin(); it != vp->attributes.end(); ++it)
+            {
+                transaction->parameterized(SQL_INSERT_VECTOR_ATTR)(vp->id)(getNameID(it->first.c_str()))(
+                        it->second.c_str()).exec();
+            }
+        }
+
+        // fill in prepared statement parameters, and fire off the statement
+        transaction->parameterized(SQL_INSERT_VECTOR_DATA)(vp->id)(SIMTIME_DBL(t))(value).exec();
+
+        // commit every once in a while
+        if (commitFreq && ((++insertCount % commitFreq) == 0))
+        {
+            if (transaction)
+            {
+                transaction->exec("COMMIT; BEGIN;");
+            }
+        }
+        return true;
+    }
+    else
+    {
         return false;
-
-    if (!vp->initialised)
-    {
-        pqxx::result result = transaction->parameterized(SQL_INSERT_VECTOR)(runid)(getModuleID(vp->modulename.c_str()))(
-                getNameID(vp->vectorname.c_str())).exec();
-        if (result.size() != 1)
-        {
-            throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
-        }
-        vp->id = result[0][0].as<long>();
-        vp->initialised = true;
-
-        for (opp_string_map::iterator it = vp->attributes.begin(); it != vp->attributes.end(); ++it)
-        {
-            transaction->parameterized(SQL_INSERT_VECTOR_ATTR)(vp->id)(getNameID(it->first.c_str()))(it->second.c_str()).exec();
-        }
     }
-
-    // fill in prepared statement parameters, and fire off the statement
-    transaction->parameterized(SQL_INSERT_VECTOR_DATA)(vp->id)(SIMTIME_DBL(t))(value).exec();
-
-    // commit every once in a while
-    if (commitFreq && ((++insertCount % commitFreq) == 0))
-    {
-        if (transaction)
-        {
-            transaction->exec("COMMIT; BEGIN;");
-        }
-    }
-    return true;
 }
 
 void cPostgreSQLOutputVectorMgr::flush()

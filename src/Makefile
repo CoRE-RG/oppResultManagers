@@ -11,11 +11,12 @@ TARGET = liboppResultManagers$(SHARED_LIB_SUFFIX)
 # C++ include paths (with -I)
 INCLUDE_PATH = \
     -I. \
-    -ICheck \
-    -ICommon \
-    -IMultiple \
-    -IPostgreSQL \
-    -ISQLite
+    -ISQLite \
+    -Icheck \
+    -Icommon \
+    -Imultiple \
+    -IpostgreSQL \
+    -Iutilities
 
 # Additional object and library files to link with
 EXTRA_OBJS =
@@ -30,16 +31,17 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
 OBJS = \
-    $O/Check/cCheckOutputVectorManager.o \
-    $O/Common/cDatabaseOutputVectorManager.o \
-    $O/Multiple/cMultipleOutputVectorManager.o \
-    $O/Multiple/cMultipleOutputScalarManager.o \
-    $O/PostgreSQL/cPostgreSQLOutputScalarManager.o \
-    $O/PostgreSQL/cPostgreSQLOutputVectorManager.o \
-    $O/PostgreSQL/cPorstgreSQLOutputManager.o \
     $O/SQLite/cSQLiteOutputScalarManager.o \
     $O/SQLite/cSQLiteOutputManager.o \
-    $O/SQLite/cSQLiteOutputVectorManager.o
+    $O/SQLite/cSQLiteOutputVectorManager.o \
+    $O/check/cCheckOutputVectorManager.o \
+    $O/common/cDatabaseOutputVectorManager.o \
+    $O/multiple/cMultipleOutputVectorManager.o \
+    $O/multiple/cMultipleOutputScalarManager.o \
+    $O/postgreSQL/cPostgreSQLOutputScalarManager.o \
+    $O/postgreSQL/cPostgreSQLOutputVectorManager.o \
+    $O/postgreSQL/cPorstgreSQLOutputManager.o \
+    $O/utilities/HelperFunctions.o
 
 # Message files
 MSGFILES =
@@ -117,44 +119,50 @@ clean:
 	$(Q)-rm -rf $O
 	$(Q)-rm -f oppResultManagers oppResultManagers.exe liboppResultManagers.so liboppResultManagers.a liboppResultManagers.dll liboppResultManagers.dylib
 	$(Q)-rm -f ./*_m.cc ./*_m.h
-	$(Q)-rm -f Check/*_m.cc Check/*_m.h
-	$(Q)-rm -f Common/*_m.cc Common/*_m.h
-	$(Q)-rm -f Multiple/*_m.cc Multiple/*_m.h
-	$(Q)-rm -f PostgreSQL/*_m.cc PostgreSQL/*_m.h
 	$(Q)-rm -f SQLite/*_m.cc SQLite/*_m.h
+	$(Q)-rm -f check/*_m.cc check/*_m.h
+	$(Q)-rm -f common/*_m.cc common/*_m.h
+	$(Q)-rm -f multiple/*_m.cc multiple/*_m.h
+	$(Q)-rm -f postgreSQL/*_m.cc postgreSQL/*_m.h
+	$(Q)-rm -f utilities/*_m.cc utilities/*_m.h
 
 cleanall: clean
 	$(Q)-rm -rf $(PROJECT_OUTPUT_DIR)
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc Check/*.cc Common/*.cc Multiple/*.cc PostgreSQL/*.cc SQLite/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc SQLite/*.cc check/*.cc common/*.cc multiple/*.cc postgreSQL/*.cc utilities/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
-$O/Check/cCheckOutputVectorManager.o: Check/cCheckOutputVectorManager.cc \
-	Check/cCheckOutputVectorManager.h
-$O/Common/cDatabaseOutputVectorManager.o: Common/cDatabaseOutputVectorManager.cc \
-	Common/cDatabaseOutputVectorManager.h
-$O/Multiple/cMultipleOutputScalarManager.o: Multiple/cMultipleOutputScalarManager.cc \
-	Multiple/cMultipleOutputScalarManager.h
-$O/Multiple/cMultipleOutputVectorManager.o: Multiple/cMultipleOutputVectorManager.cc \
-	Multiple/cMultipleOutputVectorManager.h
-$O/PostgreSQL/cPorstgreSQLOutputManager.o: PostgreSQL/cPorstgreSQLOutputManager.cc \
-	PostgreSQL/cPorstgreSQLOutputManager.h
-$O/PostgreSQL/cPostgreSQLOutputScalarManager.o: PostgreSQL/cPostgreSQLOutputScalarManager.cc \
-	PostgreSQL/cPorstgreSQLOutputManager.h \
-	PostgreSQL/cPostgreSQLOutputScalarManager.h
-$O/PostgreSQL/cPostgreSQLOutputVectorManager.o: PostgreSQL/cPostgreSQLOutputVectorManager.cc \
-	Common/cDatabaseOutputVectorManager.h \
-	PostgreSQL/cPorstgreSQLOutputManager.h \
-	PostgreSQL/cPostgreSQLOutputVectorManager.h
 $O/SQLite/cSQLiteOutputManager.o: SQLite/cSQLiteOutputManager.cc \
 	SQLite/cSQLiteOutputManager.h
 $O/SQLite/cSQLiteOutputScalarManager.o: SQLite/cSQLiteOutputScalarManager.cc \
 	SQLite/cSQLiteOutputManager.h \
 	SQLite/cSQLiteOutputScalarManager.h
 $O/SQLite/cSQLiteOutputVectorManager.o: SQLite/cSQLiteOutputVectorManager.cc \
-	Common/cDatabaseOutputVectorManager.h \
 	SQLite/cSQLiteOutputManager.h \
-	SQLite/cSQLiteOutputVectorManager.h
+	SQLite/cSQLiteOutputVectorManager.h \
+	common/cDatabaseOutputVectorManager.h \
+	utilities/HelperFunctions.h
+$O/check/cCheckOutputVectorManager.o: check/cCheckOutputVectorManager.cc \
+	check/cCheckOutputVectorManager.h
+$O/common/cDatabaseOutputVectorManager.o: common/cDatabaseOutputVectorManager.cc \
+	common/cDatabaseOutputVectorManager.h \
+	utilities/HelperFunctions.h
+$O/multiple/cMultipleOutputScalarManager.o: multiple/cMultipleOutputScalarManager.cc \
+	multiple/cMultipleOutputScalarManager.h
+$O/multiple/cMultipleOutputVectorManager.o: multiple/cMultipleOutputVectorManager.cc \
+	multiple/cMultipleOutputVectorManager.h
+$O/postgreSQL/cPorstgreSQLOutputManager.o: postgreSQL/cPorstgreSQLOutputManager.cc \
+	postgreSQL/cPorstgreSQLOutputManager.h
+$O/postgreSQL/cPostgreSQLOutputScalarManager.o: postgreSQL/cPostgreSQLOutputScalarManager.cc \
+	postgreSQL/cPorstgreSQLOutputManager.h \
+	postgreSQL/cPostgreSQLOutputScalarManager.h
+$O/postgreSQL/cPostgreSQLOutputVectorManager.o: postgreSQL/cPostgreSQLOutputVectorManager.cc \
+	common/cDatabaseOutputVectorManager.h \
+	postgreSQL/cPorstgreSQLOutputManager.h \
+	postgreSQL/cPostgreSQLOutputVectorManager.h \
+	utilities/HelperFunctions.h
+$O/utilities/HelperFunctions.o: utilities/HelperFunctions.cc \
+	utilities/HelperFunctions.h
 

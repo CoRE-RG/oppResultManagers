@@ -1,10 +1,10 @@
-#include "cPostgreSQLOutputScalarMgr.h"
+#include "cPostgreSQLOutputScalarManager.h"
 
-Register_Class(cPostgreSQLOutputScalarMgr);
+Register_Class(cPostgreSQLOutputScalarManager);
 
 #define SQL_INSERT_SCALAR_RESULT  "INSERT INTO scalar(runid,moduleid,nameid,value) VALUES($1,$2,$3,$4)"
 
-void cPostgreSQLOutputScalarMgr::startRun()
+void cPostgreSQLOutputScalarManager::startRun()
 {
     cPorstgreSQLOutputManager::startRun();
     transaction->exec(
@@ -21,13 +21,13 @@ void cPostgreSQLOutputScalarMgr::startRun()
     transaction->exec("COMMIT; BEGIN;");
 }
 
-void cPostgreSQLOutputScalarMgr::endRun()
+void cPostgreSQLOutputScalarManager::endRun()
 {
     //TODO create index if parameter (TBD) is true
     cPorstgreSQLOutputManager::endRun();
 }
 
-void cPostgreSQLOutputScalarMgr::recordScalar(cComponent *component, const char *name, double value,
+void cPostgreSQLOutputScalarManager::recordScalar(cComponent *component, const char *name, double value,
         opp_string_map *attributes)
 {
 
@@ -44,18 +44,18 @@ void cPostgreSQLOutputScalarMgr::recordScalar(cComponent *component, const char 
     }
 }
 
-void cPostgreSQLOutputScalarMgr::recordStatistic(cComponent *component, const char *name, cStatistic *statistic,
+void cPostgreSQLOutputScalarManager::recordStatistic(cComponent *component, const char *name, cStatistic *statistic,
         opp_string_map *attributes)
 {
     throw cRuntimeError("cPostgreSQLOutputScalarMgr: recording cStatistics objects not supported yet");
 }
 
-void cPostgreSQLOutputScalarMgr::flush()
+void cPostgreSQLOutputScalarManager::flush()
 {
     cPorstgreSQLOutputManager::flush();
 }
 
-const char *cPostgreSQLOutputScalarMgr::getFileName() const
+const char *cPostgreSQLOutputScalarManager::getFileName() const
 {
     return cPorstgreSQLOutputManager::getFileName();
 }

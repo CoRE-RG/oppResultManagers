@@ -1,5 +1,5 @@
-#ifndef CPORSTGRESQLOUTPUTMANAGER_H_
-#define CPORSTGRESQLOUTPUTMANAGER_H_
+#ifndef CSQLITEOUTPUTMANAGER_H_
+#define CSQLITEOUTPUTMANAGER_H_
 
 #include <sqlite3.h>
 #include <unordered_map>
@@ -58,4 +58,4 @@ class cSQLiteOutputManager
         size_t getNameID(std::string name);
 };
 
-#endif /* CPORSTGRESQLOUTPUTMANAGER_H_ */
+#endif /* CSQLITEOUTPUTMANAGER_H_ */

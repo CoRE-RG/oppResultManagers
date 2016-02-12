@@ -1,9 +1,9 @@
-#ifndef __MYSQLOUTPUTSCALARMGR_H
-#define __MYSQLOUTPUTSCALARMGR_H
+#ifndef CPOSTGRESQLOUTPUTSCALARMANAGER_H
+#define CPOSTGRESQLOUTPUTSCALARMANAGER_H
 
 #include <cPorstgreSQLOutputManager.h>
 
-class cPostgreSQLOutputScalarMgr : public cOutputScalarManager, cPorstgreSQLOutputManager
+class cPostgreSQLOutputScalarManager : public cOutputScalarManager, cPorstgreSQLOutputManager
 {
 
     public:

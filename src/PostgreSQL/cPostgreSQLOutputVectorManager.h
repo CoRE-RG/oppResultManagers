@@ -1,17 +1,11 @@
-#ifndef CSQLITEOUTPUTVECTORMANAGER_H
-#define CSQLITEOUTPUTVECTORMANAGER_H
+#ifndef CPOSTGRESQLOUTPUTVECTORMANAGER_H
+#define CPOSTGRESQLOUTPUTVECTORMANAGER_H
 
 #include "cDatabaseOutputVectorManager.h"
-#include <cSQLiteOutputManager.h>
+#include <cPorstgreSQLOutputManager.h>
 
-class cSQLiteOutputVectorManager : public cDatabaseOutputVectorManager, cSQLiteOutputManager
+class cPostgreSQLOutputVectorMgr : public cDatabaseOutputVectorManager, cPorstgreSQLOutputManager
 {
-
-        sqlite3_stmt *insertVectorStmt;
-        sqlite3_stmt *insertVectorAttrStmt;
-        sqlite3_stmt *insertVectorDataStmt;
-
-
     public:
         /**
          * Opens collecting. Called at the beginning of a simulation run.
@@ -22,6 +16,7 @@ class cSQLiteOutputVectorManager : public cDatabaseOutputVectorManager, cSQLiteO
          * Closes collecting. Called at the end of a simulation run.
          */
         virtual void endRun() override;
+
 
         /**
          * Writes the (time, value) pair into the output file.

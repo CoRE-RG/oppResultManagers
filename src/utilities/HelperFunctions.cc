@@ -15,24 +15,25 @@ std::vector<std::pair<simtime_t, simtime_t> > parseIntervals(const char* text)
         {
             throw cRuntimeError("Wrong syntax in interval %s=%s", text, (*interval).c_str());
         }
-        else if (pos == 1)
+        else if (pos == 0)
         {
-            endtime = STR_SIMTIME(std::string((*interval), 3, (*interval).length() - 5).c_str());
+            endtime = STR_SIMTIME(std::string((*interval), 2, (*interval).length() - 2).c_str());
         }
-        else if (pos == ((*interval).length() - 4))
+        else if (pos == ((*interval).length() - 2))
         {
-            starttime = STR_SIMTIME(std::string((*interval), 1, (*interval).length() - 5).c_str());
+            starttime = STR_SIMTIME(std::string((*interval), 0, (*interval).length() - 2).c_str());
         }
         else
         {
-            starttime = STR_SIMTIME(std::string((*interval), 1, pos - 1).c_str());
-            endtime = STR_SIMTIME(std::string((*interval), pos + 2, (*interval).length() - pos - 4).c_str());
+            starttime = STR_SIMTIME(std::string((*interval), 0, pos).c_str());
+            endtime = STR_SIMTIME(std::string((*interval), pos + 2, (*interval).length() - pos - 2).c_str());
             if (starttime > endtime)
             {
                 throw cRuntimeError("Wrong time in interval %s=%s, starttime cannot be later than endtime", text,
                         (*interval).c_str());
             }
         }
+        ev << "starttime:"<<starttime<<" endtime:"<<endtime<<endl;
         parsedIntervals.push_back(std::pair<simtime_t, simtime_t>(starttime, endtime));
     }
     return parsedIntervals;

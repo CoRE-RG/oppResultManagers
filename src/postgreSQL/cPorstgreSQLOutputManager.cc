@@ -1,17 +1,15 @@
 #include <cPorstgreSQLOutputManager.h>
 
-Register_GlobalConfigOption(CFGID_POSTGRESQLOUTMGR_CONNECTION, "postgresqloutputmanager-connection",
-        CFG_STRING, "\"\"", "Object name of database connection parameters");
-Register_GlobalConfigOption(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ, "postgresqloutputmanager-commit-freq",
-        CFG_INT, "10", "COMMIT every n INSERTs, default=10");
+Register_GlobalConfigOption(CFGID_POSTGRESQLOUTMGR_CONNECTION, "postgresqloutputmanager-connection", CFG_STRING, "\"\"",
+        "Object name of database connection parameters");
+Register_GlobalConfigOption(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ, "postgresqloutputmanager-commit-freq", CFG_INT, "10",
+        "COMMIT every n INSERTs, default=10");
 
 #define SQL_SELECT_MODULE "SELECT * FROM module;"
 #define SQL_INSERT_MODULE "INSERT INTO module(name) VALUES($1) RETURNING id"
 #define SQL_SELECT_NAME "SELECT * FROM name;"
 #define SQL_INSERT_NAME "INSERT INTO name(name) VALUES($1) RETURNING id"
-#define SQL_INSERT_RUN "INSERT INTO run(runnumber,network) VALUES($1,$2) RETURNING id"
-
-
+#define SQL_INSERT_RUN "INSERT INTO run(runid,runnumber,network,date) VALUES($1,$2,$3,to_timestamp($4,'YYYYMMDD-HH:MI:SS')) RETURNING id"
 
 cPorstgreSQLOutputManager::cPorstgreSQLOutputManager()
 {
@@ -49,9 +47,10 @@ void cPorstgreSQLOutputManager::startRun()
     work_transaction.exec(
             "CREATE TABLE IF NOT EXISTS run (\
          id SERIAL NOT NULL PRIMARY KEY,\
+         runid TEXT NOT NULL UNIQUE,\
          runnumber BIGINT NOT NULL,\
          network TEXT NOT NULL,\
-         date TIMESTAMP NOT NULL DEFAULT now()\
+         date TIMESTAMP NOT NULL\
        );");
     work_transaction.exec(
             "CREATE TABLE IF NOT EXISTS module(\
@@ -64,9 +63,9 @@ void cPorstgreSQLOutputManager::startRun()
          name TEXT NOT NULL UNIQUE\
       );");
 
-    pqxx::result result = work_transaction.parameterized(SQL_INSERT_RUN)(
+    pqxx::result result = work_transaction.parameterized(SQL_INSERT_RUN)(ev.getConfigEx()->getVariable(CFGVAR_RUNID))(
     simulation.getActiveEnvir()->getConfigEx()->getActiveRunNumber())(
-    simulation.getNetworkType()->getName()).exec();
+    simulation.getNetworkType()->getName())(ev.getConfigEx()->getVariable(CFGVAR_DATETIME)).exec();
     if (result.size() != 1)
     {
         throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");

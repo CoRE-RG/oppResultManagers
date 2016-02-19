@@ -12,6 +12,7 @@ void *cDatabaseOutputVectorManager::registerVector(const char *modulename, const
     vp->modulename = modulename;
     vp->vectorname = vectorname;
 
+    //TODO Work with extern instead?
     vp->enabled = cConfiguration::parseBool(
     ev.getConfig()->getPerObjectConfigEntry(vectorfullpath.c_str(), "vector-recording").getValue(), "true");
 

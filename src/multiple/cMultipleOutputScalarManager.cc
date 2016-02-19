@@ -7,28 +7,30 @@ Register_GlobalConfigOption(CFGID_OUTPUTSCALARMANAGER_CLASSES, "outputscalarmana
 
 cMultipleOutputScalarManager::cMultipleOutputScalarManager()
 {
-    std::string cfgobj = ev.getConfig()->getAsString(CFGID_OUTPUTSCALARMANAGER_CLASSES);
+    std::string cfgobj = omnetpp::getEnvir()->getConfig()->getAsString(CFGID_OUTPUTSCALARMANAGER_CLASSES);
 
-    std::vector<std::string> managerClasses = cStringTokenizer(cfgobj.c_str(), ", ").asVector();
+    std::vector<std::string> managerClasses = omnetpp::cStringTokenizer(cfgobj.c_str(), ", ").asVector();
     for (std::vector<std::string>::const_iterator managerClass = managerClasses.begin();
             managerClass != managerClasses.end(); ++managerClass)
     {
-        cObject *outscalarmgr_tmp = createOne((*managerClass).c_str());
-        if (cOutputScalarManager * scalarManager = dynamic_cast<cOutputScalarManager *>(outscalarmgr_tmp))
+        omnetpp::cObject *outscalarmgr_tmp = omnetpp::createOne((*managerClass).c_str());
+        if (omnetpp::cIOutputScalarManager * scalarManager =
+                dynamic_cast<omnetpp::cIOutputScalarManager *>(outscalarmgr_tmp))
         {
             scalarOutputManagers.push_back(scalarManager);
         }
         else
         {
-            throw cRuntimeError("Class \"%s\" is not subclassed from cOutputScalarManager", (*managerClass).c_str());
+            throw omnetpp::cRuntimeError("Class \"%s\" is not subclassed from cOutputScalarManager",
+                    (*managerClass).c_str());
         }
     }
 }
 
 cMultipleOutputScalarManager::~cMultipleOutputScalarManager()
 {
-    for (std::vector<cOutputScalarManager*>::const_iterator scalarOutputManager = scalarOutputManagers.begin();
-            scalarOutputManager != scalarOutputManagers.end();)
+    for (std::vector<omnetpp::cIOutputScalarManager*>::const_iterator scalarOutputManager =
+            scalarOutputManagers.begin(); scalarOutputManager != scalarOutputManagers.end();)
     {
         scalarOutputManager = scalarOutputManagers.erase(scalarOutputManager);
     }
@@ -36,8 +38,8 @@ cMultipleOutputScalarManager::~cMultipleOutputScalarManager()
 
 void cMultipleOutputScalarManager::startRun()
 {
-    for (std::vector<cOutputScalarManager*>::const_iterator scalarOutputManager = scalarOutputManagers.begin();
-            scalarOutputManager != scalarOutputManagers.end(); ++scalarOutputManager)
+    for (std::vector<omnetpp::cIOutputScalarManager*>::const_iterator scalarOutputManager =
+            scalarOutputManagers.begin(); scalarOutputManager != scalarOutputManagers.end(); ++scalarOutputManager)
     {
         (*scalarOutputManager)->startRun();
     }
@@ -45,28 +47,28 @@ void cMultipleOutputScalarManager::startRun()
 
 void cMultipleOutputScalarManager::endRun()
 {
-    for (std::vector<cOutputScalarManager*>::const_iterator scalarOutputManager = scalarOutputManagers.begin();
-            scalarOutputManager != scalarOutputManagers.end(); ++scalarOutputManager)
+    for (std::vector<omnetpp::cIOutputScalarManager*>::const_iterator scalarOutputManager =
+            scalarOutputManagers.begin(); scalarOutputManager != scalarOutputManagers.end(); ++scalarOutputManager)
     {
         (*scalarOutputManager)->endRun();
     }
 }
 
-void cMultipleOutputScalarManager::recordScalar(cComponent *component, const char *name, double value,
-        opp_string_map *attributes)
+void cMultipleOutputScalarManager::recordScalar(omnetpp::cComponent *component, const char *name, double value,
+        omnetpp::opp_string_map *attributes)
 {
-    for (std::vector<cOutputScalarManager*>::const_iterator scalarOutputManager = scalarOutputManagers.begin();
-            scalarOutputManager != scalarOutputManagers.end(); ++scalarOutputManager)
+    for (std::vector<omnetpp::cIOutputScalarManager*>::const_iterator scalarOutputManager =
+            scalarOutputManagers.begin(); scalarOutputManager != scalarOutputManagers.end(); ++scalarOutputManager)
     {
         (*scalarOutputManager)->recordScalar(component, name, value, attributes);
     }
 }
 
-void cMultipleOutputScalarManager::recordStatistic(cComponent *component, const char *name, cStatistic *statistic,
-        opp_string_map *attributes)
+void cMultipleOutputScalarManager::recordStatistic(omnetpp::cComponent *component, const char *name,
+        omnetpp::cStatistic *statistic, omnetpp::opp_string_map *attributes)
 {
-    for (std::vector<cOutputScalarManager*>::const_iterator scalarOutputManager = scalarOutputManagers.begin();
-            scalarOutputManager != scalarOutputManagers.end(); ++scalarOutputManager)
+    for (std::vector<omnetpp::cIOutputScalarManager*>::const_iterator scalarOutputManager =
+            scalarOutputManagers.begin(); scalarOutputManager != scalarOutputManagers.end(); ++scalarOutputManager)
     {
         (*scalarOutputManager)->recordStatistic(component, name, statistic, attributes);
     }
@@ -74,8 +76,8 @@ void cMultipleOutputScalarManager::recordStatistic(cComponent *component, const 
 
 void cMultipleOutputScalarManager::flush()
 {
-    for (std::vector<cOutputScalarManager*>::const_iterator scalarOutputManager = scalarOutputManagers.begin();
-            scalarOutputManager != scalarOutputManagers.end(); ++scalarOutputManager)
+    for (std::vector<omnetpp::cIOutputScalarManager*>::const_iterator scalarOutputManager =
+            scalarOutputManagers.begin(); scalarOutputManager != scalarOutputManagers.end(); ++scalarOutputManager)
     {
         (*scalarOutputManager)->flush();
     }

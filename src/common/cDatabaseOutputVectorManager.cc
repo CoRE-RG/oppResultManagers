@@ -12,10 +12,13 @@ void *cDatabaseOutputVectorManager::registerVector(const char *modulename, const
     vp->modulename = modulename;
     vp->vectorname = vectorname;
 
-    vp->enabled = cConfiguration::parseBool(
-    ev.getConfig()->getPerObjectConfigEntry(vectorfullpath.c_str(), "vector-recording").getValue(), "true");
+    vp->enabled =
+            omnetpp::cConfiguration::parseBool(
+                    omnetpp::getEnvir()->getConfig()->getPerObjectConfigEntry(vectorfullpath.c_str(),
+                            "vector-recording").getValue(), "true");
 
-    const char *text = ev.getConfig()->getPerObjectConfigEntry(vectorfullpath.c_str(), "vector-recording-intervals").getValue();
+    const char *text = omnetpp::getEnvir()->getConfig()->getPerObjectConfigEntry(vectorfullpath.c_str(),
+            "vector-recording-intervals").getValue();
     vp->intervals = parseIntervals(text);
     return vp;
 }

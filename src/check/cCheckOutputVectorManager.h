@@ -7,7 +7,7 @@
 //Std
 #include <vector>
 
-class cCheckOutputVectorManager : public cOutputVectorManager
+class cCheckOutputVectorManager : public omnetpp::cIOutputVectorManager
 {
     protected:
         struct sVectorData
@@ -17,7 +17,7 @@ class cCheckOutputVectorManager : public cOutputVectorManager
                 bool maxEnabled = false;
                 double max = std::numeric_limits<double>::max();
         };
-        cXMLElement * xmlConfiguration;
+        omnetpp::cXMLElement * xmlConfiguration;
     public:
         /**
          * Constructor.

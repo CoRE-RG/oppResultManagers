@@ -9,8 +9,9 @@ Register_GlobalConfigOption(CFGID_CHECKOUTPUTVECTORMANAGER_CONFIGFILE, "checkout
 
 cCheckOutputVectorManager::cCheckOutputVectorManager()
 {
-    xmlConfiguration = simulation.getEnvir()->getXMLDocument(
-    ev.getConfig()->getAsPath(CFGID_CHECKOUTPUTVECTORMANAGER_CONFIGFILE).c_str(), "/constraints");
+    xmlConfiguration = omnetpp::getEnvir()->getXMLDocument(
+            omnetpp::getEnvir()->getConfig()->getAsPath(CFGID_CHECKOUTPUTVECTORMANAGER_CONFIGFILE).c_str(),
+            "/constraints");
 }
 
 cCheckOutputVectorManager::~cCheckOutputVectorManager()
@@ -31,8 +32,9 @@ void *cCheckOutputVectorManager::registerVector(const char *modulename, const ch
 {
     sVectorData *vp = new sVectorData();
 
-    cXMLElementList constraints = xmlConfiguration->getChildrenByTagName("constraint");
-    for (cXMLElementList::iterator constraint = constraints.begin(); constraint != constraints.end(); ++constraint)
+    omnetpp::cXMLElementList constraints = xmlConfiguration->getChildrenByTagName("constraint");
+    for (omnetpp::cXMLElementList::iterator constraint = constraints.begin(); constraint != constraints.end();
+            ++constraint)
     {
         //Check module for this vector?
         if ((*constraint)->getAttribute("module"))
@@ -75,8 +77,8 @@ void *cCheckOutputVectorManager::registerVector(const char *modulename, const ch
                 }
 
                 //
-                cXMLElementList constraintsValues = (*constraint)->getChildren();
-                for (cXMLElementList::iterator constraintsValue = constraintsValues.begin();
+                omnetpp::cXMLElementList constraintsValues = (*constraint)->getChildren();
+                for (omnetpp::cXMLElementList::iterator constraintsValue = constraintsValues.begin();
                         constraintsValue != constraintsValues.end(); ++constraintsValue)
                 {
                     if (0 == strcmp((*constraintsValue)->getTagName(), "min"))
@@ -85,8 +87,8 @@ void *cCheckOutputVectorManager::registerVector(const char *modulename, const ch
                         if (min > vp->min)
                         {
                             vp->min = min;
-                            ev << "Registered constraint for module: " << modulename << " vector: " << vectorname
-                                    << " minimum: " << min << endl;
+                            EV_ERROR << "Registered constraint for module: " << modulename << " vector: " << vectorname
+                                    << " minimum: " << min << std::endl;
                         }
                         vp->minEnabled = true;
                     }
@@ -96,8 +98,8 @@ void *cCheckOutputVectorManager::registerVector(const char *modulename, const ch
                         if (max < vp->max)
                         {
                             vp->max = max;
-                            ev << "Registered constraint for module: " << modulename << " vector: " << vectorname
-                                    << " maximum: " << max << endl;
+                            EV_ERROR << "Registered constraint for module: " << modulename << " vector: " << vectorname
+                                    << " maximum: " << max << std::endl;
                         }
                         vp->maxEnabled = true;
                     }
@@ -123,14 +125,14 @@ bool cCheckOutputVectorManager::record(void *vectorhandle, simtime_t t, double v
     {
         if (value < vp->min)
         {
-            throw cTerminationException("module lala violates range check");
+            throw omnetpp::cTerminationException("module lala violates range check");
         }
     }
     if (vp->maxEnabled)
     {
         if (value > vp->max)
         {
-            throw cTerminationException("module lala violates range check");
+            throw omnetpp::cTerminationException("module lala violates range check");
         }
     }
 

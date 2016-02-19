@@ -1,2 +1,4 @@
 src
 simulations
+-oppresultmanagers.SQLite
+-oppresultmanagers.postgreSQL

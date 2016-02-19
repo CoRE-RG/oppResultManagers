@@ -6,7 +6,7 @@
 //Std
 #include <vector>
 
-class cMultipleOutputVectorManager : public cOutputVectorManager
+class cMultipleOutputVectorManager : public omnetpp::cIOutputVectorManager
 {
     protected:
         struct sVectorData
@@ -14,7 +14,7 @@ class cMultipleOutputVectorManager : public cOutputVectorManager
                 std::vector<void *> vectorhandles;
         };
     protected:
-        std::vector<cOutputVectorManager *> vectorOutputManagers;
+        std::vector<omnetpp::cIOutputVectorManager *> vectorOutputManagers;
     public:
         /**
          * Constructor.

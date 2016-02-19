@@ -7,28 +7,30 @@ Register_GlobalConfigOption(CFGID_OUTPUTVECTORMANAGER_CLASSES, "outputvectormana
 
 cMultipleOutputVectorManager::cMultipleOutputVectorManager()
 {
-    std::string cfgobj = ev.getConfig()->getAsString(CFGID_OUTPUTVECTORMANAGER_CLASSES);
+    std::string cfgobj = omnetpp::getEnvir()->getConfig()->getAsString(CFGID_OUTPUTVECTORMANAGER_CLASSES);
 
-    std::vector<std::string> managerClasses = cStringTokenizer(cfgobj.c_str(), ", ").asVector();
+    std::vector<std::string> managerClasses = omnetpp::cStringTokenizer(cfgobj.c_str(), ", ").asVector();
     for (std::vector<std::string>::const_iterator managerClass = managerClasses.begin();
             managerClass != managerClasses.end(); ++managerClass)
     {
-        cObject *outvectormgr_tmp = createOne((*managerClass).c_str());
-        if (cOutputVectorManager * vectorManager = dynamic_cast<cOutputVectorManager *>(outvectormgr_tmp))
+        omnetpp::cObject *outvectormgr_tmp = omnetpp::createOne((*managerClass).c_str());
+        if (omnetpp::cIOutputVectorManager * vectorManager =
+                dynamic_cast<omnetpp::cIOutputVectorManager *>(outvectormgr_tmp))
         {
             vectorOutputManagers.push_back(vectorManager);
         }
         else
         {
-            throw cRuntimeError("Class \"%s\" is not subclassed from cOutputVectorManager", (*managerClass).c_str());
+            throw omnetpp::cRuntimeError("Class \"%s\" is not subclassed from cOutputVectorManager",
+                    (*managerClass).c_str());
         }
     }
 }
 
 cMultipleOutputVectorManager::~cMultipleOutputVectorManager()
 {
-    for (std::vector<cOutputVectorManager*>::const_iterator vectorOutputManager = vectorOutputManagers.begin();
-            vectorOutputManager != vectorOutputManagers.end();)
+    for (std::vector<omnetpp::cIOutputVectorManager*>::const_iterator vectorOutputManager =
+            vectorOutputManagers.begin(); vectorOutputManager != vectorOutputManagers.end();)
     {
         vectorOutputManager = vectorOutputManagers.erase(vectorOutputManager);
     }
@@ -36,8 +38,8 @@ cMultipleOutputVectorManager::~cMultipleOutputVectorManager()
 
 void cMultipleOutputVectorManager::startRun()
 {
-    for (std::vector<cOutputVectorManager*>::const_iterator vectorOutputManager = vectorOutputManagers.begin();
-            vectorOutputManager != vectorOutputManagers.end(); ++vectorOutputManager)
+    for (std::vector<omnetpp::cIOutputVectorManager*>::const_iterator vectorOutputManager =
+            vectorOutputManagers.begin(); vectorOutputManager != vectorOutputManagers.end(); ++vectorOutputManager)
     {
         (*vectorOutputManager)->startRun();
     }
@@ -45,8 +47,8 @@ void cMultipleOutputVectorManager::startRun()
 
 void cMultipleOutputVectorManager::endRun()
 {
-    for (std::vector<cOutputVectorManager*>::const_iterator vectorOutputManager = vectorOutputManagers.begin();
-            vectorOutputManager != vectorOutputManagers.end(); ++vectorOutputManager)
+    for (std::vector<omnetpp::cIOutputVectorManager*>::const_iterator vectorOutputManager =
+            vectorOutputManagers.begin(); vectorOutputManager != vectorOutputManagers.end(); ++vectorOutputManager)
     {
         (*vectorOutputManager)->endRun();
     }
@@ -55,8 +57,8 @@ void cMultipleOutputVectorManager::endRun()
 void *cMultipleOutputVectorManager::registerVector(const char *modulename, const char *vectorname)
 {
     sVectorData *vp = new sVectorData();
-    for (std::vector<cOutputVectorManager*>::const_iterator vectorOutputManager = vectorOutputManagers.begin();
-            vectorOutputManager != vectorOutputManagers.end(); ++vectorOutputManager)
+    for (std::vector<omnetpp::cIOutputVectorManager*>::const_iterator vectorOutputManager =
+            vectorOutputManagers.begin(); vectorOutputManager != vectorOutputManagers.end(); ++vectorOutputManager)
     {
         void* vectorhandle = (*vectorOutputManager)->registerVector(modulename, vectorname);
         vp->vectorhandles.push_back(vectorhandle);
@@ -66,7 +68,7 @@ void *cMultipleOutputVectorManager::registerVector(const char *modulename, const
 void cMultipleOutputVectorManager::deregisterVector(void *vectorhandle)
 {
     sVectorData *vp = (sVectorData *) vectorhandle;
-    std::vector<cOutputVectorManager*>::const_iterator vectorOutputManager = vectorOutputManagers.begin();
+    std::vector<omnetpp::cIOutputVectorManager*>::const_iterator vectorOutputManager = vectorOutputManagers.begin();
     std::vector<void*>::const_iterator vectorOutputManagerHandle = vp->vectorhandles.begin();
     while ((vectorOutputManager != vectorOutputManagers.end()) && (vectorOutputManagerHandle != vp->vectorhandles.end()))
     {
@@ -80,7 +82,7 @@ void cMultipleOutputVectorManager::deregisterVector(void *vectorhandle)
 void cMultipleOutputVectorManager::setVectorAttribute(void *vectorhandle, const char *name, const char *value)
 {
     sVectorData *vp = (sVectorData *) vectorhandle;
-    std::vector<cOutputVectorManager*>::const_iterator vectorOutputManager = vectorOutputManagers.begin();
+    std::vector<omnetpp::cIOutputVectorManager*>::const_iterator vectorOutputManager = vectorOutputManagers.begin();
     std::vector<void*>::const_iterator vectorOutputManagerHandle = vp->vectorhandles.begin();
     while ((vectorOutputManager != vectorOutputManagers.end()) && (vectorOutputManagerHandle != vp->vectorhandles.end()))
     {
@@ -95,7 +97,7 @@ bool cMultipleOutputVectorManager::record(void *vectorhandle, simtime_t t, doubl
     bool returnValue = false;
 
     sVectorData *vp = (sVectorData *) vectorhandle;
-    std::vector<cOutputVectorManager*>::const_iterator vectorOutputManager = vectorOutputManagers.begin();
+    std::vector<omnetpp::cIOutputVectorManager*>::const_iterator vectorOutputManager = vectorOutputManagers.begin();
     std::vector<void*>::const_iterator vectorOutputManagerHandle = vp->vectorhandles.begin();
     while ((vectorOutputManager != vectorOutputManagers.end()) && (vectorOutputManagerHandle != vp->vectorhandles.end()))
     {
@@ -108,7 +110,7 @@ bool cMultipleOutputVectorManager::record(void *vectorhandle, simtime_t t, doubl
 
 void cMultipleOutputVectorManager::flush()
 {
-    for (std::vector<cOutputVectorManager*>::const_iterator vectorOutputManager = vectorOutputManagers.begin();
+    for (std::vector<omnetpp::cIOutputVectorManager*>::const_iterator vectorOutputManager = vectorOutputManagers.begin();
             vectorOutputManager != vectorOutputManagers.end(); ++vectorOutputManager)
     {
         (*vectorOutputManager)->flush();

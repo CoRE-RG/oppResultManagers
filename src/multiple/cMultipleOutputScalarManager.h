@@ -6,10 +6,10 @@
 //Std
 #include <vector>
 
-class cMultipleOutputScalarManager : public cOutputScalarManager
+class cMultipleOutputScalarManager : public omnetpp::cIOutputScalarManager
 {
     protected:
-        std::vector<cOutputScalarManager *> scalarOutputManagers;
+        std::vector<omnetpp::cIOutputScalarManager *> scalarOutputManagers;
     public:
         /**
          * Constructor.
@@ -34,14 +34,14 @@ class cMultipleOutputScalarManager : public cOutputScalarManager
         /**
          * Records a double scalar result into the scalar result file.
          */
-        virtual void recordScalar(cComponent *component, const char *name, double value, opp_string_map *attributes =
-                NULL) override;
+        virtual void recordScalar(omnetpp::cComponent *component, const char *name, double value,
+                omnetpp::opp_string_map *attributes = NULL) override;
 
         /**
          * Records a histogram or statistic object into the scalar result file.
          */
-        virtual void recordStatistic(cComponent *component, const char *name, cStatistic *statistic,
-                opp_string_map *attributes = NULL) override;
+        virtual void recordStatistic(omnetpp::cComponent *component, const char *name, omnetpp::cStatistic *statistic,
+                omnetpp::opp_string_map *attributes = NULL) override;
 
         /**
          * Returns NULL, because this class doesn't use a file.

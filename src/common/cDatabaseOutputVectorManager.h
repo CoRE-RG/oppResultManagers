@@ -3,15 +3,15 @@
 
 #include <omnetpp.h>
 
-class cDatabaseOutputVectorManager : public cOutputVectorManager
+class cDatabaseOutputVectorManager : public omnetpp::cIOutputVectorManager
 {
     protected:
         struct sVectorData
         {
                 long id;             // vector ID
-                opp_string modulename; // module of cOutVector object
-                opp_string vectorname; // cOutVector object name
-                opp_string_map attributes; // vector attributes
+                omnetpp::opp_string modulename; // module of cOutVector object
+                omnetpp::opp_string vectorname; // cOutVector object name
+                omnetpp::opp_string_map attributes; // vector attributes
                 bool initialised;    // true if the "label" line is already written out
                 bool enabled;        // write to the output file can be enabled/disabled
                 bool recordEventNumbers;  // write to the output file can be enabled/disabled

@@ -5,7 +5,7 @@
 std::vector<std::pair<simtime_t, simtime_t> > parseIntervals(const char* text)
 {
     std::vector<std::pair<simtime_t, simtime_t>> parsedIntervals;
-    std::vector<std::string> intervals = cStringTokenizer(text, ",").asVector();
+    std::vector<std::string> intervals = omnetpp::cStringTokenizer(text, ",").asVector();
     for (std::vector<std::string>::const_iterator interval = intervals.begin(); interval != intervals.end(); ++interval)
     {
         simtime_t starttime = 0;
@@ -13,27 +13,26 @@ std::vector<std::pair<simtime_t, simtime_t> > parseIntervals(const char* text)
         size_t pos = (*interval).find("..");
         if (pos == std::string::npos)
         {
-            throw cRuntimeError("Wrong syntax in interval %s=%s", text, (*interval).c_str());
+            throw omnetpp::cRuntimeError("Wrong syntax in interval %s=%s", text, (*interval).c_str());
         }
         else if (pos == 0)
         {
-            endtime = STR_SIMTIME(std::string((*interval), 2, (*interval).length() - 2).c_str());
+            endtime = omnetpp::SimTime::parse(std::string((*interval), 2, (*interval).length() - 2).c_str());
         }
         else if (pos == ((*interval).length() - 2))
         {
-            starttime = STR_SIMTIME(std::string((*interval), 0, (*interval).length() - 2).c_str());
+            starttime = omnetpp::SimTime::parse(std::string((*interval), 0, (*interval).length() - 2).c_str());
         }
         else
         {
-            starttime = STR_SIMTIME(std::string((*interval), 0, pos).c_str());
-            endtime = STR_SIMTIME(std::string((*interval), pos + 2, (*interval).length() - pos - 2).c_str());
+            starttime = omnetpp::SimTime::parse(std::string((*interval), 0, pos).c_str());
+            endtime = omnetpp::SimTime::parse(std::string((*interval), pos + 2, (*interval).length() - pos - 2).c_str());
             if (starttime > endtime)
             {
-                throw cRuntimeError("Wrong time in interval %s=%s, starttime cannot be later than endtime", text,
+                throw omnetpp::cRuntimeError("Wrong time in interval %s=%s, starttime cannot be later than endtime", text,
                         (*interval).c_str());
             }
         }
-        ev << "starttime:"<<starttime<<" endtime:"<<endtime<<endl;
         parsedIntervals.push_back(std::pair<simtime_t, simtime_t>(starttime, endtime));
     }
     return parsedIntervals;

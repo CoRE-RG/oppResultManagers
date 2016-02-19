@@ -35,4 +35,16 @@
         compileFlags = "-DWITH_MULTIPLE_COMMON"
         linkerFlags = ""
         />
+    <feature
+        id="GCTAEventlog_common"
+        name="GCTA Eventlog Common"
+        description = "The common part of the GCTA Eventlog output implementation"
+        initiallyEnabled = "false"
+        requires = ""
+        labels = ""
+        nedPackages = "oppresultmanagers.eventlog.gcta"
+        extraSourceFolders = ""
+        compileFlags = "-DWITH_GCTAEVENTLOG_COMMON"
+        linkerFlags = ""
+        />
 </features>

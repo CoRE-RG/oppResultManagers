@@ -10,6 +10,7 @@ Register_GlobalConfigOption(CFGID_SQLITEMGR_COMMIT_FREQ, "sqliteoutputmanager-co
 #define SQL_SELECT_NAME "SELECT * FROM name;"
 #define SQL_INSERT_NAME "INSERT INTO name(name) VALUES(?);"
 #define SQL_INSERT_RUN "INSERT INTO run(runid,runnumber,network,date) VALUES(?,?,?,?);"
+#define SQL_SELECT_RUN "SELECT id FROM run WHERE runid=?;"
 
 sqlite3* cSQLiteOutputManager::connection = nullptr;
 bool cSQLiteOutputManager::hasTransaction = false;
@@ -115,48 +116,71 @@ void cSQLiteOutputManager::startRun()
 
     flush();
 
-    std::string runid = ev.getConfigEx()->getVariable(CFGVAR_RUNID);
+    std::string runid_var = ev.getConfigEx()->getVariable(CFGVAR_RUNID);
     std::string datetime = ev.getConfigEx()->getVariable(CFGVAR_DATETIME);
     datetime.at(8) = ' ';
     datetime.insert(4, "-");
     datetime.insert(7, "-");
 
     sqlite3_stmt *stmt;
-    rc = sqlite3_prepare(connection, SQL_INSERT_RUN, -1, &stmt, 0);
+
+    //Try find already existing run
+    rc = sqlite3_prepare(connection, SQL_SELECT_RUN, -1, &stmt, 0);
     if (rc != SQLITE_OK)
     {
         throw cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s", sqlite3_errmsg(connection));
     }
-    rc = sqlite3_bind_text(stmt, 1, runid.c_str(), -1, SQLITE_STATIC);
+    rc = sqlite3_bind_text(stmt, 1, runid_var.c_str(), -1, SQLITE_STATIC);
     if (rc != SQLITE_OK)
     {
-        throw cRuntimeError("SQLiteOutputManager:: Could not bind network name.");
+        throw cRuntimeError("SQLiteOutputManager:: Could not bind runid");
     }
-    rc = sqlite3_bind_int(stmt, 2, simulation.getActiveEnvir()->getConfigEx()->getActiveRunNumber());
-    if (rc != SQLITE_OK)
-    {
-        throw cRuntimeError("SQLiteOutputManager:: Could not bind active runnumber: %s", sqlite3_errmsg(connection));
-    }
-    rc = sqlite3_bind_text(stmt, 3, simulation.getNetworkType()->getName(), -1, SQLITE_STATIC);
-    if (rc != SQLITE_OK)
-    {
-        throw cRuntimeError("SQLiteOutputManager:: Could not bind network name.");
-    }
-
-    rc = sqlite3_bind_text(stmt, 4, datetime.c_str(), -1, SQLITE_STATIC);
-    if (rc != SQLITE_OK)
-    {
-        throw cRuntimeError("SQLiteOutputManager:: Could not bind date.");
-    }
-
     rc = sqlite3_step(stmt);
-    if (rc != SQLITE_DONE)
+    if (rc == SQLITE_ROW)
     {
-        throw cRuntimeError("SQLiteOutputManager:: Could not execute statement (SQL_INSERT_RUN): %s",
-                sqlite3_errmsg(connection));
+        runid = sqlite3_column_int64(stmt,0);
     }
-    runid = sqlite3_last_insert_rowid(connection);
-    sqlite3_reset(stmt);
+    sqlite3_finalize(stmt);
+    if (!runid)
+    {
+        rc = sqlite3_prepare(connection, SQL_INSERT_RUN, -1, &stmt, 0);
+        if (rc != SQLITE_OK)
+        {
+            throw cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s", sqlite3_errmsg(connection));
+        }
+        rc = sqlite3_bind_text(stmt, 1, runid_var.c_str(), -1, SQLITE_STATIC);
+        if (rc != SQLITE_OK)
+        {
+            throw cRuntimeError("SQLiteOutputManager:: Could not bind runid");
+        }
+        rc = sqlite3_bind_int(stmt, 2, simulation.getActiveEnvir()->getConfigEx()->getActiveRunNumber());
+        if (rc != SQLITE_OK)
+        {
+            throw cRuntimeError("SQLiteOutputManager:: Could not bind active runnumber: %s",
+                    sqlite3_errmsg(connection));
+        }
+        rc = sqlite3_bind_text(stmt, 3, simulation.getNetworkType()->getName(), -1, SQLITE_STATIC);
+        if (rc != SQLITE_OK)
+        {
+            throw cRuntimeError("SQLiteOutputManager:: Could not bind network name.");
+        }
+
+        rc = sqlite3_bind_text(stmt, 4, datetime.c_str(), -1, SQLITE_STATIC);
+        if (rc != SQLITE_OK)
+        {
+            throw cRuntimeError("SQLiteOutputManager:: Could not bind date.");
+        }
+
+        rc = sqlite3_step(stmt);
+        if (rc != SQLITE_DONE)
+        {
+            throw cRuntimeError("SQLiteOutputManager:: Could not execute statement (SQL_INSERT_RUN): %s",
+                    sqlite3_errmsg(connection));
+        }
+        runid = sqlite3_last_insert_rowid(connection);
+        sqlite3_reset(stmt);
+    }
+    ev << "runid" << runid << endl;
 
     //Find already existing modules and names
     rc = sqlite3_exec(connection, SQL_SELECT_MODULE, [] (void *data, int argc, char **argv, char **azColName) -> int

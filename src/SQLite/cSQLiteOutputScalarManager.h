@@ -3,7 +3,7 @@
 
 #include <cSQLiteOutputManager.h>
 
-class cSQLiteOutputScalarManager : public cOutputScalarManager, cSQLiteOutputManager
+class cSQLiteOutputScalarManager : public omnetpp::cIOutputScalarManager, cSQLiteOutputManager
 {
 
     public:
@@ -20,14 +20,14 @@ class cSQLiteOutputScalarManager : public cOutputScalarManager, cSQLiteOutputMan
         /**
          * Records a double scalar result into the scalar result file.
          */
-        virtual void recordScalar(cComponent *component, const char *name, double value, opp_string_map *attributes =
-                NULL) override;
+        virtual void recordScalar(omnetpp::cComponent *component, const char *name, double value,
+                omnetpp::opp_string_map *attributes = NULL) override;
 
         /**
          * Records a histogram or statistic object into the scalar result file.
          */
-        virtual void recordStatistic(cComponent *component, const char *name, cStatistic *statistic,
-                opp_string_map *attributes = NULL) override;
+        virtual void recordStatistic(omnetpp::cComponent *component, const char *name, omnetpp::cStatistic *statistic,
+                omnetpp::opp_string_map *attributes = NULL) override;
 
         virtual void flush() override;
 

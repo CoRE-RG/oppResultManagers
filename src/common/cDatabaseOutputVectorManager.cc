@@ -14,7 +14,7 @@ void *cDatabaseOutputVectorManager::registerVector(const char *modulename, const
 
     //TODO Work with extern instead?
     vp->enabled = omnetpp::cConfiguration::parseBool(
-    ev.getConfig()->getPerObjectConfigEntry(vectorfullpath.c_str(), "vector-recording").getValue(), "true");
+    omnetpp::getEnvir()->getConfig()->getPerObjectConfigEntry(vectorfullpath.c_str(), "vector-recording").getValue(), "true");
 
     const char *text = omnetpp::getEnvir()->getConfig()->getPerObjectConfigEntry(vectorfullpath.c_str(),
             "vector-recording-intervals").getValue();

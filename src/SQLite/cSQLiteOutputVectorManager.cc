@@ -28,7 +28,7 @@ void cSQLiteOutputVectorManager::startRun()
                     nullptr, nullptr, &zErrMsg);
     if (rc != SQLITE_OK)
     {
-        throw cRuntimeError("cSQLiteOutputScalarMgr:: Can't create table 'vector': %s", zErrMsg);
+        throw omnetpp::cRuntimeError("cSQLiteOutputScalarMgr:: Can't create table 'vector': %s", zErrMsg);
     }
 
     rc =
@@ -44,7 +44,7 @@ void cSQLiteOutputVectorManager::startRun()
                     nullptr, nullptr, &zErrMsg);
     if (rc != SQLITE_OK)
     {
-        throw cRuntimeError("cSQLiteOutputScalarMgr:: Can't create table 'vectorattr': %s", zErrMsg);
+        throw omnetpp::cRuntimeError("cSQLiteOutputScalarMgr:: Can't create table 'vectorattr': %s", zErrMsg);
     }
     rc =
             sqlite3_exec(connection,
@@ -57,14 +57,15 @@ void cSQLiteOutputVectorManager::startRun()
                     nullptr, nullptr, &zErrMsg);
     if (rc != SQLITE_OK)
     {
-        throw cRuntimeError("cSQLiteOutputScalarMgr:: Can't create table 'vectordata': %s", zErrMsg);
+        throw omnetpp::cRuntimeError("cSQLiteOutputScalarMgr:: Can't create table 'vectordata': %s", zErrMsg);
     }
 
     //prepare statements:
     rc = sqlite3_prepare_v2(connection, SQL_INSERT_VECTOR, strlen(SQL_INSERT_VECTOR), &insertVectorStmt, 0);
     if (rc != SQLITE_OK)
     {
-        throw cRuntimeError("cSQLiteOutputVectorManager:: Could not prepare statement (SQL_INSERT_VECTOR_ATTR): %s",
+        throw omnetpp::cRuntimeError(
+                "cSQLiteOutputVectorManager:: Could not prepare statement (SQL_INSERT_VECTOR_ATTR): %s",
                 sqlite3_errmsg(connection));
     }
 
@@ -72,7 +73,8 @@ void cSQLiteOutputVectorManager::startRun()
             0);
     if (rc != SQLITE_OK)
     {
-        throw cRuntimeError("cSQLiteOutputVectorManager:: Could not prepare statement (SQL_INSERT_VECTOR_ATTR): %s",
+        throw omnetpp::cRuntimeError(
+                "cSQLiteOutputVectorManager:: Could not prepare statement (SQL_INSERT_VECTOR_ATTR): %s",
                 sqlite3_errmsg(connection));
     }
 
@@ -80,7 +82,8 @@ void cSQLiteOutputVectorManager::startRun()
             0);
     if (rc != SQLITE_OK)
     {
-        throw cRuntimeError("cSQLiteOutputVectorManager:: Could not prepare statement (SQL_INSERT_VECTOR_DATA): %s",
+        throw omnetpp::cRuntimeError(
+                "cSQLiteOutputVectorManager:: Could not prepare statement (SQL_INSERT_VECTOR_DATA): %s",
                 sqlite3_errmsg(connection));
     }
 }
@@ -105,51 +108,52 @@ bool cSQLiteOutputVectorManager::record(void *vectorhandle, simtime_t t, double 
             int rc = sqlite3_bind_int(insertVectorStmt, 1, runid);
             if (rc != SQLITE_OK)
             {
-                throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind active runid.");
+                throw omnetpp::cRuntimeError("cSQLiteOutputVectorManager:: Could not bind active runid.");
             }
             rc = sqlite3_bind_int(insertVectorStmt, 2, getModuleID(vp->modulename.c_str()));
             if (rc != SQLITE_OK)
             {
-                throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind active moduleid.");
+                throw omnetpp::cRuntimeError("cSQLiteOutputVectorManager:: Could not bind active moduleid.");
             }
             rc = sqlite3_bind_int(insertVectorStmt, 3, getNameID(vp->vectorname.c_str()));
             if (rc != SQLITE_OK)
             {
-                throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind active nameid.");
+                throw omnetpp::cRuntimeError("cSQLiteOutputVectorManager:: Could not bind active nameid.");
             }
 
             rc = sqlite3_step(insertVectorStmt);
             if (rc != SQLITE_DONE)
             {
-                throw cRuntimeError("cSQLiteOutputVectorManager:: Could not execute statement (SQL_INSERT_VECTOR): %s",
+                throw omnetpp::cRuntimeError(
+                        "cSQLiteOutputVectorManager:: Could not execute statement (SQL_INSERT_VECTOR): %s",
                         sqlite3_errmsg(connection));
             }
             vp->id = sqlite3_last_insert_rowid(connection);
             sqlite3_clear_bindings(insertVectorStmt);
             sqlite3_reset(insertVectorStmt);
             vp->initialised = true;
-            for (opp_string_map::iterator it = vp->attributes.begin(); it != vp->attributes.end(); ++it)
+            for (omnetpp::opp_string_map::iterator it = vp->attributes.begin(); it != vp->attributes.end(); ++it)
             {
                 rc = sqlite3_bind_int(insertVectorAttrStmt, 1, vp->id);
                 if (rc != SQLITE_OK)
                 {
-                    throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind vectorid.");
+                    throw omnetpp::cRuntimeError("cSQLiteOutputVectorManager:: Could not bind vectorid.");
                 }
                 int rc = sqlite3_bind_int(insertVectorAttrStmt, 2, getNameID(it->first.c_str()));
                 if (rc != SQLITE_OK)
                 {
-                    throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind nameid.");
+                    throw omnetpp::cRuntimeError("cSQLiteOutputVectorManager:: Could not bind nameid.");
                 }
                 rc = sqlite3_bind_text(insertVectorAttrStmt, 3, it->second.c_str(), -1, SQLITE_STATIC);
                 if (rc != SQLITE_OK)
                 {
-                    throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind value.");
+                    throw omnetpp::cRuntimeError("cSQLiteOutputVectorManager:: Could not bind value.");
                 }
 
                 rc = sqlite3_step(insertVectorAttrStmt);
                 if (rc != SQLITE_DONE)
                 {
-                    throw cRuntimeError(
+                    throw omnetpp::cRuntimeError(
                             "cSQLiteOutputVectorManager:: Could not execute statement (SQL_INSERT_VECTOR_ATTR): %s",
                             sqlite3_errmsg(connection));
                 }
@@ -163,23 +167,24 @@ bool cSQLiteOutputVectorManager::record(void *vectorhandle, simtime_t t, double 
         int rc = sqlite3_bind_int(insertVectorDataStmt, 1, vp->id);
         if (rc != SQLITE_OK)
         {
-            throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind vectorid.");
+            throw omnetpp::cRuntimeError("cSQLiteOutputVectorManager:: Could not bind vectorid.");
         }
         rc = sqlite3_bind_double(insertVectorDataStmt, 2, SIMTIME_DBL(t));
         if (rc != SQLITE_OK)
         {
-            throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind time.");
+            throw omnetpp::cRuntimeError("cSQLiteOutputVectorManager:: Could not bind time.");
         }
         rc = sqlite3_bind_double(insertVectorDataStmt, 3, value);
         if (rc != SQLITE_OK)
         {
-            throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind value.");
+            throw omnetpp::cRuntimeError("cSQLiteOutputVectorManager:: Could not bind value.");
         }
 
         rc = sqlite3_step(insertVectorDataStmt);
         if (rc != SQLITE_DONE)
         {
-            throw cRuntimeError("cSQLiteOutputVectorManager:: Could not execute statement (SQL_INSERT_VECTOR_DATA): %s",
+            throw omnetpp::cRuntimeError(
+                    "cSQLiteOutputVectorManager:: Could not execute statement (SQL_INSERT_VECTOR_DATA): %s",
                     sqlite3_errmsg(connection));
         }
         vp->id = sqlite3_last_insert_rowid(connection);

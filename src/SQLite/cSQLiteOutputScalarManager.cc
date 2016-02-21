@@ -24,7 +24,7 @@ void cSQLiteOutputScalarManager::startRun()
     if (rc != SQLITE_OK)
     {
         sqlite3_close(connection);
-        throw cRuntimeError("cSQLiteOutputScalarMgr:: Can't create table 'scalar': %s", zErrMsg);
+        throw omnetpp::cRuntimeError("cSQLiteOutputScalarMgr:: Can't create table 'scalar': %s", zErrMsg);
     }
 }
 
@@ -34,46 +34,55 @@ void cSQLiteOutputScalarManager::endRun()
     cSQLiteOutputManager::endRun();
 }
 
-void cSQLiteOutputScalarManager::recordScalar(cComponent *component, const char *name, double value,
-        opp_string_map *attributes)
+void cSQLiteOutputScalarManager::recordScalar(omnetpp::cComponent *component, const char *name, double value,
+        omnetpp::opp_string_map *attributes)
 {
 
     sqlite3_stmt *stmt;
     int rc = sqlite3_prepare(connection, SQL_INSERT_SCALAR_RESULT, strlen(SQL_INSERT_SCALAR_RESULT), &stmt, 0);
     if (rc != SQLITE_OK)
     {
-        throw cRuntimeError("cSQLiteOutputScalarManager:: Could not prepare statement: %s", sqlite3_errmsg(connection));
+        throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not prepare statement: %s",
+                sqlite3_errmsg(connection));
     }
     rc = sqlite3_bind_int(stmt, 1, runid);
     if (rc != SQLITE_OK)
     {
-        throw cRuntimeError("cSQLiteOutputScalarManager:: Could not bind active runnumber: %s", sqlite3_errmsg(connection));
+        throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not bind active runnumber: %s",
+                sqlite3_errmsg(connection));
     }
     rc = sqlite3_bind_int(stmt, 2, getModuleID(component->getFullPath()));
     if (rc != SQLITE_OK)
     {
-        throw cRuntimeError("cSQLiteOutputScalarManager:: Could not bind module id: %s", sqlite3_errmsg(connection));
+        throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not bind module id: %s",
+                sqlite3_errmsg(connection));
     }
     rc = sqlite3_bind_int(stmt, 3, getNameID(name));
     if (rc != SQLITE_OK)
     {
-        throw cRuntimeError("cSQLiteOutputScalarManager:: Could not bind scalar name: %s", sqlite3_errmsg(connection));
+        throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not bind scalar name: %s",
+                sqlite3_errmsg(connection));
     }
-    if(isnan(value)){
+    if (isnan(value))
+    {
         sqlite3_bind_null(stmt, 4);
     }
-    else{
+    else
+    {
         rc = sqlite3_bind_double(stmt, 4, value);
     }
     if (rc != SQLITE_OK)
     {
-        throw cRuntimeError("cSQLiteOutputScalarManager:: Could not bind value: %s", sqlite3_errmsg(connection));
+        throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not bind value: %s",
+                sqlite3_errmsg(connection));
     }
 
     rc = sqlite3_step(stmt);
     if (rc != SQLITE_DONE)
     {
-        throw cRuntimeError("cSQLiteOutputScalarManager:: Could not execute statement (SQL_INSERT_SCALAR_RESULT): %s", sqlite3_errmsg(connection));
+        throw omnetpp::cRuntimeError(
+                "cSQLiteOutputScalarManager:: Could not execute statement (SQL_INSERT_SCALAR_RESULT): %s",
+                sqlite3_errmsg(connection));
     }
     sqlite3_reset(stmt);
 
@@ -84,10 +93,10 @@ void cSQLiteOutputScalarManager::recordScalar(cComponent *component, const char 
     }
 }
 
-void cSQLiteOutputScalarManager::recordStatistic(cComponent *component, const char *name, cStatistic *statistic,
-        opp_string_map *attributes)
+void cSQLiteOutputScalarManager::recordStatistic(omnetpp::cComponent *component, const char *name,
+        omnetpp::cStatistic *statistic, omnetpp::opp_string_map *attributes)
 {
-    throw cRuntimeError("cPostgreSQLOutputScalarMgr: recording cStatistics objects not supported yet");
+    throw omnetpp::cRuntimeError("cPostgreSQLOutputScalarMgr: recording cStatistics objects not supported yet");
 }
 
 void cSQLiteOutputScalarManager::flush()

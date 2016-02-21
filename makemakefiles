@@ -8,4 +8,4 @@
 MAKEMAKE=opp_makemake $(MMOPT)
 
 all:
-	cd src && $(MAKEMAKE) -f --deep --make-so -e cc -XPostgreSQL -lsqlite3 -DWITH_MULTIPLE_COMMON -DWITH_SQLITE_COMMON
+	cd src && $(MAKEMAKE) -f --deep --make-so -e cc -lpqxx -lpq -lsqlite3 -DWITH_SQLITE_COMMON -DWITH_MULTIPLE_COMMON -DWITH_POSTGRESQL_COMMON

@@ -126,6 +126,13 @@
 								</xs:documentation>
 							</xs:annotation>
 						</xs:attribute>
+						<xs:attribute type="xs:string" name="unit" use="optional" default="">
+							<xs:annotation>
+								<xs:documentation xml:lang="en">
+									Optional unit for the constraint. e.g "s" for seconds
+								</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
 					</xs:complexType>
 				</xs:element>
 			</xs:sequence>

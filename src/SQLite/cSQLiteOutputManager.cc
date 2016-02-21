@@ -1,6 +1,6 @@
 #include <cSQLiteOutputManager.h>
 
-Register_GlobalConfigOption(CFGID_SQLITEOUTMGR_FILE, "sqliteoutputmanager-file", CFG_STRING,
+Register_GlobalConfigOption(CFGID_SQLITEOUTMGR_FILE, "sqliteoutputmanager-file", CFG_FILENAME,
         "${resultdir}/${configname}-${runnumber}.sqlite3", "Object name of database connection parameters");
 Register_GlobalConfigOption(CFGID_SQLITEMGR_COMMIT_FREQ, "sqliteoutputmanager-commit-freq", CFG_INT, "10000",
         "COMMIT every n INSERTs, default=10");
@@ -38,7 +38,7 @@ void cSQLiteOutputManager::startRun()
 {
     if (!connection)
     {
-        std::string cfgobj = ev.getConfig()->getAsString(CFGID_SQLITEOUTMGR_FILE);
+        std::string cfgobj = ev.getConfig()->getAsFilename(CFGID_SQLITEOUTMGR_FILE);
         int rc = sqlite3_open(cfgobj.c_str(), &connection);
         if (rc)
         {

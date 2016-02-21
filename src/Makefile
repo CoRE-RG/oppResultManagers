@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for liboppResultManagers
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep --make-so -e cc -lpqxx -lpq -lsqlite3 -DWITH_POSTGRESQL_COMMON -DWITH_SQLITE_COMMON -DWITH_MULTIPLE_COMMON
+#  opp_makemake -f --deep --make-so -e cc -lpqxx -lpq -lsqlite3 -DWITH_SQLITE_COMMON -DWITH_MULTIPLE_COMMON -DWITH_POSTGRESQL_COMMON
 #
 
 # Name of target to be created (-o option)
@@ -31,16 +31,16 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
 OBJS = \
-    $O/SQLite/cSQLiteOutputScalarManager.o \
     $O/SQLite/cSQLiteOutputManager.o \
+    $O/SQLite/cSQLiteOutputScalarManager.o \
     $O/SQLite/cSQLiteOutputVectorManager.o \
     $O/check/cCheckOutputVectorManager.o \
     $O/common/cDatabaseOutputVectorManager.o \
-    $O/multiple/cMultipleOutputVectorManager.o \
     $O/multiple/cMultipleOutputScalarManager.o \
+    $O/multiple/cMultipleOutputVectorManager.o \
+    $O/postgreSQL/cPorstgreSQLOutputManager.o \
     $O/postgreSQL/cPostgreSQLOutputScalarManager.o \
     $O/postgreSQL/cPostgreSQLOutputVectorManager.o \
-    $O/postgreSQL/cPorstgreSQLOutputManager.o \
     $O/utilities/HelperFunctions.o
 
 # Message files
@@ -70,7 +70,7 @@ include $(CONFIGFILE)
 OMNETPP_LIB_SUBDIR = $(OMNETPP_LIB_DIR)/$(TOOLCHAIN_NAME)
 OMNETPP_LIBS = -L"$(OMNETPP_LIB_SUBDIR)" -L"$(OMNETPP_LIB_DIR)" -loppenvir$D $(KERNEL_LIBS) $(SYS_LIBS)
 
-COPTS = $(CFLAGS) -DWITH_POSTGRESQL_COMMON -DWITH_SQLITE_COMMON -DWITH_MULTIPLE_COMMON $(INCLUDE_PATH) -I$(OMNETPP_INCL_DIR)
+COPTS = $(CFLAGS) -DWITH_SQLITE_COMMON -DWITH_MULTIPLE_COMMON -DWITH_POSTGRESQL_COMMON $(INCLUDE_PATH) -I$(OMNETPP_INCL_DIR)
 MSGCOPTS = $(INCLUDE_PATH)
 
 # we want to recompile everything if COPTS changes,

@@ -28,18 +28,18 @@
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.791004234" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.364557831" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<option id="gnu.cpp.compiler.option.preprocessor.def.196753503" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
-									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.include.paths.1507852063" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1711841259" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1022967988" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.873421088" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
-									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1221698086" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -57,7 +57,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src/postgreSQL" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -91,8 +91,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
-									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.2020978174" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -103,8 +103,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
-									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.417557408" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -131,8 +131,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
-									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.311188515" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -143,8 +143,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
-									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.248185939" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -166,8 +166,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
-									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.97415844" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -178,8 +178,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
-									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_POSTGRESQL_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.574586158" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -192,7 +192,7 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="simulations"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
+						<entry excluding="postgreSQL" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

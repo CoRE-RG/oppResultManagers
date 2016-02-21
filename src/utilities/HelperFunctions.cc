@@ -40,10 +40,10 @@ std::vector<std::pair<simtime_t, simtime_t> > parseIntervals(const char* text)
 
 bool inIntervals(simtime_t t, std::vector<std::pair<simtime_t, simtime_t> > &intervals)
 {
-    //Check intervals
-    bool inIntervals = false;
     if (intervals.size() > 0)
     {
+        //Check intervals
+        bool inIntervals = false;
         for (std::vector<std::pair<simtime_t, simtime_t>>::iterator interval = intervals.begin();
                 interval != intervals.end();)
         {
@@ -61,6 +61,11 @@ bool inIntervals(simtime_t t, std::vector<std::pair<simtime_t, simtime_t> > &int
                 ++interval;
             }
         }
+        return inIntervals;
     }
-    return inIntervals;
+    else{
+        //if there are no intervals return true
+        return true;
+    }
+
 }

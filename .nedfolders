@@ -1,4 +1,5 @@
 src
 simulations
 -oppresultmanagers.SQLite
+-oppresultmanagers.eventlog.gcta
 -oppresultmanagers.postgreSQL

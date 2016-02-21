@@ -180,7 +180,6 @@ void cSQLiteOutputManager::startRun()
         runid = sqlite3_last_insert_rowid(connection);
         sqlite3_reset(stmt);
     }
-    ev << "runid" << runid << endl;
 
     //Find already existing modules and names
     rc = sqlite3_exec(connection, SQL_SELECT_MODULE, [] (void *data, int argc, char **argv, char **azColName) -> int

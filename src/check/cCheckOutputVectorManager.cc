@@ -217,7 +217,7 @@ bool cCheckOutputVectorManager::record(void *vectorhandle, simtime_t t, double v
             workValue = sconstraint->sum;
         }
         //Avg constraints require value to be the sum:
-        else if ((*constraint)->type == Constraint::avg_min || (*constraint)->type == Constraint::avg_max)
+        else if (((*constraint)->type == Constraint::avg_min) || ((*constraint)->type == Constraint::avg_max))
         {
             AverageConstraint *aconstraint = static_cast<AverageConstraint*>(*constraint);
             aconstraint->samples[aconstraint->samplesPos++] = workValue;
@@ -239,7 +239,7 @@ bool cCheckOutputVectorManager::record(void *vectorhandle, simtime_t t, double v
             }
         }
         //Interval constraints require value to be the interval:
-        else if ((*constraint)->type == Constraint::interval_min || (*constraint)->type == Constraint::interval_max)
+        else if (((*constraint)->type == Constraint::interval_min) || ((*constraint)->type == Constraint::interval_max))
         {
             IntervalConstraint *iconstraint = static_cast<IntervalConstraint*>(*constraint);
             if (iconstraint->last != 0)

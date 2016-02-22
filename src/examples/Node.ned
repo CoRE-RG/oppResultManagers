@@ -20,6 +20,10 @@ package oppresultmanagers.examples;
 //
 simple Node
 {
+    parameters:
+        //Signal is emitted when when message is received. Contains the received message.
+        @signal[rxMessageAge](type=simtime_t);
+        @statistic[rxMessageAge](title="Message Age"; unit=s; record=max,vector; interpolationmode=none);
     gates:
         inout port;
 }

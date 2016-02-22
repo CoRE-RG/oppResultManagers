@@ -26,6 +26,12 @@ class Node : public cSimpleModule
   protected:
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
+
+  protected:
+          /**
+           * Signal that is emitted every time a message was received.
+           */
+          static simsignal_t rxMessageAgeSignal;
 };
 
 #endif

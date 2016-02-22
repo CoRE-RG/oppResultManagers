@@ -17,12 +17,16 @@
 
 Define_Module(Node);
 
+simsignal_t Node::rxMessageAgeSignal = registerSignal("rxMessageAge");
+
 void Node::initialize()
 {
-    // TODO - Generated method body
+    sendDelayed(new cMessage(getFullName()), uniform(1, 2), gate("port$o"));
 }
 
 void Node::handleMessage(cMessage *msg)
 {
-    // TODO - Generated method body
+    emit(rxMessageAgeSignal, simTime() - msg->getCreationTime());
+    delete msg;
+    sendDelayed(new cMessage(getFullName()), uniform(1, 2), gate("port$o"));
 }

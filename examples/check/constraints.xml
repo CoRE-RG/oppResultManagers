@@ -3,10 +3,9 @@
 	<constraint module="Network.node1" name="rxMessageAge:vector">
 		<min>1.5</min>
 		<max>1.7</max>
-		<avg_min samples="1">1.5</avg_min>
-		<avg_max samples="1">1.7</avg_max>
 	</constraint>
 	<constraint module="(.*)\.node2" moduleIsRegex="true" name="(rx|tx)MessageAge:vector" nameIsRegex="true">
-
+		<avg_min samples="10">1.5</avg_min>
+		<avg_max samples="10">1.7</avg_max>
 	</constraint>
 </constraints>

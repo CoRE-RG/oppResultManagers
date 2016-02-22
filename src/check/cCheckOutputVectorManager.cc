@@ -148,7 +148,7 @@ void *cCheckOutputVectorManager::registerVector(const char *modulename, const ch
                         const char* samples_string = (*constraintsValue)->getAttribute("samples");
                         if (!samples_string)
                         {
-                            throw cRuntimeError("average constraints require attribute samples");
+                            throw cRuntimeError("average constraint requires attribute samples");
                         }
                         size_t samples = atoi(samples_string);
                         if (samples == 0)
@@ -157,8 +157,8 @@ void *cCheckOutputVectorManager::registerVector(const char *modulename, const ch
                         }
                         else if (samples == 1)
                         {
-                        //    throw cRuntimeError(
-                        //            "samples attribute must be larger than 1, if you want 1 sample, use min/max constraint instead");
+                            throw cRuntimeError(
+                                    "samples attribute must be larger than 1, if you want 1 sample, use min/max constraint instead");
                         }
                         if (0 == strcmp((*constraintsValue)->getTagName(), "avg_min"))
                         {
@@ -220,10 +220,16 @@ bool cCheckOutputVectorManager::record(void *vectorhandle, simtime_t t, double v
         else if (((*constraint)->type == Constraint::avg_min) || ((*constraint)->type == Constraint::avg_max))
         {
             AverageConstraint *aconstraint = static_cast<AverageConstraint*>(*constraint);
-            aconstraint->samples[aconstraint->samplesPos++] = workValue;
+            aconstraint->samples[aconstraint->samplesPos] = workValue;
+            aconstraint->samplesPos++;
             aconstraint->samplesPos %= aconstraint->requiredSamples;
+
+            if (aconstraint->noSamples < aconstraint->requiredSamples){
+                aconstraint->noSamples++;
+            }
+
             //not yet enough samples
-            if ((aconstraint->noSamples+1) < aconstraint->requiredSamples)
+            if (aconstraint->noSamples < aconstraint->requiredSamples)
             {
                 aconstraint->noSamples++;
                 continue;

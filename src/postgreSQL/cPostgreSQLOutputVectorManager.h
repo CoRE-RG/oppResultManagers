@@ -4,7 +4,7 @@
 #include "cDatabaseOutputVectorManager.h"
 #include <cPorstgreSQLOutputManager.h>
 
-class cPostgreSQLOutputVectorMgr : public cDatabaseOutputVectorManager, cPorstgreSQLOutputManager
+class cPostgreSQLOutputVectorManager : public cDatabaseOutputVectorManager, cPorstgreSQLOutputManager
 {
     public:
         /**

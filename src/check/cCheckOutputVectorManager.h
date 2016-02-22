@@ -24,7 +24,7 @@ class cCheckOutputVectorManager : public cOutputVectorManager
                 std::vector<std::pair<simtime_t, simtime_t>> intervals;
 
                 Constraint(Type t) :
-                        type(t), intervallStart(0), violation(false)
+                        type(t), value(0), violation(false), intervallStart(0)
                 {
                 }
         };

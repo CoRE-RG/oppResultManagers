@@ -2,13 +2,13 @@
 
 #include "HelperFunctions.h"
 
-Register_Class(cPostgreSQLOutputVectorMgr);
+Register_Class(cPostgreSQLOutputVectorManager);
 
 #define SQL_INSERT_VECTOR "INSERT INTO vector(runid, moduleid, nameid) VALUES($1,$2,$3) RETURNING id"
 #define SQL_INSERT_VECTOR_ATTR "INSERT INTO vectorattr(vectorid,nameid,value) VALUES($1,$2,$3)"
 #define SQL_INSERT_VECTOR_DATA  "INSERT INTO vectordata(vectorid,time,value) VALUES($1,$2,$3)"
 
-void cPostgreSQLOutputVectorMgr::startRun()
+void cPostgreSQLOutputVectorManager::startRun()
 {
     cPorstgreSQLOutputManager::startRun();
 
@@ -42,13 +42,13 @@ void cPostgreSQLOutputVectorMgr::startRun()
     transaction->exec("COMMIT; BEGIN;");
 }
 
-void cPostgreSQLOutputVectorMgr::endRun()
+void cPostgreSQLOutputVectorManager::endRun()
 {
     //TODO create index if parameter (TBD) is true
     cPorstgreSQLOutputManager::endRun();
 }
 
-bool cPostgreSQLOutputVectorMgr::record(void *vectorhandle, simtime_t t, double value)
+bool cPostgreSQLOutputVectorManager::record(void *vectorhandle, simtime_t t, double value)
 {
     sVectorData *vp = (sVectorData *) vectorhandle;
 
@@ -91,12 +91,12 @@ bool cPostgreSQLOutputVectorMgr::record(void *vectorhandle, simtime_t t, double 
     }
 }
 
-void cPostgreSQLOutputVectorMgr::flush()
+void cPostgreSQLOutputVectorManager::flush()
 {
     cPorstgreSQLOutputManager::flush();
 }
 
-const char *cPostgreSQLOutputVectorMgr::getFileName() const
+const char *cPostgreSQLOutputVectorManager::getFileName() const
 {
     return cPorstgreSQLOutputManager::getFileName();
 }

@@ -2,14 +2,14 @@
 
 Register_GlobalConfigOption(CFGID_POSTGRESQLOUTMGR_CONNECTION, "postgresqloutputmanager-connection", CFG_STRING, "\"\"",
         "Object name of database connection parameters");
-Register_GlobalConfigOption(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ, "postgresqloutputmanager-commit-freq", CFG_INT, "10",
+Register_GlobalConfigOption(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ, "postgresqloutputmanager-commit-freq", CFG_INT, "10000",
         "COMMIT every n INSERTs, default=10");
 
 #define SQL_SELECT_MODULE "SELECT * FROM module;"
 #define SQL_INSERT_MODULE "INSERT INTO module(name) VALUES($1) RETURNING id"
 #define SQL_SELECT_NAME "SELECT * FROM name;"
 #define SQL_INSERT_NAME "INSERT INTO name(name) VALUES($1) RETURNING id"
-#define SQL_INSERT_RUN "INSERT INTO run(runid,runnumber,network,date) VALUES($1,$2,$3,to_timestamp($4,'YYYYMMDD-HH:MI:SS')) RETURNING id"
+#define SQL_INSERT_RUN "INSERT INTO run(runid,runnumber,network,date) VALUES($1,$2,$3,to_timestamp($4,'YYYYMMDD-HH24:MI:SS')) RETURNING id"
 #define SQL_SELECT_RUN "SELECT id FROM run WHERE runid=$1;"
 
 cPorstgreSQLOutputManager::cPorstgreSQLOutputManager()

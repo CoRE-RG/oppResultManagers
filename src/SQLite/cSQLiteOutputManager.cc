@@ -60,6 +60,12 @@ void cSQLiteOutputManager::startRun()
         {
             throw cRuntimeError("SQLiteOutputManager:: Can't set PRAGMA cache_size: %s", zErrMsg);
         }
+        //We don't need foreign_keys check (performance reasons)
+        rc = sqlite3_exec(connection, "PRAGMA foreign_keys = OFF;", nullptr, nullptr, &zErrMsg);
+        if (rc != SQLITE_OK)
+        {
+            throw cRuntimeError("SQLiteOutputManager:: Can't set PRAGMA foreign_keys: %s", zErrMsg);
+        }
     }
 
     commitFreq = ev.getConfig()->getAsInt(CFGID_SQLITEMGR_COMMIT_FREQ);
@@ -138,7 +144,7 @@ void cSQLiteOutputManager::startRun()
     rc = sqlite3_step(stmt);
     if (rc == SQLITE_ROW)
     {
-        runid = sqlite3_column_int64(stmt,0);
+        runid = sqlite3_column_int64(stmt, 0);
     }
     sqlite3_finalize(stmt);
     if (!runid)

@@ -153,7 +153,6 @@ bool cSQLiteOutputVectorManager::record(void *vectorhandle, simtime_t t, double 
                             "cSQLiteOutputVectorManager:: Could not execute statement (SQL_INSERT_VECTOR_ATTR): %s",
                             sqlite3_errmsg(connection));
                 }
-                vp->id = sqlite3_last_insert_rowid(connection);
                 sqlite3_clear_bindings(insertVectorAttrStmt);
                 sqlite3_reset(insertVectorAttrStmt);
             }
@@ -182,7 +181,6 @@ bool cSQLiteOutputVectorManager::record(void *vectorhandle, simtime_t t, double 
             throw cRuntimeError("cSQLiteOutputVectorManager:: Could not execute statement (SQL_INSERT_VECTOR_DATA): %s",
                     sqlite3_errmsg(connection));
         }
-        vp->id = sqlite3_last_insert_rowid(connection);
         sqlite3_clear_bindings(insertVectorDataStmt);
         sqlite3_reset(insertVectorDataStmt);
 

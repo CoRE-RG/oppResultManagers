@@ -21,9 +21,9 @@ void cSQLiteOutputVectorManager::startRun()
                              runid INT NOT NULL,\
                              moduleid INT NOT NULL,\
                              nameid INT NOT NULL,\
-                             FOREIGN KEY (runid) REFERENCES run(id),\
-                             FOREIGN KEY (moduleid) REFERENCES module(id),\
-                             FOREIGN KEY (nameid) REFERENCES name(id)\
+                             FOREIGN KEY (runid) REFERENCES run(id) ON DELETE CASCADE,\
+                             FOREIGN KEY (moduleid) REFERENCES module(id) ON DELETE CASCADE,\
+                             FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE\
                           );",
                     nullptr, nullptr, &zErrMsg);
     if (rc != SQLITE_OK)
@@ -38,8 +38,8 @@ void cSQLiteOutputVectorManager::startRun()
                                  vectorid INT NOT NULL,\
                                  nameid INT NOT NULL,\
                                  value TEXT NOT NULL,\
-                                 FOREIGN KEY (vectorid) REFERENCES vector(id),\
-                                 FOREIGN KEY (nameid) REFERENCES name(id)\
+                                 FOREIGN KEY (vectorid) REFERENCES vector(id) ON DELETE CASCADE,\
+                                 FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE\
                               );",
                     nullptr, nullptr, &zErrMsg);
     if (rc != SQLITE_OK)
@@ -52,7 +52,7 @@ void cSQLiteOutputVectorManager::startRun()
                                          vectorid INT NOT NULL,\
                                          time DOUBLE PRECISION NOT NULL,\
                                          value DOUBLE PRECISION NOT NULL,\
-                                         FOREIGN KEY (vectorid) REFERENCES vector(id)\
+                                         FOREIGN KEY (vectorid) REFERENCES vector(id) ON DELETE CASCADE\
                                        );",
                     nullptr, nullptr, &zErrMsg);
     if (rc != SQLITE_OK)

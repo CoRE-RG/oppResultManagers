@@ -14,9 +14,9 @@ void cPostgreSQLOutputScalarManager::startRun()
              nameid INT NOT NULL,\
              value DOUBLE PRECISION NOT NULL,\
              PRIMARY KEY (runid,moduleid,nameid),\
-             FOREIGN KEY (runid) REFERENCES run(id),\
-             FOREIGN KEY (moduleid) REFERENCES module(id),\
-             FOREIGN KEY (nameid) REFERENCES name(id)\
+             FOREIGN KEY (runid) REFERENCES run(id) ON DELETE CASCADE,\
+             FOREIGN KEY (moduleid) REFERENCES module(id) ON DELETE CASCADE,\
+             FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE\
            );");
     transaction->exec("COMMIT; BEGIN;");
 }

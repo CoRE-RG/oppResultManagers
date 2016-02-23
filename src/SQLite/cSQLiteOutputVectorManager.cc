@@ -23,7 +23,8 @@ void cSQLiteOutputVectorManager::startRun()
                              nameid INT NOT NULL,\
                              FOREIGN KEY (runid) REFERENCES run(id) ON DELETE CASCADE,\
                              FOREIGN KEY (moduleid) REFERENCES module(id) ON DELETE CASCADE,\
-                             FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE\
+                             FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE,\
+                             CONSTRAINT vector_unique UNIQUE(runid, moduleid, nameid) \
                           );",
                     nullptr, nullptr, &zErrMsg);
     if (rc != SQLITE_OK)
@@ -39,7 +40,8 @@ void cSQLiteOutputVectorManager::startRun()
                                  nameid INT NOT NULL,\
                                  value TEXT NOT NULL,\
                                  FOREIGN KEY (vectorid) REFERENCES vector(id) ON DELETE CASCADE,\
-                                 FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE\
+                                 FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE,\
+                                 CONSTRAINT vectorattr_unique UNIQUE(vectorid, nameid, value) \
                               );",
                     nullptr, nullptr, &zErrMsg);
     if (rc != SQLITE_OK)
@@ -52,7 +54,8 @@ void cSQLiteOutputVectorManager::startRun()
                                          vectorid INT NOT NULL,\
                                          time DOUBLE PRECISION NOT NULL,\
                                          value DOUBLE PRECISION NOT NULL,\
-                                         FOREIGN KEY (vectorid) REFERENCES vector(id) ON DELETE CASCADE\
+                                         FOREIGN KEY (vectorid) REFERENCES vector(id) ON DELETE CASCADE,\
+                                         CONSTRAINT vectordata_unique UNIQUE(vectorid, time, value) \
                                        );",
                     nullptr, nullptr, &zErrMsg);
     if (rc != SQLITE_OK)

@@ -21,7 +21,8 @@ void cPostgreSQLOutputVectorManager::startRun()
          nameid INT NOT NULL,\
          FOREIGN KEY (runid) REFERENCES run(id) ON DELETE CASCADE,\
          FOREIGN KEY (moduleid) REFERENCES module(id) ON DELETE CASCADE,\
-         FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE\
+         FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE,\
+         CONSTRAINT vector_unique UNIQUE(runid, moduleid, nameid) \
       );");
     transaction->exec(
             "CREATE TABLE IF NOT EXISTS vectorattr(\
@@ -30,14 +31,16 @@ void cPostgreSQLOutputVectorManager::startRun()
          nameid INT NOT NULL,\
          value TEXT NOT NULL,\
          FOREIGN KEY (vectorid) REFERENCES vector(id) ON DELETE CASCADE,\
-         FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE\
+         FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE,\
+         CONSTRAINT vectorattr_unique UNIQUE(vectorid, nameid, value) \
       );");
     transaction->exec(
             "CREATE TABLE IF NOT EXISTS vectordata (\
          vectorid INT NOT NULL,\
          time DOUBLE PRECISION NOT NULL,\
          value DOUBLE PRECISION NOT NULL,\
-         FOREIGN KEY (vectorid) REFERENCES vector(id) ON DELETE CASCADE\
+         FOREIGN KEY (vectorid) REFERENCES vector(id) ON DELETE CASCADE,\
+         CONSTRAINT vectordata_unique UNIQUE(vectorid, time, value) \
        );");
     transaction->exec("COMMIT; BEGIN;");
 }

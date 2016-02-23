@@ -66,7 +66,14 @@ void cSQLiteOutputManager::startRun()
         {
             throw cRuntimeError("SQLiteOutputManager:: Can't set PRAGMA foreign_keys: %s", zErrMsg);
         }
+        //We trust our integrity and turn off the constraint checks
+        rc = sqlite3_exec(connection, "PRAGMA ignore_check_constraints = OFF;", nullptr, nullptr, &zErrMsg);
+        if (rc != SQLITE_OK)
+        {
+            throw cRuntimeError("SQLiteOutputManager:: Can't set PRAGMA ignore_check_constraints: %s", zErrMsg);
+        }
     }
+
 
     commitFreq = ev.getConfig()->getAsInt(CFGID_SQLITEMGR_COMMIT_FREQ);
 

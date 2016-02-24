@@ -2,14 +2,16 @@
 
 Register_GlobalConfigOption(CFGID_POSTGRESQLOUTMGR_CONNECTION, "postgresqloutputmanager-connection", CFG_STRING, "\"\"",
         "Object name of database connection parameters");
-Register_GlobalConfigOption(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ, "postgresqloutputmanager-commit-freq", CFG_INT, "10",
+Register_GlobalConfigOption(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ, "postgresqloutputmanager-commit-freq", CFG_INT, "10000",
         "COMMIT every n INSERTs, default=10");
 
 #define SQL_SELECT_MODULE "SELECT * FROM module;"
+#define SQL_SELECT_MODULE_BYNAME  "SELECT id FROM module WHERE name=$1;"
 #define SQL_INSERT_MODULE "INSERT INTO module(name) VALUES($1) RETURNING id"
 #define SQL_SELECT_NAME "SELECT * FROM name;"
+#define SQL_SELECT_NAME_BYNAME  "SELECT id FROM name WHERE name=$1;"
 #define SQL_INSERT_NAME "INSERT INTO name(name) VALUES($1) RETURNING id"
-#define SQL_INSERT_RUN "INSERT INTO run(runid,runnumber,network,date) VALUES($1,$2,$3,to_timestamp($4,'YYYYMMDD-HH:MI:SS')) RETURNING id"
+#define SQL_INSERT_RUN "INSERT INTO run(runid,runnumber,network,date) VALUES($1,$2,$3,to_timestamp($4,'YYYYMMDD-HH24:MI:SS')) RETURNING id"
 #define SQL_SELECT_RUN "SELECT id FROM run WHERE runid=$1;"
 
 cPorstgreSQLOutputManager::cPorstgreSQLOutputManager()
@@ -65,7 +67,8 @@ void cPorstgreSQLOutputManager::startRun()
       );");
 
     //Find already existing run
-    pqxx::result result = work_transaction.parameterized(SQL_SELECT_RUN)(ev.getConfigEx()->getVariable(CFGVAR_RUNID)).exec();
+    pqxx::result result =
+            work_transaction.parameterized(SQL_SELECT_RUN)(ev.getConfigEx()->getVariable(CFGVAR_RUNID)).exec();
     if (result.size() > 1)
     {
         throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
@@ -77,7 +80,7 @@ void cPorstgreSQLOutputManager::startRun()
     else
     {
         pqxx::result result = work_transaction.parameterized(SQL_INSERT_RUN)(
-                ev.getConfigEx()->getVariable(CFGVAR_RUNID))(
+        ev.getConfigEx()->getVariable(CFGVAR_RUNID))(
         simulation.getActiveEnvir()->getConfigEx()->getActiveRunNumber())(
         simulation.getNetworkType()->getName())(ev.getConfigEx()->getVariable(CFGVAR_DATETIME)).exec();
         if (result.size() != 1)
@@ -132,17 +135,33 @@ size_t cPorstgreSQLOutputManager::getModuleID(std::string module)
     }
     else
     {
-
-        pqxx::result result = transaction->parameterized(SQL_INSERT_MODULE)(module).exec();
-        if (result.size() != 1)
+        try
         {
-            //TODO check if now in database (concurrent runs possible!)
-            throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
+            pqxx::result result = transaction->parameterized(SQL_INSERT_MODULE)(module).exec();
+            if (result.size() != 1)
+            {
+                throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
+            }
+            size_t id = result[0][0].as<size_t>();
+            moduleIDMap[module] = id;
+            transaction->exec("COMMIT; BEGIN;");
+            return id;
         }
-        size_t id = result[0][0].as<size_t>();
-        moduleIDMap[module] = id;
-        transaction->exec("COMMIT; BEGIN;");
-        return id;
+        catch (pqxx::unique_violation e)
+        {
+            transaction->exec("COMMIT; BEGIN;");
+            pqxx::result result = transaction->parameterized(SQL_SELECT_MODULE_BYNAME)(module).exec();
+            if (result.size() != 1)
+            {
+                throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
+            }
+            else
+            {
+                size_t id = result[0][0].as<size_t>();
+                moduleIDMap[module] = id;
+                return id;
+            }
+        }
     }
 }
 
@@ -155,15 +174,34 @@ size_t cPorstgreSQLOutputManager::getNameID(std::string name)
     }
     else
     {
-        pqxx::result result = transaction->parameterized(SQL_INSERT_NAME)(name).exec();
-        if (result.size() != 1)
+        try
         {
-            //TODO check if now in database (concurrent runs possible!)
-            throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
+            pqxx::result result = transaction->parameterized(SQL_INSERT_NAME)(name).exec();
+            if (result.size() != 1)
+            {
+                //TODO check if now in database (concurrent runs possible!)
+
+                throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
+            }
+            size_t id = result[0][0].as<size_t>();
+            nameIDMap[name] = id;
+            transaction->exec("COMMIT; BEGIN;");
+            return id;
         }
-        size_t id = result[0][0].as<size_t>();
-        nameIDMap[name] = id;
-        transaction->exec("COMMIT; BEGIN;");
-        return id;
+        catch (pqxx::unique_violation e)
+        {
+            transaction->exec("COMMIT; BEGIN;");
+            pqxx::result result = transaction->parameterized(SQL_SELECT_NAME_BYNAME)(name).exec();
+            if (result.size() != 1)
+            {
+                throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
+            }
+            else
+            {
+                size_t id = result[0][0].as<size_t>();
+                nameIDMap[name] = id;
+                return id;
+            }
+        }
     }
 }

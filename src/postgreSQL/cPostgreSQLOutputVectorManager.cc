@@ -2,13 +2,13 @@
 
 #include "HelperFunctions.h"
 
-Register_Class(cPostgreSQLOutputVectorMgr);
+Register_Class(cPostgreSQLOutputVectorManager);
 
 #define SQL_INSERT_VECTOR "INSERT INTO vector(runid, moduleid, nameid) VALUES($1,$2,$3) RETURNING id"
 #define SQL_INSERT_VECTOR_ATTR "INSERT INTO vectorattr(vectorid,nameid,value) VALUES($1,$2,$3)"
 #define SQL_INSERT_VECTOR_DATA  "INSERT INTO vectordata(vectorid,time,value) VALUES($1,$2,$3)"
 
-void cPostgreSQLOutputVectorMgr::startRun()
+void cPostgreSQLOutputVectorManager::startRun()
 {
     cPorstgreSQLOutputManager::startRun();
 
@@ -19,9 +19,10 @@ void cPostgreSQLOutputVectorMgr::startRun()
          runid INT NOT NULL,\
          moduleid INT NOT NULL,\
          nameid INT NOT NULL,\
-         FOREIGN KEY (runid) REFERENCES run(id),\
-         FOREIGN KEY (moduleid) REFERENCES module(id),\
-         FOREIGN KEY (nameid) REFERENCES name(id)\
+         FOREIGN KEY (runid) REFERENCES run(id) ON DELETE CASCADE,\
+         FOREIGN KEY (moduleid) REFERENCES module(id) ON DELETE CASCADE,\
+         FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE,\
+         CONSTRAINT vector_unique UNIQUE(runid, moduleid, nameid) \
       );");
     transaction->exec(
             "CREATE TABLE IF NOT EXISTS vectorattr(\
@@ -29,26 +30,28 @@ void cPostgreSQLOutputVectorMgr::startRun()
          vectorid INT NOT NULL,\
          nameid INT NOT NULL,\
          value TEXT NOT NULL,\
-         FOREIGN KEY (vectorid) REFERENCES vector(id),\
-         FOREIGN KEY (nameid) REFERENCES name(id)\
+         FOREIGN KEY (vectorid) REFERENCES vector(id) ON DELETE CASCADE,\
+         FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE,\
+         CONSTRAINT vectorattr_unique UNIQUE(vectorid, nameid, value) \
       );");
     transaction->exec(
             "CREATE TABLE IF NOT EXISTS vectordata (\
          vectorid INT NOT NULL,\
          time DOUBLE PRECISION NOT NULL,\
          value DOUBLE PRECISION NOT NULL,\
-         FOREIGN KEY (vectorid) REFERENCES vector(id)\
+         FOREIGN KEY (vectorid) REFERENCES vector(id) ON DELETE CASCADE,\
+         CONSTRAINT vectordata_unique UNIQUE(vectorid, time, value) \
        );");
     transaction->exec("COMMIT; BEGIN;");
 }
 
-void cPostgreSQLOutputVectorMgr::endRun()
+void cPostgreSQLOutputVectorManager::endRun()
 {
     //TODO create index if parameter (TBD) is true
     cPorstgreSQLOutputManager::endRun();
 }
 
-bool cPostgreSQLOutputVectorMgr::record(void *vectorhandle, simtime_t t, double value)
+bool cPostgreSQLOutputVectorManager::record(void *vectorhandle, simtime_t t, double value)
 {
     sVectorData *vp = (sVectorData *) vectorhandle;
 
@@ -91,12 +94,12 @@ bool cPostgreSQLOutputVectorMgr::record(void *vectorhandle, simtime_t t, double 
     }
 }
 
-void cPostgreSQLOutputVectorMgr::flush()
+void cPostgreSQLOutputVectorManager::flush()
 {
     cPorstgreSQLOutputManager::flush();
 }
 
-const char *cPostgreSQLOutputVectorMgr::getFileName() const
+const char *cPostgreSQLOutputVectorManager::getFileName() const
 {
     return cPorstgreSQLOutputManager::getFileName();
 }

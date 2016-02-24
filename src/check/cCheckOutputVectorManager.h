@@ -10,14 +10,77 @@
 class cCheckOutputVectorManager : public omnetpp::cIOutputVectorManager
 {
     protected:
+        class Constraint
+        {
+                friend class cCheckOutputVectorManager;
+            private:
+                enum Type
+                {
+                    min, max, avg_min, avg_max, interval_min, interval_max, sum_max
+                } type;
+                double value;
+                bool violation;
+                simtime_t intervallStart;
+                std::vector<std::pair<simtime_t, simtime_t>> intervals;
+
+                Constraint(Type t) :
+                        type(t), value(0), violation(false), intervallStart(0)
+                {
+                }
+        };
+        class IntervalConstraint : public Constraint
+        {
+                friend class cCheckOutputVectorManager;
+            private:
+                simtime_t last;
+
+                IntervalConstraint(Type t) :
+                        Constraint(t), last(0)
+                {
+                }
+        };
+        class SumConstraint : public Constraint
+        {
+                friend class cCheckOutputVectorManager;
+            private:
+                double sum;
+
+                SumConstraint(Type t) :
+                        Constraint(t), sum(0)
+                {
+                }
+        };
+        class AverageConstraint : public Constraint
+        {
+                friend class cCheckOutputVectorManager;
+            private:
+                size_t noSamples;
+                size_t requiredSamples;
+                double *samples;
+                size_t samplesPos;
+
+                AverageConstraint(Type t, size_t rs) :
+                        Constraint(t), noSamples(0), requiredSamples(rs), samplesPos(0)
+                {
+                    samples = new double[rs];
+                }
+                ~AverageConstraint()
+                {
+                    delete samples;
+                }
+        };
         struct sVectorData
         {
-                bool minEnabled = false;
-                double min = std::numeric_limits<double>::min();
-                bool maxEnabled = false;
-                double max = std::numeric_limits<double>::max();
+
+                std::vector<Constraint*> constraints;
+                std::string moduleName;
+                std::string vectorName;
         };
+        std::vector<sVectorData*> vectordata;
         omnetpp::cXMLElement * xmlConfiguration;
+        bool endSimulation;
+        bool report;
+        std::string reportFilename;
     public:
         /**
          * Constructor.
@@ -68,6 +131,9 @@ class cCheckOutputVectorManager : public omnetpp::cIOutputVectorManager
          * Performs a database commit.
          */
         virtual void flush() override;
+
+    private:
+        void outputReport();
 };
 
 #endif

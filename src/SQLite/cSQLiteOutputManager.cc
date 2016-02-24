@@ -1,6 +1,6 @@
 #include <cSQLiteOutputManager.h>
 
-Register_GlobalConfigOption(CFGID_SQLITEOUTMGR_FILE, "sqliteoutputmanager-file", CFG_STRING,
+Register_GlobalConfigOption(CFGID_SQLITEOUTMGR_FILE, "sqliteoutputmanager-file", CFG_FILENAME,
         "${resultdir}/${configname}-${runnumber}.sqlite3", "Object name of database connection parameters");
 Register_GlobalConfigOption(CFGID_SQLITEMGR_COMMIT_FREQ, "sqliteoutputmanager-commit-freq", CFG_INT, "10000",
         "COMMIT every n INSERTs, default=10");
@@ -38,7 +38,7 @@ void cSQLiteOutputManager::startRun()
 {
     if (!connection)
     {
-        std::string cfgobj = omnetpp::getEnvir()->getConfig()->getAsString(CFGID_SQLITEOUTMGR_FILE);
+        std::string cfgobj = ev.getConfig()->getAsFilename(CFGID_SQLITEOUTMGR_FILE);
         int rc = sqlite3_open(cfgobj.c_str(), &connection);
         if (rc)
         {
@@ -60,7 +60,20 @@ void cSQLiteOutputManager::startRun()
         {
             throw omnetpp::cRuntimeError("SQLiteOutputManager:: Can't set PRAGMA cache_size: %s", zErrMsg);
         }
+        //We don't need foreign_keys check (performance reasons)
+        rc = sqlite3_exec(connection, "PRAGMA foreign_keys = OFF;", nullptr, nullptr, &zErrMsg);
+        if (rc != SQLITE_OK)
+        {
+            throw cRuntimeError("SQLiteOutputManager:: Can't set PRAGMA foreign_keys: %s", zErrMsg);
+        }
+        //We trust our integrity and turn off the constraint checks
+        rc = sqlite3_exec(connection, "PRAGMA ignore_check_constraints = OFF;", nullptr, nullptr, &zErrMsg);
+        if (rc != SQLITE_OK)
+        {
+            throw cRuntimeError("SQLiteOutputManager:: Can't set PRAGMA ignore_check_constraints: %s", zErrMsg);
+        }
     }
+
 
     commitFreq = omnetpp::getEnvir()->getConfig()->getAsInt(CFGID_SQLITEMGR_COMMIT_FREQ);
 
@@ -138,7 +151,7 @@ void cSQLiteOutputManager::startRun()
     rc = sqlite3_step(stmt);
     if (rc == SQLITE_ROW)
     {
-        runid = sqlite3_column_int64(stmt,0);
+        runid = sqlite3_column_int64(stmt, 0);
     }
     sqlite3_finalize(stmt);
     if (!runid)

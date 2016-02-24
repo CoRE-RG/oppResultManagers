@@ -7,15 +7,18 @@
 		<avg_max samples="10">50</avg_max>
 	</constraint>
 	<constraint module="(.*)\.node(\d+).app\[(\d+)\]" moduleIsRegex="true" name="rxLatency:vector">
-		<max>0.001</max>
-		<min>0.0002</min>
+		<max>0.00001</max>
+		<min>0.02</min>
+		<avg_min samples="1">0.02</avg_min>
+		<avg_max samples="1">0.00001</avg_max>
+
 		<interval_min>0.0049</interval_min>
 		<interval_max>0.0051</interval_max>
 	</constraint>
 	<constraint module="smallNetworkTTE.node3.vl_100_ctc" name="dropped:vector">
 		<sum_max>12</sum_max>
 	</constraint>
-	<constraint module=".*node(\d)\.app\[\d\]" moduleIsRegex="true" name="(rx|tx)Latency:vector" nameIsRegex="true">
+	<constraint module=".*node(\d)\.app\[\d\]" moduleIsRegex="true" name="(rx|tx)Latency:vector" nameIsRegex="true" unit="s">
 		<max>0.000001</max>
 	</constraint>
 </constraints>

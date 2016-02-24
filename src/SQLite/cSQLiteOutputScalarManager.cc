@@ -16,9 +16,9 @@ void cSQLiteOutputScalarManager::startRun()
                      nameid INT NOT NULL,\
                      value DOUBLE PRECISION,\
                      PRIMARY KEY (runid,moduleid,nameid),\
-                     FOREIGN KEY (runid) REFERENCES run(id),\
-                     FOREIGN KEY (moduleid) REFERENCES module(id),\
-                     FOREIGN KEY (nameid) REFERENCES name(id)\
+                     FOREIGN KEY (runid) REFERENCES run(id) ON DELETE CASCADE,\
+                     FOREIGN KEY (moduleid) REFERENCES module(id) ON DELETE CASCADE,\
+                     FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE\
                    );",
                     nullptr, nullptr, &zErrMsg);
     if (rc != SQLITE_OK)

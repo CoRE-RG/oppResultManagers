@@ -31,16 +31,14 @@ void cPostgreSQLOutputVectorManager::startRun()
          nameid INT NOT NULL,\
          value TEXT NOT NULL,\
          FOREIGN KEY (vectorid) REFERENCES vector(id) ON DELETE CASCADE,\
-         FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE,\
-         CONSTRAINT vectorattr_unique UNIQUE(vectorid, nameid, value) \
+         FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE\
       );");
     transaction->exec(
             "CREATE TABLE IF NOT EXISTS vectordata (\
          vectorid INT NOT NULL,\
          time DOUBLE PRECISION NOT NULL,\
          value DOUBLE PRECISION NOT NULL,\
-         FOREIGN KEY (vectorid) REFERENCES vector(id) ON DELETE CASCADE,\
-         CONSTRAINT vectordata_unique UNIQUE(vectorid, time, value) \
+         FOREIGN KEY (vectorid) REFERENCES vector(id) ON DELETE CASCADE\
        );");
     transaction->exec("COMMIT; BEGIN;");
 }

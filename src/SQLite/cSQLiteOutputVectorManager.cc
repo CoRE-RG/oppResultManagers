@@ -105,17 +105,17 @@ bool cSQLiteOutputVectorManager::record(void *vectorhandle, simtime_t t, double 
     {
         if (!vp->initialised)
         {
-            int rc = sqlite3_bind_int(insertVectorStmt, 1, runid);
+            int rc = sqlite3_bind_int64(insertVectorStmt, 1, static_cast<sqlite3_int64>(runid));
             if (rc != SQLITE_OK)
             {
                 throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind active runid.");
             }
-            rc = sqlite3_bind_int(insertVectorStmt, 2, getModuleID(vp->modulename.c_str()));
+            rc = sqlite3_bind_int64(insertVectorStmt, 2, static_cast<sqlite3_int64>(getModuleID(vp->modulename.c_str())));
             if (rc != SQLITE_OK)
             {
                 throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind active moduleid.");
             }
-            rc = sqlite3_bind_int(insertVectorStmt, 3, getNameID(vp->vectorname.c_str()));
+            rc = sqlite3_bind_int64(insertVectorStmt, 3, static_cast<sqlite3_int64>(getNameID(vp->vectorname.c_str())));
             if (rc != SQLITE_OK)
             {
                 throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind active nameid.");
@@ -133,12 +133,12 @@ bool cSQLiteOutputVectorManager::record(void *vectorhandle, simtime_t t, double 
             vp->initialised = true;
             for (opp_string_map::iterator it = vp->attributes.begin(); it != vp->attributes.end(); ++it)
             {
-                rc = sqlite3_bind_int(insertVectorAttrStmt, 1, vp->id);
+                rc = sqlite3_bind_int64(insertVectorAttrStmt, 1, static_cast<sqlite3_int64>(vp->id));
                 if (rc != SQLITE_OK)
                 {
                     throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind vectorid.");
                 }
-                int rc = sqlite3_bind_int(insertVectorAttrStmt, 2, getNameID(it->first.c_str()));
+                rc = sqlite3_bind_int64(insertVectorAttrStmt, 2, static_cast<sqlite3_int64>(getNameID(it->first.c_str())));
                 if (rc != SQLITE_OK)
                 {
                     throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind nameid.");
@@ -162,7 +162,7 @@ bool cSQLiteOutputVectorManager::record(void *vectorhandle, simtime_t t, double 
         }
 
         // fill in prepared statement parameters, and fire off the statement
-        int rc = sqlite3_bind_int(insertVectorDataStmt, 1, vp->id);
+        int rc = sqlite3_bind_int64(insertVectorDataStmt, 1, static_cast<sqlite3_int64>(vp->id));
         if (rc != SQLITE_OK)
         {
             throw cRuntimeError("cSQLiteOutputVectorManager:: Could not bind vectorid.");

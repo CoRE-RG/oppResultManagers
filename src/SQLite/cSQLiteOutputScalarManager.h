@@ -27,7 +27,7 @@ class cSQLiteOutputScalarManager : public cOutputScalarManager, cSQLiteOutputMan
          * Records a histogram or statistic object into the scalar result file.
          */
         virtual void recordStatistic(cComponent *component, const char *name, cStatistic *statistic,
-                opp_string_map *attributes = nullptr) override;
+                opp_string_map *attributes = nullptr) override  __attribute__ ((noreturn));
 
         virtual void flush() override;
 

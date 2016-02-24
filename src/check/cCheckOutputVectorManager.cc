@@ -198,9 +198,12 @@ void cCheckOutputVectorManager::deregisterVector(void *vectorhandle)
     }
     delete vp;
 }
-void cCheckOutputVectorManager::setVectorAttribute(void *vectorhandle, const char *name, const char *value)
+
+void cCheckOutputVectorManager::setVectorAttribute(__attribute__((__unused__)) void *vectorhandle,
+        __attribute__((__unused__)) const char *name, __attribute__((__unused__)) const char *value)
 {
 }
+
 bool cCheckOutputVectorManager::record(void *vectorhandle, simtime_t t, double value)
 {
     sVectorData *vp = (sVectorData *) vectorhandle;
@@ -224,7 +227,8 @@ bool cCheckOutputVectorManager::record(void *vectorhandle, simtime_t t, double v
             aconstraint->samplesPos++;
             aconstraint->samplesPos %= aconstraint->requiredSamples;
 
-            if (aconstraint->noSamples < aconstraint->requiredSamples){
+            if (aconstraint->noSamples < aconstraint->requiredSamples)
+            {
                 aconstraint->noSamples++;
             }
 
@@ -241,7 +245,7 @@ bool cCheckOutputVectorManager::record(void *vectorhandle, simtime_t t, double v
                 {
                     workValue += aconstraint->samples[i];
                 }
-                workValue /= aconstraint->noSamples;
+                workValue /= static_cast<double>(aconstraint->noSamples);
             }
         }
         //Interval constraints require value to be the interval:

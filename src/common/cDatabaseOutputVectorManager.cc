@@ -27,7 +27,7 @@ void cDatabaseOutputVectorManager::deregisterVector(void *vectorhandle)
 }
 void cDatabaseOutputVectorManager::setVectorAttribute(void *vectorhandle, const char *name, const char *value)
 {
-    ASSERT(vectorhandle != NULL);
+    ASSERT(vectorhandle != nullptr);
     sVectorData *vp = (sVectorData *) vectorhandle;
     vp->attributes[name] = value;
 }

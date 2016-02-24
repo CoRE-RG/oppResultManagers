@@ -29,7 +29,7 @@ class cSQLiteOutputVectorManager : public cDatabaseOutputVectorManager, cSQLiteO
         virtual bool record(void *vectorhandle, simtime_t t, double value) override;
 
         /**
-         * Returns NULL, because this class doesn't use a file.
+         * Returns nullptr, because this class doesn't use a file.
          */
         const char *getFileName() const override;
 

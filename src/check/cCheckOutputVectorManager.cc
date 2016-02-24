@@ -150,7 +150,7 @@ void *cCheckOutputVectorManager::registerVector(const char *modulename, const ch
                         {
                             throw cRuntimeError("average constraint requires attribute samples");
                         }
-                        size_t samples = atoi(samples_string);
+                        size_t samples = strtoul(samples_string, nullptr, 0);
                         if (samples == 0)
                         {
                             throw cRuntimeError("samples attribute must be larger than 0");
@@ -190,7 +190,7 @@ void *cCheckOutputVectorManager::registerVector(const char *modulename, const ch
 }
 void cCheckOutputVectorManager::deregisterVector(void *vectorhandle)
 {
-    sVectorData *vp = (sVectorData *) vectorhandle;
+    sVectorData *vp = static_cast<sVectorData *>(vectorhandle);
     std::vector<sVectorData*>::iterator it = std::find(vectordata.begin(), vectordata.end(), vp);
     if (it != vectordata.end())
     {
@@ -206,7 +206,7 @@ void cCheckOutputVectorManager::setVectorAttribute(__attribute__((__unused__)) v
 
 bool cCheckOutputVectorManager::record(void *vectorhandle, simtime_t t, double value)
 {
-    sVectorData *vp = (sVectorData *) vectorhandle;
+    sVectorData *vp = static_cast<sVectorData *>(vectorhandle);
 
     for (std::vector<Constraint*>::iterator constraint = vp->constraints.begin(); constraint != vp->constraints.end();
             ++constraint)

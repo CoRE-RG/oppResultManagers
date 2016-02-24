@@ -22,12 +22,12 @@ void *cDatabaseOutputVectorManager::registerVector(const char *modulename, const
 }
 void cDatabaseOutputVectorManager::deregisterVector(void *vectorhandle)
 {
-    sVectorData *vp = (sVectorData *) vectorhandle;
+    sVectorData *vp = static_cast<sVectorData *>(vectorhandle);
     delete vp;
 }
 void cDatabaseOutputVectorManager::setVectorAttribute(void *vectorhandle, const char *name, const char *value)
 {
     ASSERT(vectorhandle != nullptr);
-    sVectorData *vp = (sVectorData *) vectorhandle;
+    sVectorData *vp = static_cast<sVectorData *>(vectorhandle);
     vp->attributes[name] = value;
 }

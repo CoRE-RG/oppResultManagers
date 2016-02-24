@@ -50,7 +50,7 @@ void cPostgreSQLOutputScalarManager::endRun()
 }
 
 void cPostgreSQLOutputScalarManager::recordScalar(cComponent *component, const char *name, double value,
-        __attribute__((__unused__))       opp_string_map *attributes)
+        opp_string_map *attributes)
 {
 
     pqxx::result result = transaction->parameterized(SQL_INSERT_SCALAR_RESULT)(runid)(

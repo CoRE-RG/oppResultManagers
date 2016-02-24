@@ -85,7 +85,7 @@ void cSQLiteOutputScalarManager::endRun()
 }
 
 void cSQLiteOutputScalarManager::recordScalar(cComponent *component, const char *name, double value,
-        __attribute__((__unused__))       opp_string_map *attributes)
+        opp_string_map *attributes)
 {
 
     sqlite3_stmt *stmt;
@@ -167,9 +167,9 @@ void cSQLiteOutputScalarManager::recordScalar(cComponent *component, const char 
     }
 }
 
-void cSQLiteOutputScalarManager::recordStatistic(__attribute__((__unused__))       cComponent *component,
-        __attribute__((__unused__)) const char *name, __attribute__((__unused__))       cStatistic *statistic,
-        __attribute__((__unused__))      opp_string_map *attributes)
+void cSQLiteOutputScalarManager::recordStatistic(__attribute__((__unused__))        cComponent *component,
+        __attribute__((__unused__)) const char *name, __attribute__((__unused__))        cStatistic *statistic,
+        __attribute__((__unused__))       opp_string_map *attributes)
 {
     throw cRuntimeError("cPostgreSQLOutputScalarMgr: recording cStatistics objects not supported yet");
 }

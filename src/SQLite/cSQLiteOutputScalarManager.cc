@@ -92,7 +92,7 @@ void cSQLiteOutputScalarManager::recordScalar(omnetpp::cComponent *component, co
 {
 
     sqlite3_stmt *stmt;
-    size_t rc = sqlite3_prepare(connection, SQL_INSERT_SCALAR_RESULT, strlen(SQL_INSERT_SCALAR_RESULT), &stmt, 0);
+    int rc = sqlite3_prepare(connection, SQL_INSERT_SCALAR_RESULT, strlen(SQL_INSERT_SCALAR_RESULT), &stmt, 0);
     if (rc != SQLITE_OK)
     {
         throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not prepare statement: %s",
@@ -137,7 +137,7 @@ void cSQLiteOutputScalarManager::recordScalar(omnetpp::cComponent *component, co
                 "cSQLiteOutputScalarManager:: Could not execute statement (SQL_INSERT_SCALAR_RESULT): %s",
                 sqlite3_errmsg(connection));
     }
-    size_t scalarId = sqlite3_last_insert_rowid(connection);
+    size_t scalarId = static_cast<size_t>(sqlite3_last_insert_rowid(connection));
     sqlite3_reset(stmt);
 
     for (omnetpp::opp_string_map::iterator it = attributes->begin(); it != attributes->end(); ++it)

@@ -33,7 +33,6 @@ std::vector<std::pair<simtime_t, simtime_t> > parseIntervals(const char* text)
                         (*interval).c_str());
             }
         }
-        ev << "starttime:"<<starttime<<" endtime:"<<endtime<<endl;
         parsedIntervals.push_back(std::pair<simtime_t, simtime_t>(starttime, endtime));
     }
     return parsedIntervals;

@@ -120,7 +120,7 @@ void cSQLiteOutputVectorManager::endRun()
 
 bool cSQLiteOutputVectorManager::record(void *vectorhandle, simtime_t t, double value)
 {
-    sVectorData *vp = (sVectorData *) vectorhandle;
+    sVectorData *vp = static_cast<sVectorData *>(vectorhandle);
 
     if (vp->enabled && inIntervals(t, vp->intervals))
     {

@@ -38,7 +38,7 @@ void cSQLiteOutputManager::startRun()
 {
     if (!connection)
     {
-        std::string cfgobj = ev.getConfig()->getAsFilename(CFGID_SQLITEOUTMGR_FILE);
+        std::string cfgobj = omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_SQLITEOUTMGR_FILE);
         int rc = sqlite3_open(cfgobj.c_str(), &connection);
         if (rc)
         {
@@ -64,13 +64,13 @@ void cSQLiteOutputManager::startRun()
         rc = sqlite3_exec(connection, "PRAGMA foreign_keys = OFF;", nullptr, nullptr, &zErrMsg);
         if (rc != SQLITE_OK)
         {
-            throw cRuntimeError("SQLiteOutputManager:: Can't set PRAGMA foreign_keys: %s", zErrMsg);
+            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Can't set PRAGMA foreign_keys: %s", zErrMsg);
         }
         //We trust our integrity and turn off the constraint checks
         rc = sqlite3_exec(connection, "PRAGMA ignore_check_constraints = OFF;", nullptr, nullptr, &zErrMsg);
         if (rc != SQLITE_OK)
         {
-            throw cRuntimeError("SQLiteOutputManager:: Can't set PRAGMA ignore_check_constraints: %s", zErrMsg);
+            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Can't set PRAGMA ignore_check_constraints: %s", zErrMsg);
         }
     }
 

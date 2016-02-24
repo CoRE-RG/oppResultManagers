@@ -21,17 +21,17 @@
 /**
  * TODO - Generated class
  */
-class Node : public cSimpleModule
+class Node : public omnetpp::cSimpleModule
 {
   protected:
-    virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
+    virtual void initialize() override;
+    virtual void handleMessage(omnetpp::cMessage *msg) override;
 
   protected:
           /**
            * Signal that is emitted every time a message was received.
            */
-          static simsignal_t rxMessageAgeSignal;
+          static omnetpp::simsignal_t rxMessageAgeSignal;
 };
 
 #endif

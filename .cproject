@@ -29,6 +29,8 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.364557831" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<option id="gnu.cpp.compiler.option.preprocessor.def.196753503" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.include.paths.1507852063" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1711841259" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
@@ -36,6 +38,8 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1022967988" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.873421088" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1221698086" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -52,9 +56,61 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<folderInfo id="org.omnetpp.cdt.gnu.config.debug.332447950.1043714883" name="/" resourcePath="examples">
+						<toolChain id="org.omnetpp.cdt.gnu.toolchain.debug.1206491881" name="GCC for OMNeT++" superClass="org.omnetpp.cdt.gnu.toolchain.debug" unusedChildren="">
+							<tool id="cdt.managedbuild.tool.gnu.archiver.base.1291200347" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base.791004234"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.372668262" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.364557831">
+								<option id="gnu.cpp.compiler.option.preprocessor.def.935002168" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
+								</option>
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1853952596" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1169644008" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base.1022967988">
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1819814833" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
+								</option>
+								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1489255346" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.7304238" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base.343829242"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.232012894" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base.379338406"/>
+							<tool id="cdt.managedbuild.tool.gnu.assembler.base.53846986" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base.106259804">
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.113044885" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+							</tool>
+						</toolChain>
+					</folderInfo>
+					<folderInfo id="org.omnetpp.cdt.gnu.config.debug.332447950.160519395" name="/" resourcePath="src">
+						<toolChain id="org.omnetpp.cdt.gnu.toolchain.debug.1974923446" name="GCC for OMNeT++" superClass="org.omnetpp.cdt.gnu.toolchain.debug" unusedChildren="">
+							<tool id="cdt.managedbuild.tool.gnu.archiver.base.573820288" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base.791004234"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1675396155" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.364557831">
+								<option id="gnu.cpp.compiler.option.preprocessor.def.655730721" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
+								</option>
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.548289006" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.167304671" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base.1022967988">
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.788741911" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
+								</option>
+								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1510039712" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.1532139418" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base.343829242"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.338807660" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base.379338406"/>
+							<tool id="cdt.managedbuild.tool.gnu.assembler.base.230355521" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base.106259804">
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.443811537" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+							</tool>
+						</toolChain>
+					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="examples"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
+						<entry excluding="postgreSQL" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -88,6 +144,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.2020978174" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -98,6 +156,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.417557408" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -113,6 +173,40 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<folderInfo id="org.omnetpp.cdt.gnu.config.release.1177198719.1820032942" name="/" resourcePath="examples">
+						<toolChain id="org.omnetpp.cdt.gnu.toolchain.release.600227057" name="GCC for OMNeT++" superClass="org.omnetpp.cdt.gnu.toolchain.release" unusedChildren="">
+							<tool id="cdt.managedbuild.tool.gnu.archiver.base.207699373" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base.591521279"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.719570320" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.2004191251">
+								<option id="gnu.cpp.compiler.option.preprocessor.def.1546601511" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="WITH_AVB_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_AS6802_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_IPORE"/>
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
+								</option>
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.418146393" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1961012305" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base.2109065764">
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1986438765" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="WITH_AVB_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_AS6802_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_IPORE"/>
+									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
+								</option>
+								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.980408087" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.938081624" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base.669617457"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.208844487" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base.753700340"/>
+							<tool id="cdt.managedbuild.tool.gnu.assembler.base.1491666072" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base.1083784769">
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1606668371" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+							</tool>
+						</toolChain>
+					</folderInfo>
 					<folderInfo id="org.omnetpp.cdt.gnu.config.release.1177198719.1698494247" name="/" resourcePath="src">
 						<toolChain id="org.omnetpp.cdt.gnu.toolchain.release.1141397784" name="GCC for OMNeT++" superClass="org.omnetpp.cdt.gnu.toolchain.release" unusedChildren="">
 							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.MachO64;org.eclipse.cdt.core.PE" id="org.omnetpp.cdt.targetPlatform" isAbstract="false" name="Windows, Linux, Mac" osList="win32,linux,macosx" superClass="org.omnetpp.cdt.targetPlatform"/>
@@ -124,6 +218,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.311188515" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -134,6 +230,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.248185939" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -155,6 +253,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.97415844" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -165,6 +265,8 @@
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
+									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.574586158" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -177,7 +279,7 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="examples"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
+						<entry excluding="postgreSQL" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

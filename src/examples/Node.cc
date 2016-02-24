@@ -17,16 +17,16 @@
 
 Define_Module(Node);
 
-simsignal_t Node::rxMessageAgeSignal = registerSignal("rxMessageAge");
+omnetpp::simsignal_t Node::rxMessageAgeSignal = registerSignal("rxMessageAge");
 
 void Node::initialize()
 {
-    sendDelayed(new cMessage(getFullName()), uniform(1, 2), gate("port$o"));
+    sendDelayed(new omnetpp::cMessage(getFullName()), uniform(1, 2), gate("port$o"));
 }
 
-void Node::handleMessage(cMessage *msg)
+void Node::handleMessage(omnetpp::cMessage *msg)
 {
-    emit(rxMessageAgeSignal, simTime() - msg->getCreationTime());
+    emit(rxMessageAgeSignal, omnetpp::simTime() - msg->getCreationTime());
     delete msg;
-    sendDelayed(new cMessage(getFullName()), uniform(1, 2), gate("port$o"));
+    sendDelayed(new omnetpp::cMessage(getFullName()), uniform(1, 2), gate("port$o"));
 }

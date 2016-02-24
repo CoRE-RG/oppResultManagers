@@ -17,11 +17,12 @@ Register_GlobalConfigOption(CFGID_CHECKOUTPUTVECTORMANAGER_REPORTFILE, "checkout
 
 cCheckOutputVectorManager::cCheckOutputVectorManager()
 {
-    xmlConfiguration = simulation.getEnvir()->getXMLDocument(
-    ev.getConfig()->getAsFilename(CFGID_CHECKOUTPUTVECTORMANAGER_CONFIGFILE).c_str(), "/constraints");
-    endSimulation = ev.getConfig()->getAsBool(CFGID_CHECKOUTPUTVECTORMANAGER_ENDSIM);
-    report = ev.getConfig()->getAsBool(CFGID_CHECKOUTPUTVECTORMANAGER_REPORT);
-    reportFilename = ev.getConfig()->getAsFilename(CFGID_CHECKOUTPUTVECTORMANAGER_REPORTFILE);
+    xmlConfiguration = omnetpp::getEnvir()->getXMLDocument(
+            omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_CHECKOUTPUTVECTORMANAGER_CONFIGFILE).c_str(),
+            "/constraints");
+    endSimulation = omnetpp::getEnvir()->getConfig()->getAsBool(CFGID_CHECKOUTPUTVECTORMANAGER_ENDSIM);
+    report = omnetpp::getEnvir()->getConfig()->getAsBool(CFGID_CHECKOUTPUTVECTORMANAGER_REPORT);
+    reportFilename = omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_CHECKOUTPUTVECTORMANAGER_REPORTFILE);
 }
 
 cCheckOutputVectorManager::~cCheckOutputVectorManager()
@@ -48,8 +49,9 @@ void *cCheckOutputVectorManager::registerVector(const char *modulename, const ch
     vp->moduleName = modulename;
     vp->vectorName = vectorname;
 
-    cXMLElementList constraints = xmlConfiguration->getChildrenByTagName("constraint");
-    for (cXMLElementList::iterator constraint = constraints.begin(); constraint != constraints.end(); ++constraint)
+    omnetpp::cXMLElementList constraints = xmlConfiguration->getChildrenByTagName("constraint");
+    for (omnetpp::cXMLElementList::iterator constraint = constraints.begin(); constraint != constraints.end();
+            ++constraint)
     {
         double factor = 1;
         if ((*constraint)->getAttribute("unit"))
@@ -148,16 +150,16 @@ void *cCheckOutputVectorManager::registerVector(const char *modulename, const ch
                         const char* samples_string = (*constraintsValue)->getAttribute("samples");
                         if (!samples_string)
                         {
-                            throw cRuntimeError("average constraint requires attribute samples");
+                            throw omnetpp::cRuntimeError("average constraint requires attribute samples");
                         }
                         size_t samples = atoi(samples_string);
                         if (samples == 0)
                         {
-                            throw cRuntimeError("samples attribute must be larger than 0");
+                            throw omnetpp::cRuntimeError("samples attribute must be larger than 0");
                         }
                         else if (samples == 1)
                         {
-                            throw cRuntimeError(
+                            throw omnetpp::cRuntimeError(
                                     "samples attribute must be larger than 1, if you want 1 sample, use min/max constraint instead");
                         }
                         if (0 == strcmp((*constraintsValue)->getTagName(), "avg_min"))
@@ -171,16 +173,16 @@ void *cCheckOutputVectorManager::registerVector(const char *modulename, const ch
                     }
                     else
                     {
-                        ev << "Did not register constraint for module: " << modulename << " vector: " << vectorname
-                                << " type was unknown!" << endl;
-                        throw cRuntimeError("Unknown constraint type %s", (*constraintsValue)->getTagName());
+                        EV_ERROR << "Did not register constraint for module: " << modulename << " vector: "
+                                << vectorname << " type was unknown!" << std::endl;
+                        throw omnetpp::cRuntimeError("Unknown constraint type %s", (*constraintsValue)->getTagName());
                     }
                     double value = atof((*constraintsValue)->getNodeValue());
                     value *= factor;
                     newConstraint->value = value;
                     vp->constraints.push_back(newConstraint);
-                    ev << "Registered constraint for module: " << modulename << " vector: " << vectorname << " type: "
-                            << (*constraintsValue)->getTagName() << endl;
+                    EV_INFO << "Registered constraint for module: " << modulename << " vector: " << vectorname
+                            << " type: " << (*constraintsValue)->getTagName() << std::endl;
                 }
             }
         }
@@ -224,7 +226,8 @@ bool cCheckOutputVectorManager::record(void *vectorhandle, simtime_t t, double v
             aconstraint->samplesPos++;
             aconstraint->samplesPos %= aconstraint->requiredSamples;
 
-            if (aconstraint->noSamples < aconstraint->requiredSamples){
+            if (aconstraint->noSamples < aconstraint->requiredSamples)
+            {
                 aconstraint->noSamples++;
             }
 
@@ -312,7 +315,7 @@ bool cCheckOutputVectorManager::record(void *vectorhandle, simtime_t t, double v
             {
                 outputReport();
             }
-            throw cRuntimeError("Simulation ended due to constraint violation.");
+            throw omnetpp::cRuntimeError("Simulation ended due to constraint violation.");
         }
     }
     return true;
@@ -334,7 +337,7 @@ void cCheckOutputVectorManager::outputReport()
     {
         std::fstream file;
         file.open(reportFilename, std::fstream::out);
-        file << "Module,Vector,Constraint Type,Constraint Value" << endl;
+        file << "Module,Vector,Constraint Type,Constraint Value" << std::endl;
         for (std::vector<sVectorData*>::const_iterator vectorDataEntry = vectordata.begin();
                 vectorDataEntry != vectordata.end(); ++vectorDataEntry)
         {
@@ -380,7 +383,7 @@ void cCheckOutputVectorManager::outputReport()
                     {
                         file << (*constraint)->intervallStart << ".." << " ";
                     }
-                    file << endl;
+                    file << std::endl;
                 }
             }
         }

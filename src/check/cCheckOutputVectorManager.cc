@@ -123,7 +123,7 @@ void *cCheckOutputVectorManager::registerVector(const char *modulename, const ch
                 for (omnetpp::cXMLElementList::iterator constraintsValue = constraintsValues.begin();
                         constraintsValue != constraintsValues.end(); ++constraintsValue)
                 {
-                    Constraint *newConstraint;
+                    Constraint *newConstraint = nullptr;
                     if (0 == strcmp((*constraintsValue)->getTagName(), "min"))
                     {
                         newConstraint = new Constraint(Constraint::min);

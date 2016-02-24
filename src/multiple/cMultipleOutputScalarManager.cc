@@ -2,7 +2,7 @@
 
 Register_Class(cMultipleOutputScalarManager);
 
-Register_GlobalConfigOption(CFGID_OUTPUTSCALARMANAGER_CLASSES, "outputscalarmanager-classes", CFG_STRING, "\"\"",
+Register_PerRunConfigOption(CFGID_OUTPUTSCALARMANAGER_CLASSES, "outputscalarmanager-classes", CFG_STRING, "\"\"",
         "List of OutputScalarManager Classes (comma or space separated)");
 
 cMultipleOutputScalarManager::cMultipleOutputScalarManager()

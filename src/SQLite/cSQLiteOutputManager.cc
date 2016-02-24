@@ -74,7 +74,6 @@ void cSQLiteOutputManager::startRun()
         }
     }
 
-
     commitFreq = omnetpp::getEnvir()->getConfig()->getAsInt(CFGID_SQLITEMGR_COMMIT_FREQ);
 
     char * zErrMsg = nullptr;
@@ -195,31 +194,33 @@ void cSQLiteOutputManager::startRun()
     }
 
     //Find already existing modules and names
-    rc = sqlite3_exec(connection, SQL_SELECT_MODULE, [] (void *data, int argc, char **argv, char **azColName) -> int
-    {
-        cSQLiteOutputManager *thisManager = (cSQLiteOutputManager*)data;
-        if(argc!=2)
-        {
-            throw omnetpp::cRuntimeError("wrong number of columns returned in select!");
-        }
-        thisManager->moduleIDMap[argv[1]] = atoi(argv[0]);
-        return SQLITE_OK;
-    }, (void*) this, &zErrMsg);
+    rc = sqlite3_exec(connection, SQL_SELECT_MODULE,
+            [] (void *data, int argc, char **argv,__attribute__((__unused__)) char **azColName) -> int
+            {
+                cSQLiteOutputManager *thisManager = (cSQLiteOutputManager*)data;
+                if(argc!=2)
+                {
+                    throw omnetpp::cRuntimeError("wrong number of columns returned in select!");
+                }
+                thisManager->moduleIDMap[argv[1]] = atoi(argv[0]);
+                return SQLITE_OK;
+            }, (void*) this, &zErrMsg);
     if (rc != SQLITE_OK)
     {
         throw omnetpp::cRuntimeError("SQLiteOutputManager:: Error in select (SQL_SELECT_MODULE): %s", zErrMsg);
     }
 
-    rc = sqlite3_exec(connection, SQL_SELECT_NAME, [] (void *data, int argc, char **argv, char **azColName) -> int
-    {
-        cSQLiteOutputManager *thisManager = (cSQLiteOutputManager*)data;
-        if(argc!=2)
-        {
-            throw omnetpp::cRuntimeError("wrong number of columns returned in select!");
-        }
-        thisManager->nameIDMap[argv[1]] = atoi(argv[0]);
-        return SQLITE_OK;
-    }, (void*) this, &zErrMsg);
+    rc = sqlite3_exec(connection, SQL_SELECT_NAME,
+            [] (void *data, int argc, char **argv,__attribute__((__unused__)) char **azColName) -> int
+            {
+                cSQLiteOutputManager *thisManager = (cSQLiteOutputManager*)data;
+                if(argc!=2)
+                {
+                    throw omnetpp::cRuntimeError("wrong number of columns returned in select!");
+                }
+                thisManager->nameIDMap[argv[1]] = atoi(argv[0]);
+                return SQLITE_OK;
+            }, (void*) this, &zErrMsg);
     if (rc != SQLITE_OK)
     {
         throw omnetpp::cRuntimeError("SQLiteOutputManager:: Error in select (SQL_SELECT_NAME): %s", zErrMsg);

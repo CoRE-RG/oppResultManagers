@@ -79,7 +79,7 @@ void cPorstgreSQLOutputManager::startRun()
     }
     else
     {
-        pqxx::result result = work_transaction.parameterized(SQL_INSERT_RUN)(
+        result = work_transaction.parameterized(SQL_INSERT_RUN)(
         ev.getConfigEx()->getVariable(CFGVAR_RUNID))(
         simulation.getActiveEnvir()->getConfigEx()->getActiveRunNumber())(
         simulation.getNetworkType()->getName())(ev.getConfigEx()->getVariable(CFGVAR_DATETIME)).exec();

@@ -21,18 +21,18 @@ class cSQLiteOutputScalarManager : public omnetpp::cIOutputScalarManager, cSQLit
          * Records a double scalar result into the scalar result file.
          */
         virtual void recordScalar(omnetpp::cComponent *component, const char *name, double value,
-                omnetpp::opp_string_map *attributes = NULL) override;
+                omnetpp::opp_string_map *attributes = nullptr) override;
 
         /**
          * Records a histogram or statistic object into the scalar result file.
          */
         virtual void recordStatistic(omnetpp::cComponent *component, const char *name, omnetpp::cStatistic *statistic,
-                omnetpp::opp_string_map *attributes = NULL) override;
+                omnetpp::opp_string_map *attributes = nullptr) override __attribute__ ((noreturn));
 
         virtual void flush() override;
 
         /**
-         * Returns NULL, because this class doesn't use a file.
+         * Returns nullptr, because this class doesn't use a file.
          */
         const char *getFileName() const override;
 

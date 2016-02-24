@@ -47,11 +47,11 @@ class cSQLiteOutputManager
         virtual void flush();
 
         /**
-         * Returns NULL, because this class doesn't use a file.
+         * Returns nullptr, because this class doesn't use a file.
          */
         const char *getFileName() const
         {
-            return NULL;
+            return nullptr;
         }
     protected:
         size_t getModuleID(std::string module);

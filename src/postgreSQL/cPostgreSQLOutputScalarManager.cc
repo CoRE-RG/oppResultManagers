@@ -8,7 +8,7 @@ void cPostgreSQLOutputScalarManager::startRun()
 {
     cPorstgreSQLOutputManager::startRun();
     transaction->exec(
-                "CREATE TABLE IF NOT EXISTS scalar (\
+            "CREATE TABLE IF NOT EXISTS scalar (\
              runid INT NOT NULL,\
              moduleid INT NOT NULL,\
              nameid INT NOT NULL,\
@@ -28,7 +28,7 @@ void cPostgreSQLOutputScalarManager::endRun()
 }
 
 void cPostgreSQLOutputScalarManager::recordScalar(cComponent *component, const char *name, double value,
-        opp_string_map *attributes)
+        __attribute__((__unused__))  opp_string_map *attributes)
 {
 
     transaction->parameterized(SQL_INSERT_SCALAR_RESULT)(runid)(getModuleID(component->getFullPath()))(getNameID(name))(
@@ -44,8 +44,9 @@ void cPostgreSQLOutputScalarManager::recordScalar(cComponent *component, const c
     }
 }
 
-void cPostgreSQLOutputScalarManager::recordStatistic(cComponent *component, const char *name, cStatistic *statistic,
-        opp_string_map *attributes)
+void cPostgreSQLOutputScalarManager::recordStatistic(__attribute__((__unused__))  cComponent *component,
+        __attribute__((__unused__)) const char *name, __attribute__((__unused__))  cStatistic *statistic,
+        __attribute__((__unused__))  opp_string_map *attributes)
 {
     throw cRuntimeError("cPostgreSQLOutputScalarMgr: recording cStatistics objects not supported yet");
 }

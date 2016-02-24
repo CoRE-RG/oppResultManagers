@@ -1,7 +1,13 @@
 eclipse.preferences.version=1
+environment/project/org.omnetpp.cdt.gnu.config.debug.332447950/EXTENDED_WARNINGS/delimiter=\:
+environment/project/org.omnetpp.cdt.gnu.config.debug.332447950/EXTENDED_WARNINGS/operation=append
+environment/project/org.omnetpp.cdt.gnu.config.debug.332447950/EXTENDED_WARNINGS/value=1
 environment/project/org.omnetpp.cdt.gnu.config.debug.332447950/V/delimiter=\:
 environment/project/org.omnetpp.cdt.gnu.config.debug.332447950/V/operation=append
 environment/project/org.omnetpp.cdt.gnu.config.debug.332447950/V/value=1
+environment/project/org.omnetpp.cdt.gnu.config.debug.332447950/WARNINGS_ERROR/delimiter=\:
+environment/project/org.omnetpp.cdt.gnu.config.debug.332447950/WARNINGS_ERROR/operation=append
+environment/project/org.omnetpp.cdt.gnu.config.debug.332447950/WARNINGS_ERROR/value=1
 environment/project/org.omnetpp.cdt.gnu.config.debug.332447950/append=true
 environment/project/org.omnetpp.cdt.gnu.config.debug.332447950/appendContributed=true
 org.eclipse.cdt.core.formatter.alignment_for_arguments_in_method_invocation=16

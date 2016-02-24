@@ -5,6 +5,7 @@
 
 class cSQLiteOutputScalarManager : public omnetpp::cIOutputScalarManager, cSQLiteOutputManager
 {
+        sqlite3_stmt *insertScalarAttrStmt;
 
     public:
         /**

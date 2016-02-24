@@ -9,8 +9,9 @@ Register_GlobalConfigOption(CFGID_SQLITEMGR_COMMIT_FREQ, "sqliteoutputmanager-co
 #define SQL_INSERT_MODULE "INSERT INTO module(name) VALUES(?);"
 #define SQL_SELECT_NAME "SELECT * FROM name;"
 #define SQL_INSERT_NAME "INSERT INTO name(name) VALUES(?);"
-#define SQL_INSERT_RUN "INSERT INTO run(runid,runnumber,network,date) VALUES(?,?,?,?);"
+#define SQL_INSERT_RUN "INSERT INTO run(runid) VALUES(?);"
 #define SQL_SELECT_RUN "SELECT id FROM run WHERE runid=?;"
+#define SQL_INSERT_RUN_ATTR "INSERT INTO runattr(runid,nameid,value) VALUES(?,?,?);"
 
 sqlite3* cSQLiteOutputManager::connection = nullptr;
 bool cSQLiteOutputManager::hasTransaction = false;
@@ -70,7 +71,8 @@ void cSQLiteOutputManager::startRun()
         rc = sqlite3_exec(connection, "PRAGMA ignore_check_constraints = ON;", nullptr, nullptr, &zErrMsg);
         if (rc != SQLITE_OK)
         {
-            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Can't set PRAGMA ignore_check_constraints: %s", zErrMsg);
+            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Can't set PRAGMA ignore_check_constraints: %s",
+                    zErrMsg);
         }
     }
 
@@ -93,10 +95,7 @@ void cSQLiteOutputManager::startRun()
             sqlite3_exec(connection,
                     "CREATE TABLE IF NOT EXISTS run (\
          id INTEGER PRIMARY KEY,\
-         runid TEXT NOT NULL UNIQUE,\
-         runnumber BIGINT NOT NULL,\
-         network TEXT NOT NULL,\
-         date TIMESTAMP NOT NULL\
+         runid TEXT NOT NULL UNIQUE\
        );",
                     nullptr, nullptr, &zErrMsg);
     if (rc != SQLITE_OK)
@@ -125,73 +124,38 @@ void cSQLiteOutputManager::startRun()
     {
         throw omnetpp::cRuntimeError("SQLiteOutputManager:: Can't create table 'name': %s", zErrMsg);
     }
+    rc =
+            sqlite3_exec(connection,
+                    "CREATE TABLE IF NOT EXISTS runattr(\
+                                         id INTEGER PRIMARY KEY,\
+                                         runid INT NOT NULL,\
+                                         nameid INT NOT NULL,\
+                                         value TEXT NOT NULL,\
+                                         FOREIGN KEY (runid) REFERENCES run(id) ON DELETE CASCADE,\
+                                         FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE\
+                                      );",
+                    nullptr, nullptr, &zErrMsg);
+    if (rc != SQLITE_OK)
+    {
+        throw omnetpp::cRuntimeError("SQLiteOutputManager:: Can't create table 'runattr': %s", zErrMsg);
+    }
+    rc =
+            sqlite3_exec(connection,
+                    "CREATE VIEW IF NOT EXISTS runattr_names AS \
+                                         SELECT runattr.id AS id, runattr.runid AS runid, \
+                                         name.name AS name, runattr.value AS value FROM runattr \
+                                         JOIN name ON name.id = runattr.nameid;",
+                    nullptr, nullptr, &zErrMsg);
+    if (rc != SQLITE_OK)
+    {
+        throw omnetpp::cRuntimeError("SQLiteOutputManager:: Can't create view 'scalarattr_names': %s", zErrMsg);
+    }
 
     flush();
 
     std::string runid_var = omnetpp::getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNID);
-    std::string datetime = omnetpp::getEnvir()->getConfigEx()->getVariable(CFGVAR_DATETIME);
-    datetime.at(8) = ' ';
-    datetime.insert(4, "-");
-    datetime.insert(7, "-");
 
     sqlite3_stmt *stmt;
-
-    //Try find already existing run
-    rc = sqlite3_prepare(connection, SQL_SELECT_RUN, -1, &stmt, 0);
-    if (rc != SQLITE_OK)
-    {
-        throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s", sqlite3_errmsg(connection));
-    }
-    rc = sqlite3_bind_text(stmt, 1, runid_var.c_str(), -1, SQLITE_STATIC);
-    if (rc != SQLITE_OK)
-    {
-        throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not bind runid");
-    }
-    rc = sqlite3_step(stmt);
-    if (rc == SQLITE_ROW)
-    {
-        runid = sqlite3_column_int64(stmt, 0);
-    }
-    sqlite3_finalize(stmt);
-    if (!runid)
-    {
-        rc = sqlite3_prepare(connection, SQL_INSERT_RUN, -1, &stmt, 0);
-        if (rc != SQLITE_OK)
-        {
-            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s", sqlite3_errmsg(connection));
-        }
-        rc = sqlite3_bind_text(stmt, 1, runid_var.c_str(), -1, SQLITE_STATIC);
-        if (rc != SQLITE_OK)
-        {
-            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not bind runid");
-        }
-        rc = sqlite3_bind_int(stmt, 2, omnetpp::getSimulation()->getActiveEnvir()->getConfigEx()->getActiveRunNumber());
-        if (rc != SQLITE_OK)
-        {
-            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not bind active runnumber: %s",
-                    sqlite3_errmsg(connection));
-        }
-        rc = sqlite3_bind_text(stmt, 3, omnetpp::getSimulation()->getNetworkType()->getName(), -1, SQLITE_STATIC);
-        if (rc != SQLITE_OK)
-        {
-            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not bind network name.");
-        }
-
-        rc = sqlite3_bind_text(stmt, 4, datetime.c_str(), -1, SQLITE_STATIC);
-        if (rc != SQLITE_OK)
-        {
-            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not bind date.");
-        }
-
-        rc = sqlite3_step(stmt);
-        if (rc != SQLITE_DONE)
-        {
-            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not execute statement (SQL_INSERT_RUN): %s",
-                    sqlite3_errmsg(connection));
-        }
-        runid = sqlite3_last_insert_rowid(connection);
-        sqlite3_reset(stmt);
-    }
 
     //Find already existing modules and names
     rc = sqlite3_exec(connection, SQL_SELECT_MODULE,
@@ -226,6 +190,89 @@ void cSQLiteOutputManager::startRun()
         throw omnetpp::cRuntimeError("SQLiteOutputManager:: Error in select (SQL_SELECT_NAME): %s", zErrMsg);
     }
 
+    //Try find already existing run
+    rc = sqlite3_prepare(connection, SQL_SELECT_RUN, -1, &stmt, 0);
+    if (rc != SQLITE_OK)
+    {
+        throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s",
+                sqlite3_errmsg(connection));
+    }
+    rc = sqlite3_bind_text(stmt, 1, runid_var.c_str(), -1, SQLITE_STATIC);
+    if (rc != SQLITE_OK)
+    {
+        throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not bind runid");
+    }
+    rc = sqlite3_step(stmt);
+    if (rc == SQLITE_ROW)
+    {
+        runid = sqlite3_column_int64(stmt, 0);
+    }
+    sqlite3_finalize(stmt);
+    if (!runid)
+    {
+        rc = sqlite3_prepare(connection, SQL_INSERT_RUN, -1, &stmt, 0);
+        if (rc != SQLITE_OK)
+        {
+            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s",
+                    sqlite3_errmsg(connection));
+        }
+        rc = sqlite3_bind_text(stmt, 1, runid_var.c_str(), -1, SQLITE_STATIC);
+        if (rc != SQLITE_OK)
+        {
+            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not bind runid");
+        }
+
+        rc = sqlite3_step(stmt);
+        if (rc != SQLITE_DONE)
+        {
+            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not execute statement (SQL_INSERT_RUN): %s",
+                    sqlite3_errmsg(connection));
+        }
+        runid = sqlite3_last_insert_rowid(connection);
+        sqlite3_reset(stmt);
+
+        sqlite3_stmt *insertRunAttrStmt;
+        rc = sqlite3_prepare_v2(connection, SQL_INSERT_RUN_ATTR, strlen(SQL_INSERT_RUN_ATTR), &insertRunAttrStmt, 0);
+        if (rc != SQLITE_OK)
+        {
+            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not prepare statement (SQL_INSERT_RUN_ATTR): %s",
+                    sqlite3_errmsg(connection));
+        }
+        //INSERT runattr
+        std::vector<const char *> keys1 = omnetpp::getEnvir()->getConfigEx()->getPredefinedVariableNames();
+        std::vector<const char *> keys2 = omnetpp::getEnvir()->getConfigEx()->getIterationVariableNames();
+        keys1.insert(keys1.end(), keys2.begin(), keys2.end());
+        for (size_t i = 0; i < keys1.size(); i++)
+        {
+            rc = sqlite3_bind_int64(insertRunAttrStmt, 1, static_cast<sqlite3_int64>(runid));
+            if (rc != SQLITE_OK)
+            {
+                throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not bind runid.");
+            }
+            rc = sqlite3_bind_int64(insertRunAttrStmt, 2, static_cast<sqlite3_int64>(getNameID(keys1[i])));
+            if (rc != SQLITE_OK)
+            {
+                throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not bind nameid.");
+            }
+            rc = sqlite3_bind_text(insertRunAttrStmt, 3, omnetpp::getEnvir()->getConfigEx()->getVariable(keys1[i]), -1,
+            SQLITE_STATIC);
+            if (rc != SQLITE_OK)
+            {
+                throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not bind value.");
+            }
+
+            rc = sqlite3_step(insertRunAttrStmt);
+            if (rc != SQLITE_DONE)
+            {
+                throw omnetpp::cRuntimeError(
+                        "cSQLiteOutputVectorManager:: Could not execute statement (SQL_INSERT_VECTOR_ATTR): %s",
+                        sqlite3_errmsg(connection));
+            }
+            sqlite3_clear_bindings(insertRunAttrStmt);
+            sqlite3_reset(insertRunAttrStmt);
+        }
+        sqlite3_finalize(insertRunAttrStmt);
+    }
 }
 
 void cSQLiteOutputManager::endRun()
@@ -268,7 +315,8 @@ size_t cSQLiteOutputManager::getModuleID(std::string module)
         int rc = sqlite3_prepare(connection, SQL_INSERT_MODULE, -1, &stmt, 0);
         if (rc != SQLITE_OK)
         {
-            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s", sqlite3_errmsg(connection));
+            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s",
+                    sqlite3_errmsg(connection));
         }
         rc = sqlite3_bind_text(stmt, 1, module.c_str(), -1, SQLITE_STATIC);
         if (rc != SQLITE_OK)
@@ -303,7 +351,8 @@ size_t cSQLiteOutputManager::getNameID(std::string name)
         int rc = sqlite3_prepare(connection, SQL_INSERT_NAME, -1, &stmt, 0);
         if (rc != SQLITE_OK)
         {
-            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s", sqlite3_errmsg(connection));
+            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s",
+                    sqlite3_errmsg(connection));
         }
         rc = sqlite3_bind_text(stmt, 1, name.c_str(), -1, SQLITE_STATIC);
         if (rc != SQLITE_OK)

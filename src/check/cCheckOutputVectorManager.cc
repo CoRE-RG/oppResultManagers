@@ -373,8 +373,6 @@ void cCheckOutputVectorManager::outputReport()
                         case Constraint::sum_max:
                             file << "sum_max";
                             break;
-                        default:
-                            break;
                     }
                     file << "," << (*constraint)->value << ",";
                     for (std::vector<std::pair<simtime_t, simtime_t>>::const_iterator interval =

@@ -32,7 +32,7 @@
 									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.include.paths.1507852063" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths"/>
+								<option id="gnu.cpp.compiler.option.include.paths.1507852063" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1711841259" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1022967988" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
@@ -58,9 +58,10 @@
 					</folderInfo>
 					<folderInfo id="org.omnetpp.cdt.gnu.config.debug.332447950.1043714883" name="/" resourcePath="examples">
 						<toolChain id="org.omnetpp.cdt.gnu.toolchain.debug.1206491881" name="GCC for OMNeT++" superClass="org.omnetpp.cdt.gnu.toolchain.debug" unusedChildren="">
+							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.MachO64;org.eclipse.cdt.core.PE" id="org.omnetpp.cdt.targetPlatform" isAbstract="false" name="Windows, Linux, Mac" osList="win32,linux,macosx" superClass="org.omnetpp.cdt.targetPlatform"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.1291200347" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base.791004234"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.372668262" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.364557831">
-								<option id="gnu.cpp.compiler.option.preprocessor.def.935002168" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+								<option id="gnu.cpp.compiler.option.preprocessor.def.935002168" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
@@ -68,7 +69,7 @@
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1853952596" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1169644008" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base.1022967988">
-								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1819814833" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1819814833" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
@@ -84,9 +85,10 @@
 					</folderInfo>
 					<folderInfo id="org.omnetpp.cdt.gnu.config.debug.332447950.160519395" name="/" resourcePath="src">
 						<toolChain id="org.omnetpp.cdt.gnu.toolchain.debug.1974923446" name="GCC for OMNeT++" superClass="org.omnetpp.cdt.gnu.toolchain.debug" unusedChildren="">
+							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.MachO64;org.eclipse.cdt.core.PE" id="org.omnetpp.cdt.targetPlatform" isAbstract="false" name="Windows, Linux, Mac" osList="win32,linux,macosx" superClass="org.omnetpp.cdt.targetPlatform"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.573820288" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base.791004234"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1675396155" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.364557831">
-								<option id="gnu.cpp.compiler.option.preprocessor.def.655730721" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+								<option id="gnu.cpp.compiler.option.preprocessor.def.655730721" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
@@ -94,7 +96,7 @@
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.548289006" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.167304671" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base.1022967988">
-								<option id="gnu.c.compiler.option.preprocessor.def.symbols.788741911" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.788741911" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
@@ -175,9 +177,10 @@
 					</folderInfo>
 					<folderInfo id="org.omnetpp.cdt.gnu.config.release.1177198719.1820032942" name="/" resourcePath="examples">
 						<toolChain id="org.omnetpp.cdt.gnu.toolchain.release.600227057" name="GCC for OMNeT++" superClass="org.omnetpp.cdt.gnu.toolchain.release" unusedChildren="">
+							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.MachO64;org.eclipse.cdt.core.PE" id="org.omnetpp.cdt.targetPlatform" isAbstract="false" name="Windows, Linux, Mac" osList="win32,linux,macosx" superClass="org.omnetpp.cdt.targetPlatform"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.207699373" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base.591521279"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.719570320" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.2004191251">
-								<option id="gnu.cpp.compiler.option.preprocessor.def.1546601511" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+								<option id="gnu.cpp.compiler.option.preprocessor.def.1546601511" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WITH_AVB_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_AS6802_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
@@ -189,7 +192,7 @@
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.418146393" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1961012305" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base.2109065764">
-								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1986438765" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1986438765" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WITH_AVB_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_AS6802_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>

@@ -25,6 +25,11 @@ void cPostgreSQLOutputVectorManager::startRun()
          CONSTRAINT vector_unique UNIQUE(runid, moduleid, nameid) \
       );");
     transaction->exec(
+                "CREATE OR REPLACE VIEW vector_names AS \
+         SELECT vector.id AS id,runid,module.name AS module,name.name AS name FROM vector \
+         JOIN module ON module.id = vector.moduleid \
+         JOIN name ON name.id = vector.nameid;");
+    transaction->exec(
             "CREATE TABLE IF NOT EXISTS vectorattr(\
          id SERIAL NOT NULL PRIMARY KEY,\
          vectorid INT NOT NULL,\
@@ -33,6 +38,11 @@ void cPostgreSQLOutputVectorManager::startRun()
          FOREIGN KEY (vectorid) REFERENCES vector(id) ON DELETE CASCADE,\
          FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE\
       );");
+    transaction->exec(
+                "CREATE OR REPLACE VIEW vectorattr_names AS \
+         SELECT vectorattr.id AS id, vectorattr.vectorid AS vectorid, \
+         name.name AS name, vectorattr.value AS value FROM vectorattr \
+         JOIN name ON name.id = vectorattr.nameid;");
     transaction->exec(
             "CREATE TABLE IF NOT EXISTS vectordata (\
          vectorid INT NOT NULL,\

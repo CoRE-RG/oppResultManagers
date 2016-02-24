@@ -31,6 +31,17 @@ void cSQLiteOutputVectorManager::startRun()
     {
         throw omnetpp::cRuntimeError("cSQLiteOutputScalarMgr:: Can't create table 'vector': %s", zErrMsg);
     }
+    rc =
+            sqlite3_exec(connection,
+                    "CREATE VIEW IF NOT EXISTS vector_names AS \
+                             SELECT vector.id AS id,runid,module.name AS module,name.name AS name FROM vector \
+                             JOIN module ON module.id = vector.moduleid \
+                             JOIN name ON name.id = vector.nameid;",
+                    nullptr, nullptr, &zErrMsg);
+    if (rc != SQLITE_OK)
+    {
+        throw cRuntimeError("cSQLiteOutputScalarMgr:: Can't create view 'vector_names': %s", zErrMsg);
+    }
 
     rc =
             sqlite3_exec(connection,
@@ -47,6 +58,18 @@ void cSQLiteOutputVectorManager::startRun()
     {
         throw omnetpp::cRuntimeError("cSQLiteOutputScalarMgr:: Can't create table 'vectorattr': %s", zErrMsg);
     }
+    rc =
+            sqlite3_exec(connection,
+                    "CREATE VIEW IF NOT EXISTS vectorattr_names AS \
+                                 SELECT vectorattr.id AS id, vectorattr.vectorid AS vectorid, \
+                                 name.name AS name, vectorattr.value AS value FROM vectorattr \
+                                 JOIN name ON name.id = vectorattr.nameid;",
+                    nullptr, nullptr, &zErrMsg);
+    if (rc != SQLITE_OK)
+    {
+        throw cRuntimeError("cSQLiteOutputScalarMgr:: Can't create view 'vectorattr_names': %s", zErrMsg);
+    }
+
     rc =
             sqlite3_exec(connection,
                     "CREATE TABLE IF NOT EXISTS vectordata (\
@@ -111,7 +134,8 @@ bool cSQLiteOutputVectorManager::record(void *vectorhandle, simtime_t t, double 
             {
                 throw omnetpp::cRuntimeError("cSQLiteOutputVectorManager:: Could not bind active runid.");
             }
-            rc = sqlite3_bind_int64(insertVectorStmt, 2, static_cast<sqlite3_int64>(getModuleID(vp->modulename.c_str())));
+            rc = sqlite3_bind_int64(insertVectorStmt, 2,
+                    static_cast<sqlite3_int64>(getModuleID(vp->modulename.c_str())));
             if (rc != SQLITE_OK)
             {
                 throw omnetpp::cRuntimeError("cSQLiteOutputVectorManager:: Could not bind active moduleid.");
@@ -140,7 +164,8 @@ bool cSQLiteOutputVectorManager::record(void *vectorhandle, simtime_t t, double 
                 {
                     throw omnetpp::cRuntimeError("cSQLiteOutputVectorManager:: Could not bind vectorid.");
                 }
-                rc = sqlite3_bind_int64(insertVectorAttrStmt, 2, static_cast<sqlite3_int64>(getNameID(it->first.c_str())));
+                rc = sqlite3_bind_int64(insertVectorAttrStmt, 2,
+                        static_cast<sqlite3_int64>(getNameID(it->first.c_str())));
                 if (rc != SQLITE_OK)
                 {
                     throw omnetpp::cRuntimeError("cSQLiteOutputVectorManager:: Could not bind nameid.");

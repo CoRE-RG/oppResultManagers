@@ -11,8 +11,9 @@ Register_GlobalConfigOption(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ, "postgresqloutpu
 #define SQL_SELECT_NAME "SELECT * FROM name;"
 #define SQL_SELECT_NAME_BYNAME  "SELECT id FROM name WHERE name=$1;"
 #define SQL_INSERT_NAME "INSERT INTO name(name) VALUES($1) RETURNING id"
-#define SQL_INSERT_RUN "INSERT INTO run(runid,runnumber,network,date) VALUES($1,$2,$3,to_timestamp($4,'YYYYMMDD-HH24:MI:SS')) RETURNING id"
+#define SQL_INSERT_RUN "INSERT INTO run(runid) VALUES($1) RETURNING id"
 #define SQL_SELECT_RUN "SELECT id FROM run WHERE runid=$1;"
+#define SQL_INSERT_RUN_ATTR "INSERT INTO runattr(runid,nameid,value) VALUES($1,$2,$3);"
 
 cPorstgreSQLOutputManager::cPorstgreSQLOutputManager()
 {
@@ -50,10 +51,7 @@ void cPorstgreSQLOutputManager::startRun()
     work_transaction.exec(
             "CREATE TABLE IF NOT EXISTS run (\
          id SERIAL NOT NULL PRIMARY KEY,\
-         runid TEXT NOT NULL UNIQUE,\
-         runnumber BIGINT NOT NULL,\
-         network TEXT NOT NULL,\
-         date TIMESTAMP NOT NULL\
+         runid TEXT NOT NULL UNIQUE\
        );");
     work_transaction.exec(
             "CREATE TABLE IF NOT EXISTS module(\
@@ -65,10 +63,41 @@ void cPorstgreSQLOutputManager::startRun()
          id SERIAL NOT NULL PRIMARY KEY,\
          name TEXT NOT NULL UNIQUE\
       );");
+    work_transaction.exec(
+            "CREATE TABLE IF NOT EXISTS runattr(\
+         id SERIAL NOT NULL PRIMARY KEY,\
+         runid INT NOT NULL,\
+         nameid INT NOT NULL,\
+         value TEXT NOT NULL,\
+         FOREIGN KEY (runid) REFERENCES run(id) ON DELETE CASCADE,\
+         FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE\
+       );");
+    work_transaction.exec(
+            "CREATE OR REPLACE VIEW runattr_names AS \
+         SELECT runattr.id AS id, runattr.runid AS runid, \
+         name.name AS name, runattr.value AS value FROM runattr \
+         JOIN name ON name.id = runattr.nameid;");
+
+    work_transaction.commit();
+    if (!transaction)
+    {
+        transaction = new pqxx::nontransaction(*connection);
+        transaction->exec("BEGIN;");
+    }
+    //Find already existing modules and names
+    pqxx::result result = transaction->exec(SQL_SELECT_MODULE);
+    for (size_t rownum = 0; rownum < result.size(); ++rownum)
+    {
+        moduleIDMap[result[rownum][1].as<std::string>()] = result[rownum][0].as<size_t>();
+    }
+    result = transaction->exec(SQL_SELECT_NAME);
+    for (size_t rownum = 0; rownum < result.size(); ++rownum)
+    {
+        nameIDMap[result[rownum][1].as<std::string>()] = result[rownum][0].as<size_t>();
+    }
 
     //Find already existing run
-    pqxx::result result =
-            work_transaction.parameterized(SQL_SELECT_RUN)(ev.getConfigEx()->getVariable(CFGVAR_RUNID)).exec();
+    result = transaction->parameterized(SQL_SELECT_RUN)(ev.getConfigEx()->getVariable(CFGVAR_RUNID)).exec();
     if (result.size() > 1)
     {
         throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
@@ -79,34 +108,23 @@ void cPorstgreSQLOutputManager::startRun()
     }
     else
     {
-        result = work_transaction.parameterized(SQL_INSERT_RUN)(
-        ev.getConfigEx()->getVariable(CFGVAR_RUNID))(
-        simulation.getActiveEnvir()->getConfigEx()->getActiveRunNumber())(
-        simulation.getNetworkType()->getName())(ev.getConfigEx()->getVariable(CFGVAR_DATETIME)).exec();
+        result = transaction->parameterized(SQL_INSERT_RUN)(
+        ev.getConfigEx()->getVariable(CFGVAR_RUNID)).exec();
         if (result.size() != 1)
         {
-            throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
+            throw cRuntimeError("cPostgreSQLOutputMgr:: internal error!");
         }
         runid = result[0][0].as<size_t>();
-    }
 
-    //Find already existing modules and names
-    result = work_transaction.exec(SQL_SELECT_MODULE);
-    for (size_t rownum = 0; rownum < result.size(); ++rownum)
-    {
-        moduleIDMap[result[rownum][1].as<std::string>()] = result[rownum][0].as<size_t>();
-    }
-    result = work_transaction.exec(SQL_SELECT_NAME);
-    for (size_t rownum = 0; rownum < result.size(); ++rownum)
-    {
-        nameIDMap[result[rownum][1].as<std::string>()] = result[rownum][0].as<size_t>();
-    }
-    work_transaction.commit();
-
-    if (!transaction)
-    {
-        transaction = new pqxx::nontransaction(*connection);
-        transaction->exec("BEGIN;");
+        //INSERT runattr
+        std::vector<const char *> keys1 = ev.getConfigEx()->getPredefinedVariableNames();
+        std::vector<const char *> keys2 = ev.getConfigEx()->getIterationVariableNames();
+        keys1.insert(keys1.end(), keys2.begin(), keys2.end());
+        for (size_t i = 0; i < keys1.size(); i++)
+        {
+            work_transaction.parameterized(SQL_INSERT_RUN_ATTR)(runid)(getNameID(keys1[i]))(
+            ev.getConfigEx()->getVariable(keys1[i])).exec();
+        }
     }
 }
 

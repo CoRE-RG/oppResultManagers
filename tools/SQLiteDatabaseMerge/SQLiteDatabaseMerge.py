@@ -55,9 +55,19 @@ if __name__ == "__main__":
 			
 			sys.stdout.write('\t inserting remaining runs...')
 			# Insert all missing runs
-			c.execute("INSERT INTO run (runid, runnumber, network, date) SELECT runid, runnumber, network, date FROM toMerge.run WHERE NOT EXISTS (SELECT 1 FROM run WHERE runid=toMerge.run.runid);")
+			c.execute("INSERT INTO run (runid) SELECT runid FROM toMerge.run WHERE NOT EXISTS (SELECT 1 FROM run WHERE runid=toMerge.run.runid);")
 			sys.stdout.write('done\n')
 			
+			sys.stdout.write('\t inserting runattr...')
+			# Insert all scalarattrs while looking uo the correct names and modules
+			c.execute('''INSERT INTO runattr (runid,nameid,value)
+			SELECT dest_run.id AS runid, dest_name.id AS nameid, toMerge.runattr.value FROM toMerge.runattr
+			JOIN toMerge.run AS src_run ON toMerge.runattr.runid = src_run.id
+			JOIN toMerge.name AS src_name ON toMerge.runattr.nameid = src_name.id
+			JOIN run AS dest_run ON src_run.runid = dest_run.runid
+			JOIN name AS dest_name ON src_name.name = dest_name.name;''')
+			sys.stdout.write('done\n')
+
 			sys.stdout.write('\t inserting missing modules...')
 			# Insert all missing modules
 			c.execute("INSERT INTO module (name) SELECT name FROM toMerge.module WHERE NOT EXISTS (SELECT 1 FROM module WHERE name=toMerge.module.name);")
@@ -79,6 +89,22 @@ if __name__ == "__main__":
 			JOIN module AS dest_module ON toMerge.module.name = dest_module.name
 			JOIN name AS dest_name ON toMerge.name.name = dest_name.name;''')
 			sys.stdout.write('done\n')
+
+			sys.stdout.write('\t inserting scalarattr...')
+			# Insert all scalarattrs while looking uo the correct names and modules
+			c.execute('''INSERT INTO scalarattr (scalarid,nameid,value)
+			SELECT dest_scalar.id AS scalarid, dest_name.id AS nameid, toMerge.scalarattr.value FROM toMerge.scalarattr
+			JOIN toMerge.scalar AS src_scalar ON toMerge.scalarattr.scalarid = src_scalar.id
+			JOIN toMerge.run AS src_run ON src_scalar.runid = src_run.id
+			JOIN toMerge.module AS src_module ON src_scalar.moduleid = src_scalar.id
+			JOIN toMerge.name AS src_name ON toMerge.scalarattr.nameid = src_name.id
+			JOIN toMerge.name AS src_scalarname ON src_scalar.nameid = src_scalarname.id
+			JOIN run AS dest_run ON src_run.runid = dest_run.runid
+			JOIN module AS dest_module ON src_module.name = dest_module.name
+			JOIN name AS dest_name ON src_name.name = dest_name.name
+			JOIN name AS dest_scalarname ON src_scalarname.name = dest_scalarname.name
+			JOIN vector AS dest_scalar ON dest_run.id = dest_scalar.runid AND dest_module.id = dest_scalar.moduleid AND dest_scalarname.id = dest_scalar.nameid;''')
+			sys.stdout.write('done\n')
 			
 			sys.stdout.write('\t inserting vectors...')
 			# Insert all vectors while looking uo the correct names and modules
@@ -94,18 +120,18 @@ if __name__ == "__main__":
 			
 			sys.stdout.write('\t inserting vectorattr...')
 			# Insert all vectorattr while looking uo the correct vectors
-			c.execute('''INSERT INTO vectorattr (vectorid,nameid,value)
-			SELECT dest_vector.id AS vectorid, dest_name.id AS nameid, value FROM toMerge.vectorattr
-			JOIN toMerge.vector AS src_vector ON toMerge.vectorattr.vectorid = src_vector.id
-			JOIN toMerge.run AS src_run ON src_vector.runid = src_run.id
-			JOIN toMerge.module AS src_module ON src_vector.moduleid = src_module.id
-			JOIN toMerge.name AS src_name ON toMerge.vectorattr.nameid = src_name.id
-			JOIN toMerge.name AS src_vectorname ON src_vector.nameid = src_vectorname.id
+			c.execute('''INSERT INTO scalarattr (scalarid,nameid,value)
+			SELECT dest_scalar.id AS scalarid, dest_name.id AS nameid, toMerge.scalarattr.value FROM toMerge.scalarattr
+			JOIN toMerge.scalar AS src_scalar ON toMerge.scalarattr.scalarid = src_scalar.id
+			JOIN toMerge.run AS src_run ON src_scalar.runid = src_run.id
+			JOIN toMerge.module AS src_module ON src_scalar.moduleid = src_module.id
+			JOIN toMerge.name AS src_name ON toMerge.scalarattr.nameid = src_name.id
+			JOIN toMerge.name AS src_scalarname ON src_scalar.nameid = src_scalarname.id
 			JOIN run AS dest_run ON src_run.runid = dest_run.runid
 			JOIN module AS dest_module ON src_module.name = dest_module.name
 			JOIN name AS dest_name ON src_name.name = dest_name.name
-			JOIN name AS dest_vectorname ON src_vectorname.name = dest_vectorname.name
-			JOIN vector AS dest_vector ON dest_run.id = dest_vector.runid AND dest_module.id = dest_vector.moduleid AND dest_vectorname.id = dest_vector.nameid;''')
+			JOIN name AS dest_scalarname ON src_scalarname.name = dest_scalarname.name
+			JOIN scalar AS dest_scalar ON dest_run.id = dest_scalar.runid AND dest_module.id = dest_scalar.moduleid AND dest_scalarname.id = dest_scalar.nameid;''')
 			sys.stdout.write('done\n')
 			
 			sys.stdout.write('\t inserting vectordata...')

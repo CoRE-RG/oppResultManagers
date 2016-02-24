@@ -40,7 +40,7 @@ void cSQLiteOutputVectorManager::startRun()
                     nullptr, nullptr, &zErrMsg);
     if (rc != SQLITE_OK)
     {
-        throw cRuntimeError("cSQLiteOutputScalarMgr:: Can't create view 'vector_names': %s", zErrMsg);
+        throw omnetpp::cRuntimeError("cSQLiteOutputScalarMgr:: Can't create view 'vector_names': %s", zErrMsg);
     }
 
     rc =
@@ -67,7 +67,7 @@ void cSQLiteOutputVectorManager::startRun()
                     nullptr, nullptr, &zErrMsg);
     if (rc != SQLITE_OK)
     {
-        throw cRuntimeError("cSQLiteOutputScalarMgr:: Can't create view 'vectorattr_names': %s", zErrMsg);
+        throw omnetpp::cRuntimeError("cSQLiteOutputScalarMgr:: Can't create view 'vectorattr_names': %s", zErrMsg);
     }
 
     rc =

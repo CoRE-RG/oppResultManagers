@@ -76,7 +76,7 @@ void cSQLiteOutputManager::startRun()
         }
     }
 
-    commitFreq = omnetpp::getEnvir()->getConfig()->getAsInt(CFGID_SQLITEMGR_COMMIT_FREQ);
+    commitFreq = static_cast<size_t>(omnetpp::getEnvir()->getConfig()->getAsInt(CFGID_SQLITEMGR_COMMIT_FREQ));
 
     char * zErrMsg = nullptr;
 
@@ -161,14 +161,14 @@ void cSQLiteOutputManager::startRun()
     rc = sqlite3_exec(connection, SQL_SELECT_MODULE,
             [] (void *data, int argc, char **argv,__attribute__((__unused__)) char **azColName) -> int
             {
-                cSQLiteOutputManager *thisManager = (cSQLiteOutputManager*)data;
+                cSQLiteOutputManager *thisManager = static_cast<cSQLiteOutputManager*>(data);
                 if(argc!=2)
                 {
                     throw omnetpp::cRuntimeError("wrong number of columns returned in select!");
                 }
-                thisManager->moduleIDMap[argv[1]] = atoi(argv[0]);
+                thisManager->moduleIDMap[argv[1]] = strtoul(argv[0], nullptr, 0);
                 return SQLITE_OK;
-            }, (void*) this, &zErrMsg);
+            }, static_cast<void*>(this), &zErrMsg);
     if (rc != SQLITE_OK)
     {
         throw omnetpp::cRuntimeError("SQLiteOutputManager:: Error in select (SQL_SELECT_MODULE): %s", zErrMsg);
@@ -177,14 +177,14 @@ void cSQLiteOutputManager::startRun()
     rc = sqlite3_exec(connection, SQL_SELECT_NAME,
             [] (void *data, int argc, char **argv,__attribute__((__unused__)) char **azColName) -> int
             {
-                cSQLiteOutputManager *thisManager = (cSQLiteOutputManager*)data;
+                cSQLiteOutputManager *thisManager = static_cast<cSQLiteOutputManager*>(data);
                 if(argc!=2)
                 {
                     throw omnetpp::cRuntimeError("wrong number of columns returned in select!");
                 }
-                thisManager->nameIDMap[argv[1]] = atoi(argv[0]);
+                thisManager->nameIDMap[argv[1]] = strtoul(argv[0], nullptr, 0);
                 return SQLITE_OK;
-            }, (void*) this, &zErrMsg);
+            }, static_cast<void*>(this), &zErrMsg);
     if (rc != SQLITE_OK)
     {
         throw omnetpp::cRuntimeError("SQLiteOutputManager:: Error in select (SQL_SELECT_NAME): %s", zErrMsg);
@@ -205,7 +205,7 @@ void cSQLiteOutputManager::startRun()
     rc = sqlite3_step(stmt);
     if (rc == SQLITE_ROW)
     {
-        runid = sqlite3_column_int64(stmt, 0);
+        runid = static_cast<size_t>(sqlite3_column_int64(stmt, 0));
     }
     sqlite3_finalize(stmt);
     if (!runid)
@@ -228,7 +228,7 @@ void cSQLiteOutputManager::startRun()
             throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not execute statement (SQL_INSERT_RUN): %s",
                     sqlite3_errmsg(connection));
         }
-        runid = sqlite3_last_insert_rowid(connection);
+        runid = static_cast<size_t>(sqlite3_last_insert_rowid(connection));
         sqlite3_reset(stmt);
 
         sqlite3_stmt *insertRunAttrStmt;
@@ -329,7 +329,7 @@ size_t cSQLiteOutputManager::getModuleID(std::string module)
             throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not execute statement (SQL_INSERT_MODULE): %s",
                     sqlite3_errmsg(connection));
         }
-        size_t id = sqlite3_last_insert_rowid(connection);
+        size_t id = static_cast<size_t>(sqlite3_last_insert_rowid(connection));
         moduleIDMap[module] = id;
         sqlite3_reset(stmt);
 
@@ -365,7 +365,7 @@ size_t cSQLiteOutputManager::getNameID(std::string name)
             throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not execute statement (SQL_INSERT_NAME): %s",
                     sqlite3_errmsg(connection));
         }
-        size_t id = sqlite3_last_insert_rowid(connection);
+        size_t id = static_cast<size_t>(sqlite3_last_insert_rowid(connection));
         nameIDMap[name] = id;
         sqlite3_reset(stmt);
 

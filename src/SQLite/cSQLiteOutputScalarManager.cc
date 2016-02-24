@@ -88,7 +88,7 @@ void cSQLiteOutputScalarManager::endRun()
 }
 
 void cSQLiteOutputScalarManager::recordScalar(omnetpp::cComponent *component, const char *name, double value,
-        __attribute__((__unused__))   omnetpp::opp_string_map *attributes)
+        omnetpp::opp_string_map *attributes)
 {
 
     sqlite3_stmt *stmt;
@@ -176,9 +176,9 @@ void cSQLiteOutputScalarManager::recordScalar(omnetpp::cComponent *component, co
     }
 }
 
-void cSQLiteOutputScalarManager::recordStatistic(__attribute__((__unused__))  omnetpp::cComponent *component,
-        __attribute__((__unused__)) const char *name, __attribute__((__unused__))  omnetpp::cStatistic *statistic,
-        __attribute__((__unused__))  omnetpp::opp_string_map *attributes)
+void cSQLiteOutputScalarManager::recordStatistic(__attribute__((__unused__)) omnetpp::cComponent *component,
+        __attribute__((__unused__)) const char *name, __attribute__((__unused__)) omnetpp::cStatistic *statistic,
+        __attribute__((__unused__)) omnetpp::opp_string_map *attributes)
 {
     throw omnetpp::cRuntimeError("cPostgreSQLOutputScalarMgr: recording cStatistics objects not supported yet");
 }

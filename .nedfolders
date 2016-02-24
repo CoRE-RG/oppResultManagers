@@ -1,5 +1,4 @@
 examples
 simulations
 src
--oppresultmanagers.SQLite
 -oppresultmanagers.postgreSQL

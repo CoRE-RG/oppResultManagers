@@ -29,7 +29,6 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.364557831" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<option id="gnu.cpp.compiler.option.preprocessor.def.196753503" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
-									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.include.paths.1507852063" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false"/>
@@ -38,7 +37,6 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1022967988" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.873421088" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
-									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1221698086" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
@@ -63,7 +61,6 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.372668262" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.364557831">
 								<option id="gnu.cpp.compiler.option.preprocessor.def.935002168" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
-									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1853952596" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
@@ -71,7 +68,6 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1169644008" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base.1022967988">
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1819814833" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
-									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1489255346" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
@@ -90,7 +86,6 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1675396155" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.364557831">
 								<option id="gnu.cpp.compiler.option.preprocessor.def.655730721" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
-									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.548289006" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
@@ -98,7 +93,6 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.167304671" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base.1022967988">
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.788741911" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WITH_MULTIPLE_COMMON"/>
-									<listOptionValue builtIn="false" value="WITH_SQLITE_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_GCTAEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1510039712" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
@@ -112,7 +106,7 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="examples"/>
-						<entry excluding="postgreSQL" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
+						<entry excluding="SQLite|postgreSQL" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

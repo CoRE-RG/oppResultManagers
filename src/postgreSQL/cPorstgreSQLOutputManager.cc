@@ -1,8 +1,8 @@
 #include <cPorstgreSQLOutputManager.h>
 
-Register_GlobalConfigOption(CFGID_POSTGRESQLOUTMGR_CONNECTION, "postgresqloutputmanager-connection", CFG_STRING, "\"\"",
+Register_PerRunConfigOption(CFGID_POSTGRESQLOUTMGR_CONNECTION, "postgresqloutputmanager-connection", CFG_STRING, "\"\"",
         "Object name of database connection parameters");
-Register_GlobalConfigOption(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ, "postgresqloutputmanager-commit-freq", CFG_INT, "10000",
+Register_PerRunConfigOption(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ, "postgresqloutputmanager-commit-freq", CFG_INT, "10000",
         "COMMIT every n INSERTs, default=10");
 
 #define SQL_SELECT_MODULE "SELECT * FROM module;"

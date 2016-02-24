@@ -6,13 +6,13 @@
 
 Register_Class(cCheckOutputVectorManager);
 
-Register_GlobalConfigOption(CFGID_CHECKOUTPUTVECTORMANAGER_CONFIGFILE, "checkoutputvectormanager-configfile",
+Register_PerRunConfigOption(CFGID_CHECKOUTPUTVECTORMANAGER_CONFIGFILE, "checkoutputvectormanager-configfile",
         CFG_FILENAME, "constraints.xml", "TBD");
-Register_GlobalConfigOption(CFGID_CHECKOUTPUTVECTORMANAGER_ENDSIM, "checkoutputvectormanager-endsimulation", CFG_BOOL,
+Register_PerRunConfigOption(CFGID_CHECKOUTPUTVECTORMANAGER_ENDSIM, "checkoutputvectormanager-endsimulation", CFG_BOOL,
         "false", "TBD");
-Register_GlobalConfigOption(CFGID_CHECKOUTPUTVECTORMANAGER_REPORT, "checkoutputvectormanager-report", CFG_BOOL, "true",
+Register_PerRunConfigOption(CFGID_CHECKOUTPUTVECTORMANAGER_REPORT, "checkoutputvectormanager-report", CFG_BOOL, "true",
         "TBD");
-Register_GlobalConfigOption(CFGID_CHECKOUTPUTVECTORMANAGER_REPORTFILE, "checkoutputvectormanager-reportfile",
+Register_PerRunConfigOption(CFGID_CHECKOUTPUTVECTORMANAGER_REPORTFILE, "checkoutputvectormanager-reportfile",
         CFG_FILENAME, "${resultdir}/${configname}-${runnumber}-constraintReport.csv", "TBD");
 
 cCheckOutputVectorManager::cCheckOutputVectorManager()

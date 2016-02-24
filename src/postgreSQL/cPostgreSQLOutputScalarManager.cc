@@ -49,19 +49,19 @@ void cPostgreSQLOutputScalarManager::endRun()
     cPorstgreSQLOutputManager::endRun();
 }
 
-void cPostgreSQLOutputScalarManager::recordScalar(cComponent *component, const char *name, double value,
-        __attribute__((__unused__))       opp_string_map *attributes)
+void cPostgreSQLOutputScalarManager::recordScalar(omnetpp::cComponent *component, const char *name, double value,
+        omnetpp::opp_string_map *attributes)
 {
 
     pqxx::result result = transaction->parameterized(SQL_INSERT_SCALAR_RESULT)(runid)(
             getModuleID(component->getFullPath()))(getNameID(name))(value).exec();
     if (result.size() != 1)
     {
-        throw cRuntimeError("cPostgreSQLOutputScalarManager:: internal error!");
+        throw omnetpp::cRuntimeError("cPostgreSQLOutputScalarManager:: internal error!");
     }
     size_t vectorId = result[0][0].as<size_t>();
 
-    for (opp_string_map::const_iterator it = attributes->begin(); it != attributes->end(); ++it)
+    for (omnetpp::opp_string_map::const_iterator it = attributes->begin(); it != attributes->end(); ++it)
     {
         transaction->parameterized(SQL_INSERT_SCALAR_ATTR)(vectorId)(getNameID(it->first.c_str()))(it->second.c_str()).exec();
     }
@@ -76,11 +76,11 @@ void cPostgreSQLOutputScalarManager::recordScalar(cComponent *component, const c
     }
 }
 
-void cPostgreSQLOutputScalarManager::recordStatistic(__attribute__((__unused__))       cComponent *component,
-        __attribute__((__unused__)) const char *name, __attribute__((__unused__))       cStatistic *statistic,
-        __attribute__((__unused__))       opp_string_map *attributes)
+void cPostgreSQLOutputScalarManager::recordStatistic(__attribute__((__unused__)) omnetpp::cComponent *component,
+        __attribute__((__unused__)) const char *name, __attribute__((__unused__)) omnetpp::cStatistic *statistic,
+        __attribute__((__unused__)) omnetpp::opp_string_map *attributes)
 {
-    throw cRuntimeError("cPostgreSQLOutputScalarMgr: recording cStatistics objects not supported yet");
+    throw omnetpp::cRuntimeError("cPostgreSQLOutputScalarMgr: recording cStatistics objects not supported yet");
 }
 
 void cPostgreSQLOutputScalarManager::flush()

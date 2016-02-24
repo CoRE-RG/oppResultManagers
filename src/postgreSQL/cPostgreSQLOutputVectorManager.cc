@@ -71,12 +71,12 @@ bool cPostgreSQLOutputVectorManager::record(void *vectorhandle, simtime_t t, dou
                     getModuleID(vp->modulename.c_str()))(getNameID(vp->vectorname.c_str())).exec();
             if (result.size() != 1)
             {
-                throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
+                throw omnetpp::cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
             }
             vp->id = result[0][0].as<long>();
             vp->initialised = true;
 
-            for (opp_string_map::iterator it = vp->attributes.begin(); it != vp->attributes.end(); ++it)
+            for (omnetpp::opp_string_map::iterator it = vp->attributes.begin(); it != vp->attributes.end(); ++it)
             {
                 transaction->parameterized(SQL_INSERT_VECTOR_ATTR)(vp->id)(getNameID(it->first.c_str()))(
                         it->second.c_str()).exec();

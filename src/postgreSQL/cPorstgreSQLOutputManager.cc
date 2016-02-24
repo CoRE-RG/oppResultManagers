@@ -40,11 +40,11 @@ void cPorstgreSQLOutputManager::startRun()
 {
     if (!connection)
     {
-        std::string cfgobj = ev.getConfig()->getAsString(CFGID_POSTGRESQLOUTMGR_CONNECTION);
+        std::string cfgobj = omnetpp::getEnvir()->getConfig()->getAsString(CFGID_POSTGRESQLOUTMGR_CONNECTION);
         connection = new pqxx::connection(cfgobj.c_str());
     }
 
-    commitFreq = ev.getConfig()->getAsInt(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ);
+    commitFreq = omnetpp::getEnvir()->getConfig()->getAsInt(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ);
 
     pqxx::work work_transaction(*connection);
     //Create Tables
@@ -97,10 +97,12 @@ void cPorstgreSQLOutputManager::startRun()
     }
 
     //Find already existing run
-    result = transaction->parameterized(SQL_SELECT_RUN)(ev.getConfigEx()->getVariable(CFGVAR_RUNID)).exec();
+    result =
+            transaction->parameterized(SQL_SELECT_RUN)
+            (omnetpp::getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNID)).exec();
     if (result.size() > 1)
     {
-        throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
+        throw omnetpp::cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
     }
     else if (result.size() == 1)
     {
@@ -108,22 +110,22 @@ void cPorstgreSQLOutputManager::startRun()
     }
     else
     {
-        result = transaction->parameterized(SQL_INSERT_RUN)(
-        ev.getConfigEx()->getVariable(CFGVAR_RUNID)).exec();
+        result = transaction->parameterized(SQL_INSERT_RUN)
+                (omnetpp::getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNID)).exec();
         if (result.size() != 1)
         {
-            throw cRuntimeError("cPostgreSQLOutputMgr:: internal error!");
+            throw omnetpp::cRuntimeError("cPostgreSQLOutputMgr:: internal error!");
         }
         runid = result[0][0].as<size_t>();
 
         //INSERT runattr
-        std::vector<const char *> keys1 = ev.getConfigEx()->getPredefinedVariableNames();
-        std::vector<const char *> keys2 = ev.getConfigEx()->getIterationVariableNames();
+        std::vector<const char *> keys1 = omnetpp::getEnvir()->getConfigEx()->getPredefinedVariableNames();
+        std::vector<const char *> keys2 = omnetpp::getEnvir()->getConfigEx()->getIterationVariableNames();
         keys1.insert(keys1.end(), keys2.begin(), keys2.end());
         for (size_t i = 0; i < keys1.size(); i++)
         {
             work_transaction.parameterized(SQL_INSERT_RUN_ATTR)(runid)(getNameID(keys1[i]))(
-            ev.getConfigEx()->getVariable(keys1[i])).exec();
+                    omnetpp::getEnvir()->getConfigEx()->getVariable(keys1[i])).exec();
         }
     }
 }
@@ -158,7 +160,7 @@ size_t cPorstgreSQLOutputManager::getModuleID(std::string module)
             pqxx::result result = transaction->parameterized(SQL_INSERT_MODULE)(module).exec();
             if (result.size() != 1)
             {
-                throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
+                throw omnetpp::cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
             }
             size_t id = result[0][0].as<size_t>();
             moduleIDMap[module] = id;
@@ -171,7 +173,7 @@ size_t cPorstgreSQLOutputManager::getModuleID(std::string module)
             pqxx::result result = transaction->parameterized(SQL_SELECT_MODULE_BYNAME)(module).exec();
             if (result.size() != 1)
             {
-                throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
+                throw omnetpp::cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
             }
             else
             {
@@ -199,7 +201,7 @@ size_t cPorstgreSQLOutputManager::getNameID(std::string name)
             {
                 //TODO check if now in database (concurrent runs possible!)
 
-                throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
+                throw omnetpp::cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
             }
             size_t id = result[0][0].as<size_t>();
             nameIDMap[name] = id;
@@ -212,7 +214,7 @@ size_t cPorstgreSQLOutputManager::getNameID(std::string name)
             pqxx::result result = transaction->parameterized(SQL_SELECT_NAME_BYNAME)(name).exec();
             if (result.size() != 1)
             {
-                throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
+                throw omnetpp::cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
             }
             else
             {

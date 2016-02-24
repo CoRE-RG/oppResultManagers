@@ -110,7 +110,7 @@ void cSQLiteOutputScalarManager::recordScalar(cComponent *component, const char 
     {
         throw cRuntimeError("cSQLiteOutputScalarManager:: Could not bind scalar name: %s", sqlite3_errmsg(connection));
     }
-    if (isnanl(value))
+    if (isnan(value))
     {
         sqlite3_bind_null(stmt, 4);
     }

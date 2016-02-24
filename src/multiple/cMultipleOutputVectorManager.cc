@@ -67,7 +67,7 @@ void *cMultipleOutputVectorManager::registerVector(const char *modulename, const
 }
 void cMultipleOutputVectorManager::deregisterVector(void *vectorhandle)
 {
-    sVectorData *vp = (sVectorData *) vectorhandle;
+    sVectorData *vp = static_cast<sVectorData *>(vectorhandle);
     std::vector<omnetpp::cIOutputVectorManager*>::const_iterator vectorOutputManager = vectorOutputManagers.begin();
     std::vector<void*>::const_iterator vectorOutputManagerHandle = vp->vectorhandles.begin();
     while ((vectorOutputManager != vectorOutputManagers.end()) && (vectorOutputManagerHandle != vp->vectorhandles.end()))
@@ -81,7 +81,7 @@ void cMultipleOutputVectorManager::deregisterVector(void *vectorhandle)
 }
 void cMultipleOutputVectorManager::setVectorAttribute(void *vectorhandle, const char *name, const char *value)
 {
-    sVectorData *vp = (sVectorData *) vectorhandle;
+    sVectorData *vp = static_cast<sVectorData *>(vectorhandle);
     std::vector<omnetpp::cIOutputVectorManager*>::const_iterator vectorOutputManager = vectorOutputManagers.begin();
     std::vector<void*>::const_iterator vectorOutputManagerHandle = vp->vectorhandles.begin();
     while ((vectorOutputManager != vectorOutputManagers.end()) && (vectorOutputManagerHandle != vp->vectorhandles.end()))
@@ -96,7 +96,7 @@ bool cMultipleOutputVectorManager::record(void *vectorhandle, simtime_t t, doubl
 {
     bool returnValue = false;
 
-    sVectorData *vp = (sVectorData *) vectorhandle;
+    sVectorData *vp = static_cast<sVectorData *>(vectorhandle);
     std::vector<omnetpp::cIOutputVectorManager*>::const_iterator vectorOutputManager = vectorOutputManagers.begin();
     std::vector<void*>::const_iterator vectorOutputManagerHandle = vp->vectorhandles.begin();
     while ((vectorOutputManager != vectorOutputManagers.end()) && (vectorOutputManagerHandle != vp->vectorhandles.end()))

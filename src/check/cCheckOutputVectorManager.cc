@@ -121,7 +121,7 @@ void *cCheckOutputVectorManager::registerVector(const char *modulename, const ch
                 for (cXMLElementList::iterator constraintsValue = constraintsValues.begin();
                         constraintsValue != constraintsValues.end(); ++constraintsValue)
                 {
-                    Constraint *newConstraint;
+                    Constraint *newConstraint = nullptr;
                     if (0 == strcmp((*constraintsValue)->getTagName(), "min"))
                     {
                         newConstraint = new Constraint(Constraint::min);
@@ -370,8 +370,6 @@ void cCheckOutputVectorManager::outputReport()
                             break;
                         case Constraint::sum_max:
                             file << "sum_max";
-                            break;
-                        default:
                             break;
                     }
                     file << "," << (*constraint)->value << ",";

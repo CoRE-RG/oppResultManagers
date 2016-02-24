@@ -44,7 +44,7 @@ void cPorstgreSQLOutputManager::startRun()
         connection = new pqxx::connection(cfgobj.c_str());
     }
 
-    commitFreq = omnetpp::getEnvir()->getConfig()->getAsInt(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ);
+    commitFreq = static_cast<size_t>(omnetpp::getEnvir()->getConfig()->getAsInt(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ));
 
     pqxx::work work_transaction(*connection);
     //Create Tables

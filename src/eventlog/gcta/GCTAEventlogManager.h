@@ -32,30 +32,30 @@ class GCTAEventlogManager : public omnetpp::cIEventlogManager
         /** @name Functions called from cEnvir's similar functions */
         //@{
         virtual void simulationEvent(omnetpp::cEvent *event) override;
-        virtual void bubble(omnetpp::cComponent *component, const char *text) override {}
-        virtual void messageScheduled(omnetpp::cMessage *msg) override {}
-        virtual void messageCancelled(omnetpp::cMessage *msg) override {}
-        virtual void beginSend(omnetpp::cMessage *msg) override;
-        virtual void messageSendDirect(omnetpp::cMessage *msg, omnetpp::cGate *toGate,
-                simtime_t propagationDelay, simtime_t transmissionDelay) override {}
-        virtual void messageSendHop(omnetpp::cMessage *msg, omnetpp::cGate *srcGate) override {}
-        virtual void messageSendHop(omnetpp::cMessage *msg, omnetpp::cGate *srcGate,
-                simtime_t propagationDelay, simtime_t transmissionDelay) override {}
-        virtual void endSend(omnetpp::cMessage *msg) override {}
-        virtual void messageCreated(omnetpp::cMessage *msg) override {}
-        virtual void messageCloned(omnetpp::cMessage *msg, omnetpp::cMessage *clone) override {}
-        virtual void messageDeleted(omnetpp::cMessage *msg) override {}
-        virtual void moduleReparented(omnetpp::cModule *module, omnetpp::cModule *oldparent, int oldId) override {}
-        virtual void componentMethodBegin(omnetpp::cComponent *from, omnetpp::cComponent *to, const char *methodFmt, va_list va) override {}
+        virtual void bubble(__attribute__((__unused__)) omnetpp::cComponent *component, __attribute__((__unused__)) const char *text) override {}
+        virtual void messageScheduled(__attribute__((__unused__)) omnetpp::cMessage *msg) override {}
+        virtual void messageCancelled(__attribute__((__unused__)) omnetpp::cMessage *msg) override {}
+        virtual void beginSend(__attribute__((__unused__)) omnetpp::cMessage *msg) override;
+        virtual void messageSendDirect(__attribute__((__unused__)) omnetpp::cMessage *msg, __attribute__((__unused__)) omnetpp::cGate *toGate,
+                __attribute__((__unused__)) simtime_t propagationDelay, __attribute__((__unused__)) simtime_t transmissionDelay) override {}
+        virtual void messageSendHop(__attribute__((__unused__)) omnetpp::cMessage *msg, __attribute__((__unused__)) omnetpp::cGate *srcGate) override {}
+        virtual void messageSendHop(__attribute__((__unused__)) omnetpp::cMessage *msg, __attribute__((__unused__)) omnetpp::cGate *srcGate,
+                __attribute__((__unused__)) simtime_t propagationDelay, __attribute__((__unused__)) simtime_t transmissionDelay) override {}
+        virtual void endSend(__attribute__((__unused__)) omnetpp::cMessage *msg) override {}
+        virtual void messageCreated(__attribute__((__unused__)) omnetpp::cMessage *msg) override {}
+        virtual void messageCloned(__attribute__((__unused__)) omnetpp::cMessage *msg, __attribute__((__unused__)) omnetpp::cMessage *clone) override {}
+        virtual void messageDeleted(__attribute__((__unused__)) omnetpp::cMessage *msg) override {}
+        virtual void moduleReparented(__attribute__((__unused__)) omnetpp::cModule *module,__attribute__((__unused__)) omnetpp::cModule *oldparent, __attribute__((__unused__))  int oldId) override {}
+        virtual void componentMethodBegin(__attribute__((__unused__)) omnetpp::cComponent *from, __attribute__((__unused__)) omnetpp::cComponent *to, __attribute__((__unused__)) const char *methodFmt, __attribute__((__unused__)) va_list va) override {}
         virtual void componentMethodEnd() override {}
-        virtual void moduleCreated(omnetpp::cModule *newmodule) override {}
-        virtual void moduleDeleted(omnetpp::cModule *module) override {}
-        virtual void gateCreated(omnetpp::cGate *newgate) override {}
-        virtual void gateDeleted(omnetpp::cGate *gate) override {}
-        virtual void connectionCreated(omnetpp::cGate *srcgate) override;
-        virtual void connectionDeleted(omnetpp::cGate *srcgate) override {}
-        virtual void displayStringChanged(omnetpp::cComponent *component) override {}
-        virtual void logLine(const char *prefix, const char *line, int lineLength) override {}
+        virtual void moduleCreated(__attribute__((__unused__)) omnetpp::cModule *newmodule) override {}
+        virtual void moduleDeleted(__attribute__((__unused__)) omnetpp::cModule *module) override {}
+        virtual void gateCreated(__attribute__((__unused__)) omnetpp::cGate *newgate) override {}
+        virtual void gateDeleted(__attribute__((__unused__)) omnetpp::cGate *gate) override {}
+        virtual void connectionCreated(__attribute__((__unused__)) omnetpp::cGate *srcgate) override;
+        virtual void connectionDeleted(__attribute__((__unused__)) omnetpp::cGate *srcgate) override {}
+        virtual void displayStringChanged(__attribute__((__unused__)) omnetpp::cComponent *component) override {}
+        virtual void logLine(__attribute__((__unused__)) const char *prefix, __attribute__((__unused__)) const char *line, __attribute__((__unused__)) int lineLength) override {}
         //@}
 
 };

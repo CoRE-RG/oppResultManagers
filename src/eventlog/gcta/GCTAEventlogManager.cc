@@ -44,11 +44,12 @@ void GCTAEventlogManager::startRun()
     }
 }
 
-void GCTAEventlogManager::endRun(bool isError, int resultCode, const char *message)
+void GCTAEventlogManager::endRun(__attribute__((__unused__)) bool isError, __attribute__((__unused__)) int resultCode,
+        __attribute__((__unused__)) const char *message)
 {
     if (feventlog)
     {
-        fflush (feventlog);
+        fflush(feventlog);
         fclose(feventlog);
 
         feventlog = nullptr;
@@ -71,7 +72,7 @@ void GCTAEventlogManager::flush()
         fflush(feventlog);
 }
 
-void GCTAEventlogManager::simulationEvent(omnetpp::cEvent *event)
+void GCTAEventlogManager::simulationEvent(__attribute__((__unused__)) omnetpp::cEvent *event)
 {
 
 }
@@ -92,7 +93,7 @@ void GCTAEventlogManager::beginSend(omnetpp::cMessage *msg)
         if (mod && strcmp(mod->getFullName(), "mac") == 0)
         {
 
-            omnetpp::cPacket *pkt = (omnetpp::cPacket *) msg;
+            omnetpp::cPacket *pkt = static_cast<omnetpp::cPacket *>(msg);
 
             const char * name = mod->getParentModule()->getParentModule()->getFullName();
             //CoRE4INET
@@ -120,7 +121,7 @@ void GCTAEventlogManager::beginSend(omnetpp::cMessage *msg)
         if (mod && strstr(mod->getFullName(), "app"))
         {
 
-            omnetpp::cPacket *pkt = (omnetpp::cPacket *) msg;
+            omnetpp::cPacket *pkt = static_cast<omnetpp::cPacket *>(msg);
             fprintf(feventlog, "%s TC %s ID %ld N %s t %s et startMsg\n", msg->getFullName(), msg->getClassName(),
                     pkt->getEncapsulationTreeId(),
                     mod->getParentModule() ? mod->getParentModule()->getFullName() : mod->getFullName(),
@@ -132,7 +133,7 @@ void GCTAEventlogManager::beginSend(omnetpp::cMessage *msg)
         {
 
             //if(hasToRecord){
-            omnetpp::cPacket *pkt = (omnetpp::cPacket *) msg;
+            omnetpp::cPacket *pkt = static_cast<omnetpp::cPacket *>(msg);
             //EV << "ID: " << pkt->getEncapsulationTreeId() << " Node: " << mod->getFullName() << " MSG: " << msg->getFullName() << " TIME: " << simulation.getSimTime() << endl;
             fprintf(feventlog, "%s TC %s ID %ld N %s t %s et startMsg\n", msg->getFullName(), msg->getClassName(),
                     pkt->getEncapsulationTreeId(), mod->getParentModule()->getParentModule()->getFullName(),

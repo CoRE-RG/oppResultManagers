@@ -216,7 +216,6 @@ void cSQLiteOutputScalarManager::endRun()
     sqlite3_finalize(insertStatisticAttrStmt);
     sqlite3_finalize(insertFieldStmt);
     sqlite3_finalize(insertBinStmt);
-    //TODO create index if parameter (TBD) is true
     cSQLiteOutputManager::endRun();
 }
 

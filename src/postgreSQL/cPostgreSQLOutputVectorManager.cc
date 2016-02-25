@@ -55,7 +55,6 @@ void cPostgreSQLOutputVectorManager::startRun()
 
 void cPostgreSQLOutputVectorManager::endRun()
 {
-    //TODO create index if parameter (TBD) is true
     cPorstgreSQLOutputManager::endRun();
 }
 

@@ -197,8 +197,6 @@ size_t cPorstgreSQLOutputManager::getNameID(std::string name)
             pqxx::result result = transaction->parameterized(SQL_INSERT_NAME)(name).exec();
             if (result.size() != 1)
             {
-                //TODO check if now in database (concurrent runs possible!)
-
                 throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
             }
             size_t id = result[0][0].as<size_t>();

@@ -109,7 +109,6 @@ void cPostgreSQLOutputScalarManager::startRun()
 
 void cPostgreSQLOutputScalarManager::endRun()
 {
-    //TODO create index if parameter (TBD) is true
     cPorstgreSQLOutputManager::endRun();
 }
 

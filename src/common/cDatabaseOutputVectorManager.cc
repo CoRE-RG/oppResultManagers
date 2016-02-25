@@ -15,7 +15,7 @@ void *cDatabaseOutputVectorManager::registerVector(const char *modulename, const
     vp->modulename = modulename;
     vp->vectorname = vectorname;
 
-    vp->enabled = ev.getConfig()->getAsBool(CFGID_VECTOR_RECORDING, true);
+    vp->enabled = ev.getConfig()->getAsBool(vectorfullpath.c_str(), CFGID_VECTOR_RECORDING, true);
     const char *text = ev.getConfig()->getAsCustom(vectorfullpath.c_str(), CFGID_VECTOR_RECORDING_INTERVALS, "");
     vp->intervals = parseIntervals(text);
     return vp;

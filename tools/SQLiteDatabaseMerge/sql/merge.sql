@@ -41,6 +41,52 @@ JOIN name AS dest_name ON src_name.name = dest_name.name
 JOIN name AS dest_scalarname ON src_scalarname.name = dest_scalarname.name
 JOIN scalar AS dest_scalar ON dest_run.id = dest_scalar.runid AND dest_module.id = dest_scalar.moduleid AND dest_scalarname.id = dest_scalar.nameid;
 
+INSERT INTO statistic (runid, moduleid, nameid)
+SELECT dest_run.id AS runid, dest_module.id AS moduleid,dest_name.id AS nameid FROM toMerge.statistic 
+JOIN toMerge.run AS src_run ON toMerge.statistic.runid = src_run.id
+JOIN toMerge.module AS src_module ON toMerge.statistic.moduleid = src_module.id
+JOIN toMerge.name AS src_name ON toMerge.statistic.nameid = src_name.id
+JOIN run AS dest_run ON src_run.runid = dest_run.runid
+JOIN module AS dest_module ON src_module.name = dest_module.name
+JOIN name AS dest_name ON src_name.name = dest_name.name;
+
+INSERT INTO statisticattr (statisticid,nameid,value)
+SELECT dest_statistic.id AS statisticid, dest_name.id AS nameid, toMerge.statisticattr.value FROM toMerge.statisticattr
+JOIN toMerge.statistic AS src_statistic ON toMerge.statisticattr.statisticid = src_statistic.id
+JOIN toMerge.run AS src_run ON src_statistic.runid = src_run.id
+JOIN toMerge.module AS src_module ON src_statistic.moduleid = src_module.id
+JOIN toMerge.name AS src_name ON toMerge.statisticattr.nameid = src_name.id
+JOIN toMerge.name AS src_statisticname ON src_statistic.nameid = src_statisticname.id
+JOIN run AS dest_run ON src_run.runid = dest_run.runid
+JOIN module AS dest_module ON src_module.name = dest_module.name
+JOIN name AS dest_name ON src_name.name = dest_name.name
+JOIN name AS dest_statisticname ON src_statisticname.name = dest_statisticname.name
+JOIN statistic AS dest_statistic ON dest_run.id = dest_statistic.runid AND dest_module.id = dest_statistic.moduleid AND dest_statisticname.id = dest_statistic.nameid;
+
+INSERT INTO field (statisticid,nameid,value)
+SELECT dest_statistic.id AS statisticid, dest_name.id AS nameid, toMerge.field.value FROM toMerge.field
+JOIN toMerge.statistic AS src_statistic ON toMerge.field.statisticid = src_statistic.id
+JOIN toMerge.run AS src_run ON src_statistic.runid = src_run.id
+JOIN toMerge.module AS src_module ON src_statistic.moduleid = src_module.id
+JOIN toMerge.name AS src_name ON toMerge.field.nameid = src_name.id
+JOIN toMerge.name AS src_statisticname ON src_statistic.nameid = src_statisticname.id
+JOIN run AS dest_run ON src_run.runid = dest_run.runid
+JOIN module AS dest_module ON src_module.name = dest_module.name
+JOIN name AS dest_name ON src_name.name = dest_name.name
+JOIN name AS dest_statisticname ON src_statisticname.name = dest_statisticname.name
+JOIN statistic AS dest_statistic ON dest_run.id = dest_statistic.runid AND dest_module.id = dest_statistic.moduleid AND dest_statisticname.id = dest_statistic.nameid;
+
+INSERT INTO bin (statisticid,binlowerbound,value)
+SELECT dest_statistic.id AS statisticid, toMerge.bin.binlowerbound AS binlowerbound, toMerge.bin.value FROM toMerge.bin
+JOIN toMerge.statistic AS src_statistic ON toMerge.bin.statisticid = src_statistic.id
+JOIN toMerge.run AS src_run ON src_statistic.runid = src_run.id
+JOIN toMerge.module AS src_module ON src_statistic.moduleid = src_module.id
+JOIN toMerge.name AS src_statisticname ON src_statistic.nameid = src_statisticname.id
+JOIN run AS dest_run ON src_run.runid = dest_run.runid
+JOIN module AS dest_module ON src_module.name = dest_module.name
+JOIN name AS dest_statisticname ON src_statisticname.name = dest_statisticname.name
+JOIN statistic AS dest_statistic ON dest_run.id = dest_statistic.runid AND dest_module.id = dest_statistic.moduleid AND dest_statisticname.id = dest_statistic.nameid;
+
 INSERT INTO vector (runid,moduleid,nameid) 
 SELECT dest_run.id AS runid, dest_module.id AS moduleid,dest_name.id AS nameid FROM toMerge.vector 
 JOIN toMerge.run ON toMerge.vector.runid = toMerge.run.id

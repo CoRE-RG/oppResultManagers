@@ -6,6 +6,10 @@
 class cSQLiteOutputScalarManager : public omnetpp::cIOutputScalarManager, cSQLiteOutputManager
 {
         sqlite3_stmt *insertScalarAttrStmt;
+        sqlite3_stmt *insertStatisticStmt;
+        sqlite3_stmt *insertStatisticAttrStmt;
+        sqlite3_stmt *insertFieldStmt;
+        sqlite3_stmt *insertBinStmt;
 
     public:
         /**
@@ -28,7 +32,7 @@ class cSQLiteOutputScalarManager : public omnetpp::cIOutputScalarManager, cSQLit
          * Records a histogram or statistic object into the scalar result file.
          */
         virtual void recordStatistic(omnetpp::cComponent *component, const char *name, omnetpp::cStatistic *statistic,
-                omnetpp::opp_string_map *attributes = nullptr) override __attribute__ ((noreturn));
+                omnetpp::opp_string_map *attributes = nullptr) override;
 
         virtual void flush() override;
 
@@ -37,6 +41,9 @@ class cSQLiteOutputScalarManager : public omnetpp::cIOutputScalarManager, cSQLit
          */
         const char *getFileName() const override;
 
+    private:
+        void insertField(size_t statisticId, size_t nameid, double value);
+        void insertBin(size_t statisticId, double binlowerbound, size_t value);
 };
 
 #endif

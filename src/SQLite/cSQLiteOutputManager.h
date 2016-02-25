@@ -34,6 +34,8 @@
 
 #include <omnetpp.h>
 
+#define SCHEMAVERSION 2
+
 class cSQLiteOutputManager
 {
     protected:

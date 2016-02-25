@@ -33,6 +33,8 @@ Register_PerRunConfigOption(CFGID_POSTGRESQLOUTMGR_CONNECTION, "postgresqloutput
 Register_PerRunConfigOption(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ, "postgresqloutputmanager-commit-freq", CFG_INT, "10000",
         "COMMIT every n INSERTs, default=10");
 
+#define SQL_SELECT_SCHEMAVERSION "SELECT value FROM metadata WHERE key='schemaversion';"
+#define SQL_INSERT_SCHEMAVERSION "INSERT INTO metadata(key, value) VALUES('schemaversion', $1);"
 #define SQL_SELECT_MODULE "SELECT * FROM module;"
 #define SQL_SELECT_MODULE_BYNAME  "SELECT id FROM module WHERE name=$1;"
 #define SQL_INSERT_MODULE "INSERT INTO module(name) VALUES($1) RETURNING id"
@@ -75,6 +77,33 @@ void cPorstgreSQLOutputManager::startRun()
     commitFreq = static_cast<size_t>(ev.getConfig()->getAsInt(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ));
 
     pqxx::work work_transaction(*connection);
+
+    //Check correct schema
+    work_transaction.exec(
+            "CREATE TABLE IF NOT EXISTS metadata(\
+                 key TEXT PRIMARY KEY UNIQUE,\
+                 value TEXT NOT NULL\
+              );");
+    pqxx::result result = work_transaction.exec(SQL_SELECT_SCHEMAVERSION);
+    if (result.size() > 1)
+    {
+        throw cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
+    }
+    else if (result.size() == 1)
+    {
+        size_t schemaVersion = result[0][0].as<size_t>();
+        if (schemaVersion != SCHEMAVERSION)
+        {
+            throw cRuntimeError(
+                    "I cannot write to your database as it's schema (version %d) differs from the schema I can write (version %d). Try updating your database, if you don't know how you can also drop all tables.",
+                    schemaVersion, SCHEMAVERSION);
+        }
+    }
+    else
+    {
+        //No schema yet. Insert schema version
+        result = work_transaction.parameterized(SQL_INSERT_SCHEMAVERSION)(std::to_string(SCHEMAVERSION)).exec();
+    }
     //Create Tables
     work_transaction.exec(
             "CREATE TABLE IF NOT EXISTS run (\
@@ -113,7 +142,7 @@ void cPorstgreSQLOutputManager::startRun()
         transaction->exec("BEGIN;");
     }
     //Find already existing modules and names
-    pqxx::result result = transaction->exec(SQL_SELECT_MODULE);
+    result = transaction->exec(SQL_SELECT_MODULE);
     for (size_t rownum = 0; rownum < result.size(); ++rownum)
     {
         moduleIDMap[result[rownum][1].as<std::string>()] = result[rownum][0].as<size_t>();

@@ -33,6 +33,8 @@ Register_PerRunConfigOption(CFGID_SQLITEOUTMGR_FILE, "sqliteoutputmanager-file",
 Register_PerRunConfigOption(CFGID_SQLITEMGR_COMMIT_FREQ, "sqliteoutputmanager-commit-freq", CFG_INT, "10000",
         "COMMIT every n INSERTs, default=10");
 
+#define SQL_SELECT_SCHEMAVERSION "SELECT value FROM metadata WHERE key='schemaversion';"
+#define SQL_INSERT_SCHEMAVERSION "INSERT INTO metadata(key, value) VALUES('schemaversion', ?);"
 #define SQL_SELECT_MODULE "SELECT * FROM module;"
 #define SQL_INSERT_MODULE "INSERT INTO module(name) VALUES(?);"
 #define SQL_SELECT_NAME "SELECT * FROM name;"
@@ -117,8 +119,62 @@ void cSQLiteOutputManager::startRun()
         hasTransaction = true;
     }
 
-    //Create Tables
+    //Check correct schema
     int rc =
+            sqlite3_exec(connection,
+                    "CREATE TABLE IF NOT EXISTS metadata(\
+                     key TEXT PRIMARY KEY UNIQUE,\
+                     value TEXT NOT NULL\
+                   );",
+                    nullptr, nullptr, &zErrMsg);
+    if (rc != SQLITE_OK)
+    {
+        throw cRuntimeError("SQLiteOutputManager:: Can't create table 'metadata': %s", zErrMsg);
+    }
+
+    sqlite3_stmt *stmt;
+    rc = sqlite3_prepare(connection, SQL_SELECT_SCHEMAVERSION, -1, &stmt, 0);
+    if (rc != SQLITE_OK)
+    {
+        throw cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s", sqlite3_errmsg(connection));
+    }
+    rc = sqlite3_step(stmt);
+    if (rc == SQLITE_ROW)
+    {
+        size_t schemaVersion = static_cast<size_t>(sqlite3_column_int64(stmt, 0));
+        sqlite3_finalize(stmt);
+        if (schemaVersion != SCHEMAVERSION)
+        {
+            throw cRuntimeError(
+                    "I cannot write to your database as it's schema (version %d) differs from the schema I can write (version %d). You can record in a new database file or if you know how, you can update your database schema.",
+                    schemaVersion, SCHEMAVERSION);
+        }
+    }
+    else
+    {
+        sqlite3_finalize(stmt);
+        //No schema yet. Insert schema version
+        rc = sqlite3_prepare(connection, SQL_INSERT_SCHEMAVERSION, -1, &stmt, 0);
+        if (rc != SQLITE_OK)
+        {
+            throw cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s", sqlite3_errmsg(connection));
+        }
+        rc = sqlite3_bind_text(stmt, 1, std::to_string(SCHEMAVERSION).c_str(), -1, SQLITE_STATIC);
+        if (rc != SQLITE_OK)
+        {
+            throw cRuntimeError("SQLiteOutputManager:: Could not bind SCHEMAVERSION");
+        }
+        rc = sqlite3_step(stmt);
+        if (rc != SQLITE_DONE)
+        {
+            throw cRuntimeError("SQLiteOutputManager:: Could not execute statement (SQL_INSERT_SCHEMAVERSION): %s",
+                    sqlite3_errmsg(connection));
+        }
+        sqlite3_finalize(stmt);
+    }
+
+    //Create Tables
+    rc =
             sqlite3_exec(connection,
                     "CREATE TABLE IF NOT EXISTS run (\
          id INTEGER PRIMARY KEY,\
@@ -181,8 +237,6 @@ void cSQLiteOutputManager::startRun()
     flush();
 
     std::string runid_var = ev.getConfigEx()->getVariable(CFGVAR_RUNID);
-
-    sqlite3_stmt *stmt;
 
     //Find already existing modules and names
     rc = sqlite3_exec(connection, SQL_SELECT_MODULE,

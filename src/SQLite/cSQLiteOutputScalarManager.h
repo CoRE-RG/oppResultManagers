@@ -6,6 +6,8 @@
 class cSQLiteOutputScalarManager : public cOutputScalarManager, cSQLiteOutputManager
 {
         sqlite3_stmt *insertScalarAttrStmt;
+        sqlite3_stmt *insertStatisticStmt;
+        sqlite3_stmt *insertFieldStmt;
 
     public:
         /**
@@ -28,7 +30,7 @@ class cSQLiteOutputScalarManager : public cOutputScalarManager, cSQLiteOutputMan
          * Records a histogram or statistic object into the scalar result file.
          */
         virtual void recordStatistic(cComponent *component, const char *name, cStatistic *statistic,
-                opp_string_map *attributes = nullptr) override __attribute__ ((noreturn));
+                opp_string_map *attributes = nullptr) override;
 
         virtual void flush() override;
 
@@ -37,6 +39,8 @@ class cSQLiteOutputScalarManager : public cOutputScalarManager, cSQLiteOutputMan
          */
         const char *getFileName() const override;
 
+    private:
+        void insertField(size_t statisticId, size_t nameid, double value);
 };
 
 #endif

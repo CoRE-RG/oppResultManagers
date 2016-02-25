@@ -7,7 +7,9 @@ class cSQLiteOutputScalarManager : public cOutputScalarManager, cSQLiteOutputMan
 {
         sqlite3_stmt *insertScalarAttrStmt;
         sqlite3_stmt *insertStatisticStmt;
+        sqlite3_stmt *insertStatisticAttrStmt;
         sqlite3_stmt *insertFieldStmt;
+        sqlite3_stmt *insertBinStmt;
 
     public:
         /**
@@ -41,6 +43,7 @@ class cSQLiteOutputScalarManager : public cOutputScalarManager, cSQLiteOutputMan
 
     private:
         void insertField(size_t statisticId, size_t nameid, double value);
+        void insertBin(size_t statisticId, double binlowerbound, size_t value);
 };
 
 #endif

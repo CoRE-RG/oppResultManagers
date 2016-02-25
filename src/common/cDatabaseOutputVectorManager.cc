@@ -2,6 +2,9 @@
 
 #include "HelperFunctions.h"
 
+extern omnetpp::cConfigOption* CFGID_VECTOR_RECORDING;
+extern omnetpp::cConfigOption* CFGID_VECTOR_RECORDING_INTERVALS;
+
 void *cDatabaseOutputVectorManager::registerVector(const char *modulename, const char *vectorname)
 {
     std::string vectorfullpath = std::string(modulename) + "." + vectorname;
@@ -12,12 +15,8 @@ void *cDatabaseOutputVectorManager::registerVector(const char *modulename, const
     vp->modulename = modulename;
     vp->vectorname = vectorname;
 
-    //TODO Work with extern instead?
-    vp->enabled = omnetpp::cConfiguration::parseBool(
-    omnetpp::getEnvir()->getConfig()->getPerObjectConfigEntry(vectorfullpath.c_str(), "vector-recording").getValue(), "true");
-
-    const char *text = omnetpp::getEnvir()->getConfig()->getPerObjectConfigEntry(vectorfullpath.c_str(),
-            "vector-recording-intervals").getValue();
+    vp->enabled = omnetpp::getEnvir()->getConfig()->getAsBool(vectorfullpath.c_str(), CFGID_VECTOR_RECORDING, true);
+    const char *text = omnetpp::getEnvir()->getConfig()->getAsCustom(vectorfullpath.c_str(), CFGID_VECTOR_RECORDING_INTERVALS, "");
     vp->intervals = parseIntervals(text);
     return vp;
 }

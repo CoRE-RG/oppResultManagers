@@ -3,9 +3,6 @@
 
 #include <omnetpp.h>
 
-/**
- * TODO - Generated class
- */
 class Node : public omnetpp::cSimpleModule
 {
   protected:

@@ -45,6 +45,8 @@ import glob
 import sys
 import os
 
+SCHEMAVERSION=2
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Merges two or more source databases into destination database. Databases must be in cSQLiteResultManager format.')
     parser.add_argument('databasefiles', nargs='*', metavar='databasefile', help='sqlite3 files that contain the databases to merge. Must be in cSQLiteResultManager format. Default is *.sqlite3')
@@ -73,12 +75,33 @@ if __name__ == "__main__":
 		# TODO turn this off when everything works! Performance!
 		c.execute("PRAGMA foreign_keys = ON;")
 	
+		c.execute("SELECT value FROM metadata WHERE key='schemaversion';")
+		select_schemaversion = int(c.fetchone()[0])
+		if select_schemaversion != SCHEMAVERSION:
+			print args.databasefiles[0]+' has wrong schema (version '+str(select_schemaversion)+') tool works with schema (version '+str(SCHEMAVERSION)+'). You can try to manually merge your databases.'
+			print 'moving database back to '+args.databasefiles[0]
+			os.rename(args.output,args.databasefiles[0])
+			sys.exit(1)
+
 		for file in args.databasefiles[1:]:
 			sys.stdout.write('Attaching database '+file+'...')
 			# Attach database to merge into source database
 			c.execute("ATTACH DATABASE '"+file+"' AS toMerge;")
 			sys.stdout.write('done\n')
-
+			
+			sys.stdout.write('Checking schema version of '+file+'...')
+			c.execute("SELECT value FROM toMerge.metadata WHERE key='schemaversion';")
+			select_schemaversion = int(c.fetchone()[0])
+			if select_schemaversion != SCHEMAVERSION:
+			    sys.stdout.write('failed\n')
+			    print file+' has wrong schema (version '+str(select_schemaversion)+') tool works with schema (version '+str(SCHEMAVERSION)+'). You can try to manually merge your databases.'
+			    sys.stdout.write('Detaching database '+file+'...')
+			    c.execute("DETACH DATABASE 'toMerge';")
+			    sys.stdout.write('done\n')
+			    continue
+			else:
+			    sys.stdout.write('done\n')
+			    
 			sys.stdout.write('\t deleting duplicate runs (runs that exist in multiple databases) based on the unique runid...')
 			# DELETE DUPLICATES, due to cascading this will delete a lot of data and thus saves time if there are really duplicates
 			c.execute("DELETE FROM toMerge.run WHERE toMerge.run.runid IN (SELECT runid FROM run);")

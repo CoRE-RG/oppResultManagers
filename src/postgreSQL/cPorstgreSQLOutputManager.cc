@@ -1,3 +1,31 @@
+//Copyright (c) 2016, CoRE Research Group, Hamburg University of Applied Sciences
+//All rights reserved.
+//
+//Redistribution and use in source and binary forms, with or without modification,
+//are permitted provided that the following conditions are met:
+//
+//1. Redistributions of source code must retain the above copyright notice, this
+//   list of conditions and the following disclaimer.
+//
+//2. Redistributions in binary form must reproduce the above copyright notice,
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//
+//3. Neither the name of the copyright holder nor the names of its contributors
+//   may be used to endorse or promote products derived from this software without
+//   specific prior written permission.
+//
+//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+//ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+//WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+//DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+//ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+//(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+//ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+//(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+//SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 #include <cPorstgreSQLOutputManager.h>
 
 Register_PerRunConfigOption(CFGID_POSTGRESQLOUTMGR_CONNECTION, "postgresqloutputmanager-connection", CFG_STRING, "\"\"",
@@ -5,6 +33,8 @@ Register_PerRunConfigOption(CFGID_POSTGRESQLOUTMGR_CONNECTION, "postgresqloutput
 Register_PerRunConfigOption(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ, "postgresqloutputmanager-commit-freq", CFG_INT, "10000",
         "COMMIT every n INSERTs, default=10");
 
+#define SQL_SELECT_SCHEMAVERSION "SELECT value FROM metadata WHERE key='schemaversion';"
+#define SQL_INSERT_SCHEMAVERSION "INSERT INTO metadata(key, value) VALUES('schemaversion', $1);"
 #define SQL_SELECT_MODULE "SELECT * FROM module;"
 #define SQL_SELECT_MODULE_BYNAME  "SELECT id FROM module WHERE name=$1;"
 #define SQL_INSERT_MODULE "INSERT INTO module(name) VALUES($1) RETURNING id"
@@ -47,6 +77,33 @@ void cPorstgreSQLOutputManager::startRun()
     commitFreq = static_cast<size_t>(omnetpp::getEnvir()->getConfig()->getAsInt(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ));
 
     pqxx::work work_transaction(*connection);
+
+    //Check correct schema
+    work_transaction.exec(
+            "CREATE TABLE IF NOT EXISTS metadata(\
+                 key TEXT PRIMARY KEY UNIQUE,\
+                 value TEXT NOT NULL\
+              );");
+    pqxx::result result = work_transaction.exec(SQL_SELECT_SCHEMAVERSION);
+    if (result.size() > 1)
+    {
+        throw omnetpp::cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
+    }
+    else if (result.size() == 1)
+    {
+        size_t schemaVersion = result[0][0].as<size_t>();
+        if (schemaVersion != SCHEMAVERSION)
+        {
+            throw omnetpp::cRuntimeError(
+                    "I cannot write to your database as it's schema (version %d) differs from the schema I can write (version %d). Try updating your database, if you don't know how you can also drop all tables.",
+                    schemaVersion, SCHEMAVERSION);
+        }
+    }
+    else
+    {
+        //No schema yet. Insert schema version
+        result = work_transaction.parameterized(SQL_INSERT_SCHEMAVERSION)(std::to_string(SCHEMAVERSION)).exec();
+    }
     //Create Tables
     work_transaction.exec(
             "CREATE TABLE IF NOT EXISTS run (\
@@ -85,7 +142,7 @@ void cPorstgreSQLOutputManager::startRun()
         transaction->exec("BEGIN;");
     }
     //Find already existing modules and names
-    pqxx::result result = transaction->exec(SQL_SELECT_MODULE);
+    result = transaction->exec(SQL_SELECT_MODULE);
     for (size_t rownum = 0; rownum < result.size(); ++rownum)
     {
         moduleIDMap[result[rownum][1].as<std::string>()] = result[rownum][0].as<size_t>();
@@ -98,8 +155,7 @@ void cPorstgreSQLOutputManager::startRun()
 
     //Find already existing run
     result =
-            transaction->parameterized(SQL_SELECT_RUN)
-            (omnetpp::getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNID)).exec();
+            transaction->parameterized(SQL_SELECT_RUN)(omnetpp::getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNID)).exec();
     if (result.size() > 1)
     {
         throw omnetpp::cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
@@ -110,8 +166,8 @@ void cPorstgreSQLOutputManager::startRun()
     }
     else
     {
-        result = transaction->parameterized(SQL_INSERT_RUN)
-                (omnetpp::getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNID)).exec();
+        result = transaction->parameterized(SQL_INSERT_RUN)(
+                omnetpp::getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNID)).exec();
         if (result.size() != 1)
         {
             throw omnetpp::cRuntimeError("cPostgreSQLOutputMgr:: internal error!");
@@ -199,8 +255,6 @@ size_t cPorstgreSQLOutputManager::getNameID(std::string name)
             pqxx::result result = transaction->parameterized(SQL_INSERT_NAME)(name).exec();
             if (result.size() != 1)
             {
-                //TODO check if now in database (concurrent runs possible!)
-
                 throw omnetpp::cRuntimeError("cPostgreSQLOutputScalarMgr:: internal error!");
             }
             size_t id = result[0][0].as<size_t>();

@@ -1,3 +1,31 @@
+//Copyright (c) 2016, CoRE Research Group, Hamburg University of Applied Sciences
+//All rights reserved.
+//
+//Redistribution and use in source and binary forms, with or without modification,
+//are permitted provided that the following conditions are met:
+//
+//1. Redistributions of source code must retain the above copyright notice, this
+//   list of conditions and the following disclaimer.
+//
+//2. Redistributions in binary form must reproduce the above copyright notice,
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//
+//3. Neither the name of the copyright holder nor the names of its contributors
+//   may be used to endorse or promote products derived from this software without
+//   specific prior written permission.
+//
+//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+//ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+//WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+//DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+//ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+//(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+//ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+//(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+//SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 #include <cSQLiteOutputManager.h>
 
 Register_PerRunConfigOption(CFGID_SQLITEOUTMGR_FILE, "sqliteoutputmanager-file", CFG_FILENAME,
@@ -5,6 +33,8 @@ Register_PerRunConfigOption(CFGID_SQLITEOUTMGR_FILE, "sqliteoutputmanager-file",
 Register_PerRunConfigOption(CFGID_SQLITEMGR_COMMIT_FREQ, "sqliteoutputmanager-commit-freq", CFG_INT, "10000",
         "COMMIT every n INSERTs, default=10");
 
+#define SQL_SELECT_SCHEMAVERSION "SELECT value FROM metadata WHERE key='schemaversion';"
+#define SQL_INSERT_SCHEMAVERSION "INSERT INTO metadata(key, value) VALUES('schemaversion', ?);"
 #define SQL_SELECT_MODULE "SELECT * FROM module;"
 #define SQL_INSERT_MODULE "INSERT INTO module(name) VALUES(?);"
 #define SQL_SELECT_NAME "SELECT * FROM name;"
@@ -90,8 +120,62 @@ void cSQLiteOutputManager::startRun()
         hasTransaction = true;
     }
 
-    //Create Tables
+    //Check correct schema
     int rc =
+            sqlite3_exec(connection,
+                    "CREATE TABLE IF NOT EXISTS metadata(\
+                     key TEXT PRIMARY KEY UNIQUE,\
+                     value TEXT NOT NULL\
+                   );",
+                    nullptr, nullptr, &zErrMsg);
+    if (rc != SQLITE_OK)
+    {
+        throw omnetpp::cRuntimeError("SQLiteOutputManager:: Can't create table 'metadata': %s", zErrMsg);
+    }
+
+    sqlite3_stmt *stmt;
+    rc = sqlite3_prepare(connection, SQL_SELECT_SCHEMAVERSION, -1, &stmt, 0);
+    if (rc != SQLITE_OK)
+    {
+        throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s", sqlite3_errmsg(connection));
+    }
+    rc = sqlite3_step(stmt);
+    if (rc == SQLITE_ROW)
+    {
+        size_t schemaVersion = static_cast<size_t>(sqlite3_column_int64(stmt, 0));
+        sqlite3_finalize(stmt);
+        if (schemaVersion != SCHEMAVERSION)
+        {
+            throw omnetpp::cRuntimeError(
+                    "I cannot write to your database as it's schema (version %d) differs from the schema I can write (version %d). You can record in a new database file or if you know how, you can update your database schema.",
+                    schemaVersion, SCHEMAVERSION);
+        }
+    }
+    else
+    {
+        sqlite3_finalize(stmt);
+        //No schema yet. Insert schema version
+        rc = sqlite3_prepare(connection, SQL_INSERT_SCHEMAVERSION, -1, &stmt, 0);
+        if (rc != SQLITE_OK)
+        {
+            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s", sqlite3_errmsg(connection));
+        }
+        rc = sqlite3_bind_text(stmt, 1, std::to_string(SCHEMAVERSION).c_str(), -1, SQLITE_STATIC);
+        if (rc != SQLITE_OK)
+        {
+            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not bind SCHEMAVERSION");
+        }
+        rc = sqlite3_step(stmt);
+        if (rc != SQLITE_DONE)
+        {
+            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not execute statement (SQL_INSERT_SCHEMAVERSION): %s",
+                    sqlite3_errmsg(connection));
+        }
+        sqlite3_finalize(stmt);
+    }
+
+    //Create Tables
+    rc =
             sqlite3_exec(connection,
                     "CREATE TABLE IF NOT EXISTS run (\
          id INTEGER PRIMARY KEY,\
@@ -154,8 +238,6 @@ void cSQLiteOutputManager::startRun()
     flush();
 
     std::string runid_var = omnetpp::getEnvir()->getConfigEx()->getVariable(CFGVAR_RUNID);
-
-    sqlite3_stmt *stmt;
 
     //Find already existing modules and names
     rc = sqlite3_exec(connection, SQL_SELECT_MODULE,

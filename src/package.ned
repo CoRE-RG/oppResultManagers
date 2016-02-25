@@ -1,3 +1,2 @@
 package oppresultmanagers;
-
-@license(LGPL);
+@license(BSD 3-clause);

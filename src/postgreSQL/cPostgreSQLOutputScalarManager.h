@@ -27,7 +27,7 @@ class cPostgreSQLOutputScalarManager : public cOutputScalarManager, cPorstgreSQL
          * Records a histogram or statistic object into the scalar result file.
          */
         virtual void recordStatistic(cComponent *component, const char *name, cStatistic *statistic,
-                opp_string_map *attributes = nullptr) override  __attribute__ ((noreturn));
+                opp_string_map *attributes = nullptr) override;
 
         virtual void flush() override;
 
@@ -36,6 +36,9 @@ class cPostgreSQLOutputScalarManager : public cOutputScalarManager, cPorstgreSQL
          */
         const char *getFileName() const override;
 
+    private:
+        void insertField(size_t statisticId, size_t nameid, double value);
+        void insertBin(size_t statisticId, double binlowerbound, size_t value);
 };
 
 #endif

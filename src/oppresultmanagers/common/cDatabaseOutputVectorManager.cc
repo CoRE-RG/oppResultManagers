@@ -26,20 +26,36 @@
 //(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "Node.h"
+#include "oppresultmanagers/common/cDatabaseOutputVectorManager.h"
 
-Define_Module(Node);
+#include "oppresultmanagers/utilities/HelperFunctions.h"
 
-omnetpp::simsignal_t Node::rxMessageAgeSignal = registerSignal("rxMessageAge");
+extern omnetpp::cConfigOption* CFGID_VECTOR_RECORDING;
+extern omnetpp::cConfigOption* CFGID_VECTOR_RECORDING_INTERVALS;
 
-void Node::initialize()
+void *cDatabaseOutputVectorManager::registerVector(const char *modulename, const char *vectorname)
 {
-    sendDelayed(new omnetpp::cMessage(getFullName()), uniform(1, 2), gate("port$o"));
+    std::string vectorfullpath = std::string(modulename) + "." + vectorname;
+
+    sVectorData *vp = new sVectorData();
+    vp->id = -1; // we'll get it from the database
+    vp->initialised = false;
+    vp->modulename = modulename;
+    vp->vectorname = vectorname;
+
+    vp->enabled = omnetpp::getEnvir()->getConfig()->getAsBool(vectorfullpath.c_str(), CFGID_VECTOR_RECORDING, true);
+    const char *text = omnetpp::getEnvir()->getConfig()->getAsCustom(vectorfullpath.c_str(), CFGID_VECTOR_RECORDING_INTERVALS, "");
+    vp->intervals = parseIntervals(text);
+    return vp;
 }
-
-void Node::handleMessage(omnetpp::cMessage *msg)
+void cDatabaseOutputVectorManager::deregisterVector(void *vectorhandle)
 {
-    emit(rxMessageAgeSignal, omnetpp::simTime() - msg->getCreationTime());
-    delete msg;
-    sendDelayed(new omnetpp::cMessage(getFullName()), uniform(1, 2), gate("port$o"));
+    sVectorData *vp = static_cast<sVectorData *>(vectorhandle);
+    delete vp;
+}
+void cDatabaseOutputVectorManager::setVectorAttribute(void *vectorhandle, const char *name, const char *value)
+{
+    ASSERT(vectorhandle != nullptr);
+    sVectorData *vp = static_cast<sVectorData *>(vectorhandle);
+    vp->attributes[name] = value;
 }

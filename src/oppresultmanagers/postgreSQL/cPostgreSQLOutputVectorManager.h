@@ -26,20 +26,14 @@
 //(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef CSQLITEOUTPUTVECTORMANAGER_H
-#define CSQLITEOUTPUTVECTORMANAGER_H
+#ifndef CPOSTGRESQLOUTPUTVECTORMANAGER_H
+#define CPOSTGRESQLOUTPUTVECTORMANAGER_H
 
-#include "cDatabaseOutputVectorManager.h"
-#include <cSQLiteOutputManager.h>
+#include "oppresultmanagers/common/cDatabaseOutputVectorManager.h"
+#include "oppresultmanagers/postgreSQL/cPorstgreSQLOutputManager.h"
 
-class cSQLiteOutputVectorManager : public cDatabaseOutputVectorManager, cSQLiteOutputManager
+class cPostgreSQLOutputVectorManager : public cDatabaseOutputVectorManager, cPorstgreSQLOutputManager
 {
-
-        sqlite3_stmt *insertVectorStmt;
-        sqlite3_stmt *insertVectorAttrStmt;
-        sqlite3_stmt *insertVectorDataStmt;
-
-
     public:
         /**
          * Opens collecting. Called at the beginning of a simulation run.
@@ -50,6 +44,7 @@ class cSQLiteOutputVectorManager : public cDatabaseOutputVectorManager, cSQLiteO
          * Closes collecting. Called at the end of a simulation run.
          */
         virtual void endRun() override;
+
 
         /**
          * Writes the (time, value) pair into the output file.

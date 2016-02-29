@@ -29,7 +29,7 @@
 #ifndef CSQLITEOUTPUTSCALARMANAGER_H
 #define CSQLITEOUTPUTSCALARMANAGER_H
 
-#include <cSQLiteOutputManager.h>
+#include "oppresultmanagers/SQLite/cSQLiteOutputManager.h"
 
 class cSQLiteOutputScalarManager : public omnetpp::cIOutputScalarManager, cSQLiteOutputManager
 {

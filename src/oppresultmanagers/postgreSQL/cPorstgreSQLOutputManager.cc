@@ -26,7 +26,7 @@
 //(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include <cPorstgreSQLOutputManager.h>
+#include "oppresultmanagers/postgreSQL/cPorstgreSQLOutputManager.h"
 
 Register_PerRunConfigOption(CFGID_POSTGRESQLOUTMGR_CONNECTION, "postgresqloutputmanager-connection", CFG_STRING, "\"\"",
         "Object name of database connection parameters");

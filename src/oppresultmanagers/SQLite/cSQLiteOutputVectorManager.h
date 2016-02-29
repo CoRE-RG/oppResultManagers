@@ -26,13 +26,19 @@
 //(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef CPOSTGRESQLOUTPUTSCALARMANAGER_H
-#define CPOSTGRESQLOUTPUTSCALARMANAGER_H
+#ifndef CSQLITEOUTPUTVECTORMANAGER_H
+#define CSQLITEOUTPUTVECTORMANAGER_H
 
-#include <cPorstgreSQLOutputManager.h>
+#include "oppresultmanagers/common/cDatabaseOutputVectorManager.h"
+#include "oppresultmanagers/SQLite/cSQLiteOutputManager.h"
 
-class cPostgreSQLOutputScalarManager : public omnetpp::cIOutputScalarManager, cPorstgreSQLOutputManager
+class cSQLiteOutputVectorManager : public cDatabaseOutputVectorManager, cSQLiteOutputManager
 {
+
+        sqlite3_stmt *insertVectorStmt;
+        sqlite3_stmt *insertVectorAttrStmt;
+        sqlite3_stmt *insertVectorDataStmt;
+
 
     public:
         /**
@@ -46,27 +52,19 @@ class cPostgreSQLOutputScalarManager : public omnetpp::cIOutputScalarManager, cP
         virtual void endRun() override;
 
         /**
-         * Records a double scalar result into the scalar result file.
+         * Writes the (time, value) pair into the output file.
          */
-        virtual void recordScalar(omnetpp::cComponent *component, const char *name, double value,
-                omnetpp::opp_string_map *attributes = nullptr) override;
-
-        /**
-         * Records a histogram or statistic object into the scalar result file.
-         */
-        virtual void recordStatistic(omnetpp::cComponent *component, const char *name, omnetpp::cStatistic *statistic,
-                omnetpp::opp_string_map *attributes = nullptr) override;
-
-        virtual void flush() override;
+        virtual bool record(void *vectorhandle, simtime_t t, double value) override;
 
         /**
          * Returns nullptr, because this class doesn't use a file.
          */
         const char *getFileName() const override;
 
-    private:
-        void insertField(size_t statisticId, size_t nameid, double value);
-        void insertBin(size_t statisticId, double binlowerbound, size_t value);
+        /**
+         * Performs a database commit.
+         */
+        virtual void flush() override;
 };
 
 #endif

@@ -26,7 +26,7 @@
 //(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include <cSQLiteOutputManager.h>
+#include "oppresultmanagers/SQLite/cSQLiteOutputManager.h"
 
 Register_PerRunConfigOption(CFGID_SQLITEOUTMGR_FILE, "sqliteoutputmanager-file", CFG_FILENAME,
         "${resultdir}/${configname}-${runnumber}.sqlite3", "Object name of database connection parameters");

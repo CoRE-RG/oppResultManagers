@@ -26,41 +26,20 @@
 //(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef CPOSTGRESQLOUTPUTVECTORMANAGER_H
-#define CPOSTGRESQLOUTPUTVECTORMANAGER_H
+#include "oppresultmanagers/examples/Node.h"
 
-#include "cDatabaseOutputVectorManager.h"
-#include <cPorstgreSQLOutputManager.h>
+Define_Module(Node);
 
-class cPostgreSQLOutputVectorManager : public cDatabaseOutputVectorManager, cPorstgreSQLOutputManager
+omnetpp::simsignal_t Node::rxMessageAgeSignal = registerSignal("rxMessageAge");
+
+void Node::initialize()
 {
-    public:
-        /**
-         * Opens collecting. Called at the beginning of a simulation run.
-         */
-        virtual void startRun() override;
+    sendDelayed(new omnetpp::cMessage(getFullName()), uniform(1, 2), gate("port$o"));
+}
 
-        /**
-         * Closes collecting. Called at the end of a simulation run.
-         */
-        virtual void endRun() override;
-
-
-        /**
-         * Writes the (time, value) pair into the output file.
-         */
-        virtual bool record(void *vectorhandle, simtime_t t, double value) override;
-
-        /**
-         * Returns nullptr, because this class doesn't use a file.
-         */
-        const char *getFileName() const override;
-
-        /**
-         * Performs a database commit.
-         */
-        virtual void flush() override;
-};
-
-#endif
-
+void Node::handleMessage(omnetpp::cMessage *msg)
+{
+    emit(rxMessageAgeSignal, omnetpp::simTime() - msg->getCreationTime());
+    delete msg;
+    sendDelayed(new omnetpp::cMessage(getFullName()), uniform(1, 2), gate("port$o"));
+}

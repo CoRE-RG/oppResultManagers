@@ -37,6 +37,8 @@
 *.o
 *.obj
 
+/src/oppresultmanagers/features.h
+
 # ignore backup and temp files
 *.tmp*
 

@@ -26,9 +26,9 @@
 //(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "cSQLiteOutputVectorManager.h"
+#include "oppresultmanagers/SQLite/cSQLiteOutputVectorManager.h"
 
-#include "HelperFunctions.h"
+#include "oppresultmanagers/utilities/HelperFunctions.h"
 
 Register_Class(cSQLiteOutputVectorManager);
 

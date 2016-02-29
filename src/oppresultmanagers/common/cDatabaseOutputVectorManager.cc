@@ -26,48 +26,36 @@
 //(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef CPOSTGRESQLOUTPUTSCALARMANAGER_H
-#define CPOSTGRESQLOUTPUTSCALARMANAGER_H
+#include "oppresultmanagers/common/cDatabaseOutputVectorManager.h"
 
-#include <cPorstgreSQLOutputManager.h>
+#include "oppresultmanagers/utilities/HelperFunctions.h"
 
-class cPostgreSQLOutputScalarManager : public cOutputScalarManager, cPorstgreSQLOutputManager
+extern cConfigOption* CFGID_VECTOR_RECORDING;
+extern cConfigOption* CFGID_VECTOR_RECORDING_INTERVALS;
+
+void *cDatabaseOutputVectorManager::registerVector(const char *modulename, const char *vectorname)
 {
+    std::string vectorfullpath = std::string(modulename) + "." + vectorname;
 
-    public:
-        /**
-         * Opens collecting. Called at the beginning of a simulation run.
-         */
-        virtual void startRun() override;
+    sVectorData *vp = new sVectorData();
+    vp->id = -1; // we'll get it from the database
+    vp->initialised = false;
+    vp->modulename = modulename;
+    vp->vectorname = vectorname;
 
-        /**
-         * Closes collecting. Called at the end of a simulation run.
-         */
-        virtual void endRun() override;
-
-        /**
-         * Records a double scalar result into the scalar result file.
-         */
-        virtual void recordScalar(cComponent *component, const char *name, double value, opp_string_map *attributes =
-                nullptr) override;
-
-        /**
-         * Records a histogram or statistic object into the scalar result file.
-         */
-        virtual void recordStatistic(cComponent *component, const char *name, cStatistic *statistic,
-                opp_string_map *attributes = nullptr) override;
-
-        virtual void flush() override;
-
-        /**
-         * Returns nullptr, because this class doesn't use a file.
-         */
-        const char *getFileName() const override;
-
-    private:
-        void insertField(size_t statisticId, size_t nameid, double value);
-        void insertBin(size_t statisticId, double binlowerbound, size_t value);
-};
-
-#endif
-
+    vp->enabled = ev.getConfig()->getAsBool(vectorfullpath.c_str(), CFGID_VECTOR_RECORDING, true);
+    const char *text = ev.getConfig()->getAsCustom(vectorfullpath.c_str(), CFGID_VECTOR_RECORDING_INTERVALS, "");
+    vp->intervals = parseIntervals(text);
+    return vp;
+}
+void cDatabaseOutputVectorManager::deregisterVector(void *vectorhandle)
+{
+    sVectorData *vp = static_cast<sVectorData *>(vectorhandle);
+    delete vp;
+}
+void cDatabaseOutputVectorManager::setVectorAttribute(void *vectorhandle, const char *name, const char *value)
+{
+    ASSERT(vectorhandle != nullptr);
+    sVectorData *vp = static_cast<sVectorData *>(vectorhandle);
+    vp->attributes[name] = value;
+}

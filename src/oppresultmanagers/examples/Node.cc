@@ -26,53 +26,20 @@
 //(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef CSQLITEOUTPUTSCALARMANAGER_H
-#define CSQLITEOUTPUTSCALARMANAGER_H
+#include "oppresultmanagers/examples/Node.h"
 
-#include <cSQLiteOutputManager.h>
+Define_Module(Node);
 
-class cSQLiteOutputScalarManager : public cOutputScalarManager, cSQLiteOutputManager
+simsignal_t Node::rxMessageAgeSignal = registerSignal("rxMessageAge");
+
+void Node::initialize()
 {
-        sqlite3_stmt *insertScalarAttrStmt;
-        sqlite3_stmt *insertStatisticStmt;
-        sqlite3_stmt *insertStatisticAttrStmt;
-        sqlite3_stmt *insertFieldStmt;
-        sqlite3_stmt *insertBinStmt;
+    sendDelayed(new cMessage(getFullName()), uniform(1, 2), gate("port$o"));
+}
 
-    public:
-        /**
-         * Opens collecting. Called at the beginning of a simulation run.
-         */
-        virtual void startRun() override;
-
-        /**
-         * Closes collecting. Called at the end of a simulation run.
-         */
-        virtual void endRun() override;
-
-        /**
-         * Records a double scalar result into the scalar result file.
-         */
-        virtual void recordScalar(cComponent *component, const char *name, double value, opp_string_map *attributes =
-                nullptr) override;
-
-        /**
-         * Records a histogram or statistic object into the scalar result file.
-         */
-        virtual void recordStatistic(cComponent *component, const char *name, cStatistic *statistic,
-                opp_string_map *attributes = nullptr) override;
-
-        virtual void flush() override;
-
-        /**
-         * Returns nullptr, because this class doesn't use a file.
-         */
-        const char *getFileName() const override;
-
-    private:
-        void insertField(size_t statisticId, size_t nameid, double value);
-        void insertBin(size_t statisticId, double binlowerbound, size_t value);
-};
-
-#endif
-
+void Node::handleMessage(cMessage *msg)
+{
+    emit(rxMessageAgeSignal, simTime() - msg->getCreationTime());
+    delete msg;
+    sendDelayed(new cMessage(getFullName()), uniform(1, 2), gate("port$o"));
+}

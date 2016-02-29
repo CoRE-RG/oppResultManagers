@@ -26,9 +26,9 @@
 //(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "cPostgreSQLOutputVectorManager.h"
+#include "oppresultmanagers/postgreSQL/cPostgreSQLOutputVectorManager.h"
 
-#include "HelperFunctions.h"
+#include "oppresultmanagers/utilities/HelperFunctions.h"
 
 Register_Class(cPostgreSQLOutputVectorManager);
 

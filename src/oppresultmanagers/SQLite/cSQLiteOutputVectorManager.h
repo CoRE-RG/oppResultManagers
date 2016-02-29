@@ -29,8 +29,8 @@
 #ifndef CSQLITEOUTPUTVECTORMANAGER_H
 #define CSQLITEOUTPUTVECTORMANAGER_H
 
-#include "cDatabaseOutputVectorManager.h"
-#include <cSQLiteOutputManager.h>
+#include "oppresultmanagers/common/cDatabaseOutputVectorManager.h"
+#include "oppresultmanagers/SQLite/cSQLiteOutputManager.h"
 
 class cSQLiteOutputVectorManager : public cDatabaseOutputVectorManager, cSQLiteOutputManager
 {

@@ -26,36 +26,41 @@
 //(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "cDatabaseOutputVectorManager.h"
+#ifndef CPOSTGRESQLOUTPUTVECTORMANAGER_H
+#define CPOSTGRESQLOUTPUTVECTORMANAGER_H
 
-#include "HelperFunctions.h"
+#include "oppresultmanagers/common/cDatabaseOutputVectorManager.h"
+#include "oppresultmanagers/postgreSQL/cPorstgreSQLOutputManager.h"
 
-extern cConfigOption* CFGID_VECTOR_RECORDING;
-extern cConfigOption* CFGID_VECTOR_RECORDING_INTERVALS;
-
-void *cDatabaseOutputVectorManager::registerVector(const char *modulename, const char *vectorname)
+class cPostgreSQLOutputVectorManager : public cDatabaseOutputVectorManager, cPorstgreSQLOutputManager
 {
-    std::string vectorfullpath = std::string(modulename) + "." + vectorname;
+    public:
+        /**
+         * Opens collecting. Called at the beginning of a simulation run.
+         */
+        virtual void startRun() override;
 
-    sVectorData *vp = new sVectorData();
-    vp->id = -1; // we'll get it from the database
-    vp->initialised = false;
-    vp->modulename = modulename;
-    vp->vectorname = vectorname;
+        /**
+         * Closes collecting. Called at the end of a simulation run.
+         */
+        virtual void endRun() override;
 
-    vp->enabled = ev.getConfig()->getAsBool(vectorfullpath.c_str(), CFGID_VECTOR_RECORDING, true);
-    const char *text = ev.getConfig()->getAsCustom(vectorfullpath.c_str(), CFGID_VECTOR_RECORDING_INTERVALS, "");
-    vp->intervals = parseIntervals(text);
-    return vp;
-}
-void cDatabaseOutputVectorManager::deregisterVector(void *vectorhandle)
-{
-    sVectorData *vp = static_cast<sVectorData *>(vectorhandle);
-    delete vp;
-}
-void cDatabaseOutputVectorManager::setVectorAttribute(void *vectorhandle, const char *name, const char *value)
-{
-    ASSERT(vectorhandle != nullptr);
-    sVectorData *vp = static_cast<sVectorData *>(vectorhandle);
-    vp->attributes[name] = value;
-}
+
+        /**
+         * Writes the (time, value) pair into the output file.
+         */
+        virtual bool record(void *vectorhandle, simtime_t t, double value) override;
+
+        /**
+         * Returns nullptr, because this class doesn't use a file.
+         */
+        const char *getFileName() const override;
+
+        /**
+         * Performs a database commit.
+         */
+        virtual void flush() override;
+};
+
+#endif
+

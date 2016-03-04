@@ -36,6 +36,9 @@
 
 #define SCHEMAVERSION 2
 
+extern cConfigOption *CFGID_SQLITEOUTMGR_FILE;
+extern cConfigOption *CFGID_SQLITEMGR_COMMIT_FREQ;
+
 class cSQLiteOutputManager
 {
     protected:

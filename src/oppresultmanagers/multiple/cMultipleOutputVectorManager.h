@@ -34,6 +34,8 @@
 //Std
 #include <vector>
 
+extern cConfigOption *CFGID_OUTPUTVECTORMANAGER_CLASSES;
+
 class cMultipleOutputVectorManager : public cOutputVectorManager
 {
     protected:

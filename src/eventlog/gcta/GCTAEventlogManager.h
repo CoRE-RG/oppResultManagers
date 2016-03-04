@@ -3,6 +3,8 @@
 
 #include "omnetpp.h"
 
+extern omnetpp::cConfigOption *CFGID_EVENTLOG_TLOG_FILE;
+
 /**
  * Responsible for writing the eventlog file.
  */

@@ -34,6 +34,8 @@
 //Std
 #include <vector>
 
+extern omnetpp::cConfigOption *CFGID_OUTPUTVECTORMANAGER_CLASSES;
+
 class cMultipleOutputVectorManager : public omnetpp::cIOutputVectorManager
 {
     protected:

@@ -36,6 +36,9 @@
 
 #define SCHEMAVERSION 2
 
+extern omnetpp::cConfigOption *CFGID_POSTGRESQLOUTMGR_CONNECTION;
+extern omnetpp::cConfigOption *CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ;
+
 class cPorstgreSQLOutputManager
 {
     protected:

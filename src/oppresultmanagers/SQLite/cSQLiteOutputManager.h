@@ -36,6 +36,9 @@
 
 #define SCHEMAVERSION 2
 
+extern omnetpp::cConfigOption *CFGID_SQLITEOUTMGR_FILE;
+extern omnetpp::cConfigOption *CFGID_SQLITEMGR_COMMIT_FREQ;
+
 class cSQLiteOutputManager
 {
     protected:

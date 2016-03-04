@@ -34,6 +34,8 @@
 //Std
 #include <vector>
 
+extern omnetpp::cConfigOption *CFGID_OUTPUTSCALARMANAGER_CLASSES;
+
 class cMultipleOutputScalarManager : public omnetpp::cIOutputScalarManager
 {
     protected:

@@ -35,6 +35,11 @@
 //Std
 #include <vector>
 
+extern omnetpp::cConfigOption *CFGID_CHECKOUTPUTVECTORMANAGER_CONFIGFILE;
+extern omnetpp::cConfigOption *CFGID_CHECKOUTPUTVECTORMANAGER_ENDSIM;
+extern omnetpp::cConfigOption *CFGID_CHECKOUTPUTVECTORMANAGER_REPORT;
+extern omnetpp::cConfigOption *CFGID_CHECKOUTPUTVECTORMANAGER_REPORTFILE;
+
 class cCheckOutputVectorManager : public omnetpp::cIOutputVectorManager
 {
     protected:

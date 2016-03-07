@@ -198,7 +198,7 @@ void cPorstgreSQLOutputManager::startRun()
         }
         //INSERT param
         std::vector<const char *> params = ev.getConfigEx()->getParameterKeyValuePairs();
-        for (int i = 0; i < (int) params.size(); i += 2)
+        for (size_t i = 0; i < params.size(); i += 2)
         {
             work_transaction.parameterized(SQL_INSERT_RUN_ATTR)(runid)(getNameID(params[i]))(params[i + 1]).exec();
         }

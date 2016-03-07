@@ -396,7 +396,7 @@ void cSQLiteOutputManager::startRun()
         }
         //INSERT param
         std::vector<const char *> params = ev.getConfigEx()->getParameterKeyValuePairs();
-        for (int i = 0; i < (int) params.size(); i += 2)
+        for (size_t i = 0; i < params.size(); i += 2)
         {
             rc = sqlite3_bind_int64(insertParamStmt, 1, static_cast<sqlite3_int64>(runid));
             if (rc != SQLITE_OK)

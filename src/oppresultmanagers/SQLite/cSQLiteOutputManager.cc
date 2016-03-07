@@ -244,7 +244,7 @@ void cSQLiteOutputManager::startRun()
                     nullptr, nullptr, &zErrMsg);
     if (rc != SQLITE_OK)
     {
-        throw cRuntimeError("SQLiteOutputManager:: Can't create table 'name': %s", zErrMsg);
+        throw omnetpp::cRuntimeError("SQLiteOutputManager:: Can't create table 'name': %s", zErrMsg);
     }
     rc =
             sqlite3_exec(connection,
@@ -259,7 +259,7 @@ void cSQLiteOutputManager::startRun()
                     nullptr, nullptr, &zErrMsg);
     if (rc != SQLITE_OK)
     {
-        throw cRuntimeError("SQLiteOutputManager:: Can't create table 'runattr': %s", zErrMsg);
+        throw omnetpp::cRuntimeError("SQLiteOutputManager:: Can't create table 'runattr': %s", zErrMsg);
     }
     rc =
             sqlite3_exec(connection,
@@ -270,7 +270,7 @@ void cSQLiteOutputManager::startRun()
                     nullptr, nullptr, &zErrMsg);
     if (rc != SQLITE_OK)
     {
-        throw cRuntimeError("SQLiteOutputManager:: Can't create view 'scalarattr_names': %s", zErrMsg);
+        throw omnetpp::cRuntimeError("SQLiteOutputManager:: Can't create view 'scalarattr_names': %s", zErrMsg);
     }
     flush();
 
@@ -395,33 +395,33 @@ void cSQLiteOutputManager::startRun()
         rc = sqlite3_prepare_v2(connection, SQL_INSERT_PARAM, strlen(SQL_INSERT_PARAM), &insertParamStmt, 0);
         if (rc != SQLITE_OK)
         {
-            throw cRuntimeError("SQLiteOutputManager:: Could not prepare statement (SQL_INSERT_PARAM): %s",
+            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not prepare statement (SQL_INSERT_PARAM): %s",
                     sqlite3_errmsg(connection));
         }
         //INSERT param
-        std::vector<const char *> params = ev.getConfigEx()->getParameterKeyValuePairs();
+        std::vector<const char *> params = omnetpp::getEnvir()->getConfigEx()->getParameterKeyValuePairs();
         for (int i = 0; i < (int) params.size(); i += 2)
         {
             rc = sqlite3_bind_int64(insertParamStmt, 1, static_cast<sqlite3_int64>(runid));
             if (rc != SQLITE_OK)
             {
-                throw cRuntimeError("SQLiteOutputManager:: Could not bind runid.");
+                throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not bind runid.");
             }
             rc = sqlite3_bind_int64(insertParamStmt, 2, static_cast<sqlite3_int64>(getNameID(params[i])));
             if (rc != SQLITE_OK)
             {
-                throw cRuntimeError("SQLiteOutputManager:: Could not bind nameid.");
+                throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not bind nameid.");
             }
             rc = sqlite3_bind_text(insertParamStmt, 3, params[i + 1], -1, SQLITE_STATIC);
             if (rc != SQLITE_OK)
             {
-                throw cRuntimeError("SQLiteOutputManager:: Could not bind value.");
+                throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not bind value.");
             }
 
             rc = sqlite3_step(insertParamStmt);
             if (rc != SQLITE_DONE)
             {
-                throw cRuntimeError(
+                throw omnetpp::cRuntimeError(
                         "cSQLiteOutputVectorManager:: Could not execute statement (SQL_INSERT_PARAM): %s",
                         sqlite3_errmsg(connection));
             }

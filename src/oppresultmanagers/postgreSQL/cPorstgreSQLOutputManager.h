@@ -34,7 +34,7 @@
 
 #include <omnetpp.h>
 
-#define SCHEMAVERSION 2
+#define SCHEMAVERSION 3
 
 extern omnetpp::cConfigOption *CFGID_POSTGRESQLOUTMGR_CONNECTION;
 extern omnetpp::cConfigOption *CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ;

@@ -44,6 +44,7 @@ Register_PerRunConfigOption(CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ, "postgresqloutpu
 #define SQL_INSERT_RUN "INSERT INTO run(runid) VALUES($1) RETURNING id"
 #define SQL_SELECT_RUN "SELECT id FROM run WHERE runid=$1;"
 #define SQL_INSERT_RUN_ATTR "INSERT INTO runattr(runid,nameid,value) VALUES($1,$2,$3);"
+#define SQL_INSERT_PARAM "INSERT INTO param(runid,nameid,value) VALUES($1,$2,$3);"
 
 cPorstgreSQLOutputManager::cPorstgreSQLOutputManager()
 {
@@ -134,7 +135,20 @@ void cPorstgreSQLOutputManager::startRun()
          SELECT runattr.id AS id, runattr.runid AS runid, \
          name.name AS name, runattr.value AS value FROM runattr \
          JOIN name ON name.id = runattr.nameid;");
-
+    work_transaction.exec(
+            "CREATE TABLE IF NOT EXISTS param(\
+         id SERIAL NOT NULL PRIMARY KEY,\
+         runid INT NOT NULL,\
+         nameid INT NOT NULL,\
+         value TEXT NOT NULL,\
+         FOREIGN KEY (runid) REFERENCES run(id) ON DELETE CASCADE,\
+         FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE\
+       );");
+    work_transaction.exec(
+            "CREATE OR REPLACE VIEW param_names AS \
+         SELECT param.id AS id, param.runid AS runid, \
+         name.name AS name, param.value AS value FROM param \
+         JOIN name ON name.id = param.nameid;");
     work_transaction.commit();
     if (!transaction)
     {
@@ -182,6 +196,12 @@ void cPorstgreSQLOutputManager::startRun()
         {
             work_transaction.parameterized(SQL_INSERT_RUN_ATTR)(runid)(getNameID(keys1[i]))(
                     omnetpp::getEnvir()->getConfigEx()->getVariable(keys1[i])).exec();
+        }
+        //INSERT param
+        std::vector<const char *> params = ev.getConfigEx()->getParameterKeyValuePairs();
+        for (int i = 0; i < (int) params.size(); i += 2)
+        {
+            work_transaction.parameterized(SQL_INSERT_RUN_ATTR)(runid)(getNameID(params[i]))(params[i + 1]).exec();
         }
     }
 }

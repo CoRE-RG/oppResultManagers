@@ -34,7 +34,7 @@
 
 #include <omnetpp.h>
 
-#define SCHEMAVERSION 2
+#define SCHEMAVERSION 3
 
 extern omnetpp::cConfigOption *CFGID_SQLITEOUTMGR_FILE;
 extern omnetpp::cConfigOption *CFGID_SQLITEMGR_COMMIT_FREQ;

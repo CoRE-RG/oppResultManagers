@@ -34,6 +34,8 @@
 //Std
 #include <vector>
 
+extern cConfigOption *CFGID_OUTPUTSCALARMANAGER_CLASSES;
+
 class cMultipleOutputScalarManager : public cOutputScalarManager
 {
     protected:

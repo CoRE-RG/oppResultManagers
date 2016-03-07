@@ -35,6 +35,11 @@
 //Std
 #include <vector>
 
+extern cConfigOption *CFGID_CHECKOUTPUTVECTORMANAGER_CONFIGFILE;
+extern cConfigOption *CFGID_CHECKOUTPUTVECTORMANAGER_ENDSIM;
+extern cConfigOption *CFGID_CHECKOUTPUTVECTORMANAGER_REPORT;
+extern cConfigOption *CFGID_CHECKOUTPUTVECTORMANAGER_REPORTFILE;
+
 class cCheckOutputVectorManager : public cOutputVectorManager
 {
     protected:

@@ -36,6 +36,9 @@
 
 #define SCHEMAVERSION 3
 
+extern cConfigOption *CFGID_POSTGRESQLOUTMGR_CONNECTION;
+extern cConfigOption *CFGID_POSTGRESQLOUTMGR_COMMIT_FREQ;
+
 class cPorstgreSQLOutputManager
 {
     protected:

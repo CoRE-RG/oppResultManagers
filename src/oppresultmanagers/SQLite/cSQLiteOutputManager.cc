@@ -42,6 +42,7 @@ Register_PerRunConfigOption(CFGID_SQLITEMGR_COMMIT_FREQ, "sqliteoutputmanager-co
 #define SQL_INSERT_RUN "INSERT INTO run(runid) VALUES(?);"
 #define SQL_SELECT_RUN "SELECT id FROM run WHERE runid=?;"
 #define SQL_INSERT_RUN_ATTR "INSERT INTO runattr(runid,nameid,value) VALUES(?,?,?);"
+#define SQL_INSERT_PARAM "INSERT INTO param(runid,nameid,value) VALUES(?,?,?);"
 
 sqlite3* cSQLiteOutputManager::connection = nullptr;
 bool cSQLiteOutputManager::hasTransaction = false;
@@ -233,7 +234,43 @@ void cSQLiteOutputManager::startRun()
     {
         throw cRuntimeError("SQLiteOutputManager:: Can't create view 'scalarattr_names': %s", zErrMsg);
     }
-
+    rc =
+            sqlite3_exec(connection,
+                    "CREATE TABLE IF NOT EXISTS name(\
+                 id INTEGER PRIMARY KEY,\
+                 name TEXT NOT NULL UNIQUE\
+              );",
+                    nullptr, nullptr, &zErrMsg);
+    if (rc != SQLITE_OK)
+    {
+        throw cRuntimeError("SQLiteOutputManager:: Can't create table 'name': %s", zErrMsg);
+    }
+    rc =
+            sqlite3_exec(connection,
+                    "CREATE TABLE IF NOT EXISTS param(\
+                                         id INTEGER PRIMARY KEY,\
+                                         runid INT NOT NULL,\
+                                         nameid INT NOT NULL,\
+                                         value TEXT NOT NULL,\
+                                         FOREIGN KEY (runid) REFERENCES run(id) ON DELETE CASCADE,\
+                                         FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE\
+                                      );",
+                    nullptr, nullptr, &zErrMsg);
+    if (rc != SQLITE_OK)
+    {
+        throw cRuntimeError("SQLiteOutputManager:: Can't create table 'runattr': %s", zErrMsg);
+    }
+    rc =
+            sqlite3_exec(connection,
+                    "CREATE VIEW IF NOT EXISTS param_names AS \
+                                         SELECT param.id AS id, param.runid AS runid, \
+                                         name.name AS name, param.value AS value FROM param \
+                                         JOIN name ON name.id = param.nameid;",
+                    nullptr, nullptr, &zErrMsg);
+    if (rc != SQLITE_OK)
+    {
+        throw cRuntimeError("SQLiteOutputManager:: Can't create view 'scalarattr_names': %s", zErrMsg);
+    }
     flush();
 
     std::string runid_var = ev.getConfigEx()->getVariable(CFGVAR_RUNID);
@@ -350,6 +387,44 @@ void cSQLiteOutputManager::startRun()
             sqlite3_reset(insertRunAttrStmt);
         }
         sqlite3_finalize(insertRunAttrStmt);
+        sqlite3_stmt *insertParamStmt;
+        rc = sqlite3_prepare_v2(connection, SQL_INSERT_PARAM, strlen(SQL_INSERT_PARAM), &insertParamStmt, 0);
+        if (rc != SQLITE_OK)
+        {
+            throw cRuntimeError("SQLiteOutputManager:: Could not prepare statement (SQL_INSERT_PARAM): %s",
+                    sqlite3_errmsg(connection));
+        }
+        //INSERT param
+        std::vector<const char *> params = ev.getConfigEx()->getParameterKeyValuePairs();
+        for (int i = 0; i < (int) params.size(); i += 2)
+        {
+            rc = sqlite3_bind_int64(insertParamStmt, 1, static_cast<sqlite3_int64>(runid));
+            if (rc != SQLITE_OK)
+            {
+                throw cRuntimeError("SQLiteOutputManager:: Could not bind runid.");
+            }
+            rc = sqlite3_bind_int64(insertParamStmt, 2, static_cast<sqlite3_int64>(getNameID(params[i])));
+            if (rc != SQLITE_OK)
+            {
+                throw cRuntimeError("SQLiteOutputManager:: Could not bind nameid.");
+            }
+            rc = sqlite3_bind_text(insertParamStmt, 3, params[i + 1], -1, SQLITE_STATIC);
+            if (rc != SQLITE_OK)
+            {
+                throw cRuntimeError("SQLiteOutputManager:: Could not bind value.");
+            }
+
+            rc = sqlite3_step(insertParamStmt);
+            if (rc != SQLITE_DONE)
+            {
+                throw cRuntimeError(
+                        "cSQLiteOutputVectorManager:: Could not execute statement (SQL_INSERT_PARAM): %s",
+                        sqlite3_errmsg(connection));
+            }
+            sqlite3_clear_bindings(insertParamStmt);
+            sqlite3_reset(insertParamStmt);
+        }
+        sqlite3_finalize(insertParamStmt);
     }
 }
 

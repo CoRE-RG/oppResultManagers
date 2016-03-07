@@ -34,7 +34,7 @@
 
 #include <omnetpp.h>
 
-#define SCHEMAVERSION 2
+#define SCHEMAVERSION 3
 
 class cSQLiteOutputManager
 {

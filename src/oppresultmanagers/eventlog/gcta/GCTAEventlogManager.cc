@@ -51,7 +51,7 @@ void GCTAEventlogManager::flush()
         fflush(feventlog);
 }
 
-void GCTAEventlogManager::simulationEvent(__attribute__((__unused__))  omnetpp::cEvent *event)
+void GCTAEventlogManager::simulationEvent(__attribute__((__unused__))   omnetpp::cEvent *event)
 {
 
 }
@@ -63,35 +63,45 @@ void GCTAEventlogManager::beginSend(omnetpp::cMessage *msg)
 
         omnetpp::cModule *mod = msg->getArrivalModule();
 
-        if (mod)
-        {
-            EV << "Module Name: " << mod->getFullName() << omnetpp::endl;
-        }
-
-        //Mac Module Ankunft/Abfahrt
+        //Mac Module Arrive/Departure at Module
         if (mod && strcmp(mod->getFullName(), "mac") == 0)
         {
-
             omnetpp::cPacket *pkt = static_cast<omnetpp::cPacket *>(msg);
-
             const char * name = mod->getParentModule()->getParentModule()->getFullName();
-            //CoRE4INET
-            if (!strstr(name, "tte") || strstr(name, "switch"))
+            // "tte" for Signals and Gateways
+            if (strstr(name, "tte"))
+            {
+                fprintf(feventlog, "S %s TC %s ID %ld N %s P %s T %s SM \n", msg->getFullName(), msg->getClassName(),
+                        pkt->getEncapsulationTreeId(),
+                        mod->getParentModule()->getParentModule()->getParentModule()->getFullName(),
+                        mod->getParentModule()->getFullName(), SIMTIME_STR(omnetpp::getSimulation()->getSimTime()));
+            }
+            else
             {
                 fprintf(feventlog, "S %s TC %s ID %ld N %s P %s T %s SM \n", msg->getFullName(), msg->getClassName(),
                         pkt->getEncapsulationTreeId(), mod->getParentModule()->getParentModule()->getFullName(),
                         mod->getParentModule()->getFullName(), SIMTIME_STR(omnetpp::getSimulation()->getSimTime()));
             }
-            else
-            {
-                //Signals and Gateway
-                EV << "Name: " << name << omnetpp::endl;
-                fprintf(feventlog, "S %s TC %s ID %ld N %s P %s T %s SM \n", msg->getFullName(), msg->getClassName(),
-                        pkt->getEncapsulationTreeId(),
-                        mod->getParentModule()->getParentModule()->getParentModule()->getFullName(),
-                        mod->getParentModule()->getFullName(), SIMTIME_STR(omnetpp::getSimulation()->getSimTime()));
+        }
+        //Message arrives at Gateway
+        if (mod && strstr(mod->getFullName(), "gatewayApp"))
+        {
+            omnetpp::cPacket *pkt = static_cast<omnetpp::cPacket *>(msg);
+            fprintf(feventlog, "S %s TC %s ID %ld N %s T %s SM startMsg\n", msg->getFullName(), msg->getClassName(),
+                    pkt->getEncapsulationTreeId(), mod->getParentModule()->getParentModule()->getFullName(),
+                    SIMTIME_STR(omnetpp::getSimulation()->getSimTime()));
 
-            }
+        }
+        //Message is created
+        else if (mod
+                && (strstr(mod->getFullName(), "app") || strstr(mod->getFullName(), "App")
+                        || strstr(mod->getFullName(), "APP")))
+        {
+            omnetpp::cPacket *pkt = static_cast<omnetpp::cPacket *>(msg);
+            fprintf(feventlog, "S %s TC %s ID %ld N %s T %s SM startMsg\n", msg->getFullName(), msg->getClassName(),
+                    pkt->getEncapsulationTreeId(),
+                    mod->getParentModule() ? mod->getParentModule()->getFullName() : mod->getFullName(),
+                    SIMTIME_STR(omnetpp::getSimulation()->getSimTime()));
 
         }
 

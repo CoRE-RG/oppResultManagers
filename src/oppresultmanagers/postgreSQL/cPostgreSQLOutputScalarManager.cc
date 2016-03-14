@@ -37,7 +37,11 @@ Register_Class(cPostgreSQLOutputScalarManager);
 #define SQL_INSERT_FIELD "INSERT INTO field(statisticid,nameid,value) VALUES($1,$2,$3);"
 #define SQL_INSERT_BIN "INSERT INTO bin(statisticid,binlowerbound,value) VALUES($1,$2,$3);"
 
+namespace omnetpp {
+namespace envir {
 extern omnetpp::cConfigOption * CFGID_SCALAR_RECORDING;
+}
+}
 
 void cPostgreSQLOutputScalarManager::startRun()
 {
@@ -178,7 +182,7 @@ void cPostgreSQLOutputScalarManager::recordStatistic(omnetpp::cComponent *compon
     // check that recording this statistic is not disabled as a whole
     std::string objectFullPath = component->getFullPath() + "." + name;
 
-    bool enabled = omnetpp::getEnvir()->getConfig()->getAsBool(objectFullPath.c_str(), CFGID_SCALAR_RECORDING);
+    bool enabled = omnetpp::getEnvir()->getConfig()->getAsBool(objectFullPath.c_str(), omnetpp::envir::CFGID_SCALAR_RECORDING);
     if (enabled)
     {
         pqxx::result result = transaction->parameterized(SQL_INSERT_STATISTIC)(runid)(
@@ -216,7 +220,7 @@ void cPostgreSQLOutputScalarManager::recordStatistic(omnetpp::cComponent *compon
         {
             // check that recording the histogram is enabled
             bool hist_enabled = omnetpp::getEnvir()->getConfig()->getAsBool((objectFullPath + ":histogram").c_str(),
-                    CFGID_SCALAR_RECORDING);
+                    omnetpp::envir::CFGID_SCALAR_RECORDING);
             if (hist_enabled)
             {
                 if (!histogram->isTransformed())

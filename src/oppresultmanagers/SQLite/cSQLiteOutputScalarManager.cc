@@ -40,7 +40,11 @@ Register_Class(cSQLiteOutputScalarManager);
 #define SQL_INSERT_FIELD "INSERT INTO field(statisticid,nameid,value) VALUES(?,?,?);"
 #define SQL_INSERT_BIN "INSERT INTO bin(statisticid,binlowerbound,value) VALUES(?,?,?);"
 
+namespace omnetpp {
+namespace envir {
 extern omnetpp::cConfigOption * CFGID_SCALAR_RECORDING;
+}
+}
 
 void cSQLiteOutputScalarManager::startRun()
 {
@@ -344,7 +348,7 @@ void cSQLiteOutputScalarManager::recordStatistic(omnetpp::cComponent *component,
     // check that recording this statistic is not disabled as a whole
     std::string objectFullPath = component->getFullPath() + "." + name;
 
-    bool enabled = omnetpp::getEnvir()->getConfig()->getAsBool(objectFullPath.c_str(), CFGID_SCALAR_RECORDING);
+    bool enabled = omnetpp::getEnvir()->getConfig()->getAsBool(objectFullPath.c_str(), omnetpp::envir::CFGID_SCALAR_RECORDING);
     if (enabled)
     {
         int rc = sqlite3_bind_int64(insertStatisticStmt, 1, static_cast<sqlite3_int64>(runid));
@@ -425,7 +429,7 @@ void cSQLiteOutputScalarManager::recordStatistic(omnetpp::cComponent *component,
         {
             // check that recording the histogram is enabled
             bool hist_enabled = omnetpp::getEnvir()->getConfig()->getAsBool((objectFullPath + ":histogram").c_str(),
-                    CFGID_SCALAR_RECORDING);
+                    omnetpp::envir::CFGID_SCALAR_RECORDING);
             if (hist_enabled)
             {
                 if (!histogram->isTransformed())

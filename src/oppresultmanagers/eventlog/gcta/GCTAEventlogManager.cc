@@ -16,27 +16,17 @@ GCTAEventlogManager::GCTAEventlogManager()
 
     // setup filename
     filename = omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_EVENTLOG_TLOG_FILE).c_str();
+
+    //removeFile(filename.c_str(), "old eventlog file");
+    //mkPath(directoryOf(filename.c_str()).c_str());
+    FILE *out = fopen(filename.c_str(), "w");
+    if (!out)
+        throw omnetpp::cRuntimeError("Cannot open eventlog file `%s' for write", filename.c_str());
+    ::printf("Recording eventlog to file `%s'...\n", filename.c_str());
+    feventlog = out;
 }
 
 GCTAEventlogManager::~GCTAEventlogManager()
-{
-}
-
-void GCTAEventlogManager::startRecording()
-{
-    if (!feventlog)
-    {
-        //removeFile(filename.c_str(), "old eventlog file");
-        //mkPath(directoryOf(filename.c_str()).c_str());
-        FILE *out = fopen(filename.c_str(), "w");
-        if (!out)
-            throw omnetpp::cRuntimeError("Cannot open eventlog file `%s' for write", filename.c_str());
-        ::printf("Recording eventlog to file `%s'...\n", filename.c_str());
-        feventlog = out;
-    }
-}
-
-void GCTAEventlogManager::stopRecording()
 {
     if (feventlog)
     {
@@ -47,13 +37,21 @@ void GCTAEventlogManager::stopRecording()
     }
 }
 
+void GCTAEventlogManager::startRecording()
+{
+}
+
+void GCTAEventlogManager::stopRecording()
+{
+}
+
 void GCTAEventlogManager::flush()
 {
     if (recordEventlog)
         fflush(feventlog);
 }
 
-void GCTAEventlogManager::simulationEvent(__attribute__((__unused__)) omnetpp::cEvent *event)
+void GCTAEventlogManager::simulationEvent(__attribute__((__unused__))  omnetpp::cEvent *event)
 {
 
 }
@@ -80,7 +78,7 @@ void GCTAEventlogManager::beginSend(omnetpp::cMessage *msg)
             //CoRE4INET
             if (!strstr(name, "tte") || strstr(name, "switch"))
             {
-                fprintf(feventlog, "%s TC %s ID %ld N %s p %s t %s et \n", msg->getFullName(), msg->getClassName(),
+                fprintf(feventlog, "S %s TC %s ID %ld N %s P %s T %s SM \n", msg->getFullName(), msg->getClassName(),
                         pkt->getEncapsulationTreeId(), mod->getParentModule()->getParentModule()->getFullName(),
                         mod->getParentModule()->getFullName(), SIMTIME_STR(omnetpp::getSimulation()->getSimTime()));
             }
@@ -88,7 +86,7 @@ void GCTAEventlogManager::beginSend(omnetpp::cMessage *msg)
             {
                 //Signals and Gateway
                 EV << "Name: " << name << omnetpp::endl;
-                fprintf(feventlog, "%s TC %s ID %ld N %s p %s t %s et \n", msg->getFullName(), msg->getClassName(),
+                fprintf(feventlog, "S %s TC %s ID %ld N %s P %s T %s SM \n", msg->getFullName(), msg->getClassName(),
                         pkt->getEncapsulationTreeId(),
                         mod->getParentModule()->getParentModule()->getParentModule()->getFullName(),
                         mod->getParentModule()->getFullName(), SIMTIME_STR(omnetpp::getSimulation()->getSimTime()));
@@ -103,7 +101,7 @@ void GCTAEventlogManager::beginSend(omnetpp::cMessage *msg)
         {
 
             omnetpp::cPacket *pkt = static_cast<omnetpp::cPacket *>(msg);
-            fprintf(feventlog, "%s TC %s ID %ld N %s t %s et startMsg\n", msg->getFullName(), msg->getClassName(),
+            fprintf(feventlog, "S %s TC %s ID %ld N %s T %s SM startMsg\n", msg->getFullName(), msg->getClassName(),
                     pkt->getEncapsulationTreeId(),
                     mod->getParentModule() ? mod->getParentModule()->getFullName() : mod->getFullName(),
                     SIMTIME_STR(omnetpp::getSimulation()->getSimTime()));
@@ -116,7 +114,7 @@ void GCTAEventlogManager::beginSend(omnetpp::cMessage *msg)
             //if(hasToRecord){
             omnetpp::cPacket *pkt = static_cast<omnetpp::cPacket *>(msg);
             //EV << "ID: " << pkt->getEncapsulationTreeId() << " Node: " << mod->getFullName() << " MSG: " << msg->getFullName() << " TIME: " << simulation.getSimTime() << endl;
-            fprintf(feventlog, "%s TC %s ID %ld N %s t %s et startMsg\n", msg->getFullName(), msg->getClassName(),
+            fprintf(feventlog, "S %s TC %s ID %ld N %s T %s SM startMsg\n", msg->getFullName(), msg->getClassName(),
                     pkt->getEncapsulationTreeId(), mod->getParentModule()->getParentModule()->getFullName(),
                     SIMTIME_STR(omnetpp::getSimulation()->getSimTime()));
 
@@ -128,14 +126,16 @@ void GCTAEventlogManager::beginSend(omnetpp::cMessage *msg)
 
 void GCTAEventlogManager::connectionCreated(omnetpp::cGate *srcgate)
 {
-    if (recordEventlog)
+    if (recordEventlog && feventlog)
     {
         omnetpp::cGate *destgate = srcgate->getNextGate();
         //CoRE4INET Connections
-        //if(strstr(srcgate->getOwnerModule()->getFullName(), "node") && strstr(destgate->getOwnerModule()->getFullName(), "switch"))
-        //{
-        //  fprintf(ftiminglog, "TOPO SG %s DG %s P%s\n",srcgate->getOwnerModule()->getFullName(), destgate->getOwnerModule()->getFullName(), destgate->getFullName() );
-        //}
+        if (strstr(srcgate->getOwnerModule()->getFullName(), "node")
+                && strstr(destgate->getOwnerModule()->getFullName(), "switch"))
+        {
+            fprintf(feventlog, "TOPO SG %s DG %s P%s\n", srcgate->getOwnerModule()->getFullName(),
+                    destgate->getOwnerModule()->getFullName(), destgate->getFullName());
+        }
         //Signals and Gateway Connections
         if (strstr(srcgate->getOwnerModule()->getFullName(), "gateway")
                 && strstr(destgate->getOwnerModule()->getFullName(), "switch"))

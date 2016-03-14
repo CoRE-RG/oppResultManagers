@@ -198,10 +198,10 @@ void cPorstgreSQLOutputManager::startRun()
                     omnetpp::getEnvir()->getConfigEx()->getVariable(keys1[i])).exec();
         }
         //INSERT param
-        std::vector<const char *> params = ev.getConfigEx()->getParameterKeyValuePairs();
+        std::vector<const char *> params = omnetpp::getEnvir()->getConfigEx()->getParameterKeyValuePairs();
         for (size_t i = 0; i < params.size(); i += 2)
         {
-            work_transaction.parameterized(SQL_INSERT_RUN_ATTR)(runid)(getNameID(params[i]))(params[i + 1]).exec();
+            work_transaction.parameterized(SQL_INSERT_PARAM)(runid)(getNameID(params[i]))(params[i + 1]).exec();
         }
     }
 }

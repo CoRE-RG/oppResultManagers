@@ -61,7 +61,7 @@ void GCTAEventlogManager::beginSend(omnetpp::cMessage *msg)
     if (msg->isPacket() && recordEventlog)
     {
 
-        omnetpp::cModule *mod = msg->getArrivalModule();
+        omnetpp::cModule *mod = msg->getSenderModule();
 
         //Mac Module Arrive/Departure at Module
         if (mod && strcmp(mod->getFullName(), "mac") == 0)
@@ -104,32 +104,6 @@ void GCTAEventlogManager::beginSend(omnetpp::cMessage *msg)
                     SIMTIME_STR(omnetpp::getSimulation()->getSimTime()));
 
         }
-
-        //Message is created
-
-        if (mod && strstr(mod->getFullName(), "app"))
-        {
-
-            omnetpp::cPacket *pkt = static_cast<omnetpp::cPacket *>(msg);
-            fprintf(feventlog, "S %s TC %s ID %ld N %s T %s SM startMsg\n", msg->getFullName(), msg->getClassName(),
-                    pkt->getEncapsulationTreeId(),
-                    mod->getParentModule() ? mod->getParentModule()->getFullName() : mod->getFullName(),
-                    SIMTIME_STR(omnetpp::getSimulation()->getSimTime()));
-
-        }
-        //Message arrives at Gateway
-        if (mod && strstr(mod->getFullName(), "gatewayApp"))
-        {
-
-            //if(hasToRecord){
-            omnetpp::cPacket *pkt = static_cast<omnetpp::cPacket *>(msg);
-            //EV << "ID: " << pkt->getEncapsulationTreeId() << " Node: " << mod->getFullName() << " MSG: " << msg->getFullName() << " TIME: " << simulation.getSimTime() << endl;
-            fprintf(feventlog, "S %s TC %s ID %ld N %s T %s SM startMsg\n", msg->getFullName(), msg->getClassName(),
-                    pkt->getEncapsulationTreeId(), mod->getParentModule()->getParentModule()->getFullName(),
-                    SIMTIME_STR(omnetpp::getSimulation()->getSimTime()));
-
-        }
-
     }
 
 }

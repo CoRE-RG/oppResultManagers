@@ -19,15 +19,8 @@ class GCTAEventlogManager : public omnetpp::cIEventlogManager
         GCTAEventlogManager();
         virtual ~GCTAEventlogManager();
 
-        virtual void configure() override;
-        virtual void open() override {}
-        virtual void startRun() override;
-        virtual void endRun(bool isError, int resultCode, const char *message) override;
-
-        virtual bool hasRecordingIntervals() const override;
-        virtual void clearRecordingIntervals() override;
-
-        virtual void recordSimulation() override;
+        virtual void startRecording() override;
+        virtual void stopRecording() override;
 
         virtual void flush() override;
 
@@ -58,6 +51,7 @@ class GCTAEventlogManager : public omnetpp::cIEventlogManager
         virtual void connectionDeleted(__attribute__((__unused__)) omnetpp::cGate *srcgate) override {}
         virtual void displayStringChanged(__attribute__((__unused__)) omnetpp::cComponent *component) override {}
         virtual void logLine(__attribute__((__unused__)) const char *prefix, __attribute__((__unused__)) const char *line, __attribute__((__unused__)) int lineLength) override {}
+        virtual void stoppedWithException(__attribute__((__unused__)) bool isError,__attribute__((__unused__))  int resultCode,__attribute__((__unused__)) const char *message) override {}
         //@}
 
 };

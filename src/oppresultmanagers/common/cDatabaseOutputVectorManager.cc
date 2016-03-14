@@ -30,8 +30,12 @@
 
 #include "oppresultmanagers/utilities/HelperFunctions.h"
 
+namespace omnetpp {
+namespace envir {
 extern omnetpp::cConfigOption* CFGID_VECTOR_RECORDING;
 extern omnetpp::cConfigOption* CFGID_VECTOR_RECORDING_INTERVALS;
+}
+}
 
 void *cDatabaseOutputVectorManager::registerVector(const char *modulename, const char *vectorname)
 {
@@ -43,8 +47,8 @@ void *cDatabaseOutputVectorManager::registerVector(const char *modulename, const
     vp->modulename = modulename;
     vp->vectorname = vectorname;
 
-    vp->enabled = omnetpp::getEnvir()->getConfig()->getAsBool(vectorfullpath.c_str(), CFGID_VECTOR_RECORDING, true);
-    const char *text = omnetpp::getEnvir()->getConfig()->getAsCustom(vectorfullpath.c_str(), CFGID_VECTOR_RECORDING_INTERVALS, "");
+    vp->enabled = omnetpp::getEnvir()->getConfig()->getAsBool(vectorfullpath.c_str(), omnetpp::envir::CFGID_VECTOR_RECORDING, true);
+    const char *text = omnetpp::getEnvir()->getConfig()->getAsCustom(vectorfullpath.c_str(), omnetpp::envir::CFGID_VECTOR_RECORDING_INTERVALS, "");
     vp->intervals = parseIntervals(text);
     return vp;
 }

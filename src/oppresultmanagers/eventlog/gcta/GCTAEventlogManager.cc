@@ -9,14 +9,7 @@ GCTAEventlogManager::GCTAEventlogManager()
 {
     recordEventlog = false;
     feventlog = nullptr;
-}
 
-GCTAEventlogManager::~GCTAEventlogManager()
-{
-}
-
-void GCTAEventlogManager::configure()
-{
     // main switch
     recordEventlog = omnetpp::cConfiguration::parseBool(
             omnetpp::getEnvir()->getConfig()->getConfigEntry("record-eventlog").getValue(), "false");
@@ -25,12 +18,11 @@ void GCTAEventlogManager::configure()
     filename = omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_EVENTLOG_TLOG_FILE).c_str();
 }
 
-void GCTAEventlogManager::recordSimulation()
+GCTAEventlogManager::~GCTAEventlogManager()
 {
-
 }
 
-void GCTAEventlogManager::startRun()
+void GCTAEventlogManager::startRecording()
 {
     if (!feventlog)
     {
@@ -44,8 +36,7 @@ void GCTAEventlogManager::startRun()
     }
 }
 
-void GCTAEventlogManager::endRun(__attribute__((__unused__)) bool isError, __attribute__((__unused__)) int resultCode,
-        __attribute__((__unused__)) const char *message)
+void GCTAEventlogManager::stopRecording()
 {
     if (feventlog)
     {
@@ -54,16 +45,6 @@ void GCTAEventlogManager::endRun(__attribute__((__unused__)) bool isError, __att
 
         feventlog = nullptr;
     }
-}
-
-bool GCTAEventlogManager::hasRecordingIntervals() const
-{
-    return false;
-}
-
-void GCTAEventlogManager::clearRecordingIntervals()
-{
-
 }
 
 void GCTAEventlogManager::flush()

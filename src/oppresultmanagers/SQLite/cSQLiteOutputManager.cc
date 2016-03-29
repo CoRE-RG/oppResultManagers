@@ -28,6 +28,8 @@
 
 #include "oppresultmanagers/SQLite/cSQLiteOutputManager.h"
 
+#include "oppresultmanagers/utilities/HelperFunctions.h"
+
 Register_PerRunConfigOption(CFGID_SQLITEOUTMGR_FILE, "sqliteoutputmanager-file", CFG_FILENAME,
         "${resultdir}/${configname}-${runnumber}.sqlite3", "Object name of database connection parameters");
 Register_PerRunConfigOption(CFGID_SQLITEMGR_COMMIT_FREQ, "sqliteoutputmanager-commit-freq", CFG_INT, "10000",
@@ -70,6 +72,10 @@ void cSQLiteOutputManager::startRun()
 {
     if (!connection)
     {
+        omnetpp::common::mkPath(
+                omnetpp::common::directoryOf(
+                        omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_SQLITEOUTMGR_FILE).c_str()).c_str());
+
         std::string cfgobj = omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_SQLITEOUTMGR_FILE);
         int rc = sqlite3_open(cfgobj.c_str(), &connection);
         if (rc)
@@ -138,7 +144,8 @@ void cSQLiteOutputManager::startRun()
     rc = sqlite3_prepare(connection, SQL_SELECT_SCHEMAVERSION, -1, &stmt, 0);
     if (rc != SQLITE_OK)
     {
-        throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s", sqlite3_errmsg(connection));
+        throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s",
+                sqlite3_errmsg(connection));
     }
     rc = sqlite3_step(stmt);
     if (rc == SQLITE_ROW)
@@ -159,7 +166,8 @@ void cSQLiteOutputManager::startRun()
         rc = sqlite3_prepare(connection, SQL_INSERT_SCHEMAVERSION, -1, &stmt, 0);
         if (rc != SQLITE_OK)
         {
-            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s", sqlite3_errmsg(connection));
+            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not prepare statement: %s",
+                    sqlite3_errmsg(connection));
         }
         rc = sqlite3_bind_text(stmt, 1, std::to_string(SCHEMAVERSION).c_str(), -1, SQLITE_STATIC);
         if (rc != SQLITE_OK)
@@ -169,7 +177,8 @@ void cSQLiteOutputManager::startRun()
         rc = sqlite3_step(stmt);
         if (rc != SQLITE_DONE)
         {
-            throw omnetpp::cRuntimeError("SQLiteOutputManager:: Could not execute statement (SQL_INSERT_SCHEMAVERSION): %s",
+            throw omnetpp::cRuntimeError(
+                    "SQLiteOutputManager:: Could not execute statement (SQL_INSERT_SCHEMAVERSION): %s",
                     sqlite3_errmsg(connection));
         }
         sqlite3_finalize(stmt);

@@ -33,6 +33,13 @@
 
 #include <vector>
 
+namespace omnetpp {
+namespace common {
+extern void mkPath(const char *pathname);
+extern std::string directoryOf(const char *pathname);
+extern void removeFile(const char *fname, const char *descr);
+}}
+
 std::vector< std::pair< simtime_t, simtime_t > > parseIntervals(const char* text);
 
 bool inIntervals(simtime_t t, std::vector< std::pair< simtime_t, simtime_t > > &intervals);

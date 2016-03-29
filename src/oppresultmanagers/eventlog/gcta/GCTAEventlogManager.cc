@@ -1,5 +1,7 @@
 #include "oppresultmanagers/eventlog/gcta/GCTAEventlogManager.h"
 
+#include "oppresultmanagers/utilities/HelperFunctions.h"
+
 Register_Class(GCTAEventlogManager);
 
 Register_PerRunConfigOption(CFGID_EVENTLOG_TLOG_FILE, "tlog-file", CFG_FILENAME,
@@ -17,8 +19,8 @@ GCTAEventlogManager::GCTAEventlogManager()
     // setup filename
     filename = omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_EVENTLOG_TLOG_FILE).c_str();
 
-    //removeFile(filename.c_str(), "old eventlog file");
-    //mkPath(directoryOf(filename.c_str()).c_str());
+    omnetpp::common::removeFile(filename.c_str(), "old eventlog file");
+    omnetpp::common::mkPath(omnetpp::common::directoryOf(filename.c_str()).c_str());
     FILE *out = fopen(filename.c_str(), "w");
     if (!out)
         throw omnetpp::cRuntimeError("Cannot open eventlog file `%s' for write", filename.c_str());

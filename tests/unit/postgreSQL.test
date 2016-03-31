@@ -15,7 +15,20 @@ outputvectormanager-class = "cPostgreSQLOutputVectorManager"
 postgresqloutputmanager-connection = "dbname=testdb user=testuser password=testuser port=15432"
 postgresqloutputmanager-commit-freq = 10000
 
-%prerun-command: ../postgreSQL/db_start_script
+%file: db_start_script
+BASEDIR="$(cd "$(dirname "$0" )" && pwd )"
+rm -rf data var
+mkdir -p ${BASEDIR}/data ${BASEDIR}/var/run/postgresql
+initdb ${BASEDIR}/data
+pg_ctl start  -D ${BASEDIR}/data -o "-c port=15432 -c unix_socket_directories=${BASEDIR}/var/run/postgresql" -l dbserver.log
+createuser -h ${BASEDIR}/var/run/postgresql -p 15432 testuser
+createdb -h ${BASEDIR}/var/run/postgresql -p 15432 testdb
 
-%postrun-command: ../postgreSQL/db_start_script
+%file: db_stop_script
+BASEDIR="$(cd "$(dirname "$0" )" && pwd )"
+pg_ctl stop  -D ${BASEDIR}/data
+
+%prerun-command: source db_start_script
+
+%postrun-command: source db_start_script
 

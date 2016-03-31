@@ -1,0 +1,7 @@
+BASEDIR="$(cd "$(dirname "$0" )" && pwd )"
+rm -rf data var
+mkdir -p ${BASEDIR}/data ${BASEDIR}/var/run/postgresql
+initdb ${BASEDIR}/data
+pg_ctl start  -D ${BASEDIR}/data -o "-c port=15432 -c unix_socket_directories=${BASEDIR}/var/run/postgresql" -l dbserver.log
+createuser -h ${BASEDIR}/var/run/postgresql -p 15432 testuser
+createdb -h ${BASEDIR}/var/run/postgresql -p 15432 testdb

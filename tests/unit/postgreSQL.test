@@ -1,0 +1,21 @@
+%description:
+Test cPostgreSQLOutputScalarManager 
+
+
+%inifile: test.ini
+[General]
+sim-time-limit = 100s
+
+network = oppresultmanagers.examples.common.Network
+
+record-eventlog = false
+
+outputscalarmanager-class = "cPostgreSQLOutputScalarManager"
+outputvectormanager-class = "cPostgreSQLOutputVectorManager"
+postgresqloutputmanager-connection = "dbname=testdb user=testuser password=testuser port=15432"
+postgresqloutputmanager-commit-freq = 10000
+
+%prerun-command: ../postgreSQL/db_start_script
+
+%postrun-command: ../postgreSQL/db_start_script
+

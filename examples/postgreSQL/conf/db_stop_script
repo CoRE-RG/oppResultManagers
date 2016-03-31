@@ -1,0 +1,2 @@
+BASEDIR="$(cd "$(dirname "$0" )" && pwd )"
+pg_ctl stop  -D ${BASEDIR}/data

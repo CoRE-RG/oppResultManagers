@@ -44,3 +44,6 @@
 
 #ignore Apple files
 .DS_Store
+data
+var
+dbserver.log

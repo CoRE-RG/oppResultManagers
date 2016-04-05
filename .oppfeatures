@@ -47,4 +47,16 @@
         compileFlags = "-DWITH_GCTAEVENTLOG_COMMON"
         linkerFlags = ""
         />
+    <feature
+        id="PCAPNGEventlog_common"
+        name="PCAP NG Eventlog Common"
+        description = "The common part of the PCAPNG Eventlog output implementation"
+        initiallyEnabled = "false"
+        requires = ""
+        labels = ""
+        nedPackages = "oppresultmanagers.eventlog.pcapng"
+        extraSourceFolders = ""
+        compileFlags = "-DWITH_PCAPNGEVENTLOG_COMMON"
+        linkerFlags = "-lINET"
+        />
 </features>

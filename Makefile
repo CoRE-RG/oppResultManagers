@@ -9,7 +9,14 @@ cleanall: checkmakefiles
 	cd src && $(MAKE) MODE=debug clean
 	rm -f src/Makefile src/oppresultmanagers/features.h
 
+INET_PROJ=../../inet
+
 MAKEMAKE_OPTIONS := -f --deep --no-deep-includes -I.
+
+OPPRESULTMANAGERS_PCAPNG_ENABLED := $(shell ./oppresultmanagers_featuretool -q isenabled PCAPNGEventlog_common; echo $$?)
+ifeq ($(OPPRESULTMANAGERS_PCAPNG_ENABLED),0)
+    MAKEMAKE_OPTIONS += -I$(INET_PROJ)/src/ -DINET_IMPORT -L$(INET_PROJ)/src -lINET -KINET_PROJ=$(INET_PROJ)
+endif
 
 makefiles: src/oppresultmanagers/features.h makefiles-so
 

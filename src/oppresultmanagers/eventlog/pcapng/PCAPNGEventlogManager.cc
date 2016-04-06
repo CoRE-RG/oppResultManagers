@@ -2,130 +2,111 @@
 
 #include "pcapng.h"
 
+#include "inet/common/serializer/SerializerBase.h"
+
 Register_Class(PCAPNGEventlogManager);
 
 Register_PerRunConfigOption(CFGID_EVENTLOG_PCAPNG_FILE, "pcapng-file", CFG_FILENAME,
         "${resultdir}/${configname}-${runnumber}.pcapng", "Name of the PCAPNG file to generate.");
 
+Register_PerRunConfigOption(CFGID_EVENTLOG_PCAPNG_INTERFACES, "pcapng-interfaces", CFG_STRING, "\"\"",
+        "List of modules (comma or space separated) that appear as an interface in the pcapng file");
+
+Register_PerRunConfigOption(CFGID_EVENTLOG_PCAPNG_CAPTURELENGTH, "pcapng-capturelength", CFG_INT, "10000",
+        "Maximum length of packet that is being captured (length will be still correct)");
+
 PCAPNGEventlogManager::PCAPNGEventlogManager()
 {
     recordEventlog = false;
-    pcapfile = nullptr;
+    buffer = malloc(60000);
+    pcapwriter = new PCAPNGWriter(buffer, 60000);
+
+    recordEventlog = omnetpp::cConfiguration::parseBool(
+            omnetpp::getEnvir()->getConfig()->getConfigEntry("record-eventlog").getValue(), "false");
+    filename = omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_EVENTLOG_PCAPNG_FILE).c_str();
+    pcapwriter->openFile(filename.c_str());
+
+    recordingStarted = false;
+    capture_length =
+            static_cast<size_t>(omnetpp::getEnvir()->getConfig()->getAsInt(CFGID_EVENTLOG_PCAPNG_CAPTURELENGTH));
 }
 
 PCAPNGEventlogManager::~PCAPNGEventlogManager()
 {
+    if (recordingStarted)
+    {
+        stopRecording();
+    }
+    pcapwriter->closeFile();
 }
 
 void PCAPNGEventlogManager::startRecording()
 {
-    if (!pcapfile)
+    pcapwriter->openSection("Simulation (no real Hardware)", "", "OMNeT++");
+
+    std::string cfgobj = omnetpp::getEnvir()->getConfig()->getAsString(CFGID_EVENTLOG_PCAPNG_INTERFACES);
+    std::vector<std::string> interfaceModules = omnetpp::cStringTokenizer(cfgobj.c_str(), ", ").asVector();
+    for (std::vector<std::string>::const_iterator interfaceModule = interfaceModules.begin();
+            interfaceModule != interfaceModules.end(); ++interfaceModule)
     {
-        // main switch
-        recordEventlog = omnetpp::cConfiguration::parseBool(
-                omnetpp::getEnvir()->getConfig()->getConfigEntry("record-eventlog").getValue(), "false");
-
-        // setup filename
-        filename = omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_EVENTLOG_PCAPNG_FILE).c_str();
-
-        //removeFile(filename.c_str(), "old eventlog file");
-        //mkPath(directoryOf(filename.c_str()).c_str());
-        pcapfile = fopen(filename.c_str(), "w");
-        if (!pcapfile)
-            throw omnetpp::cRuntimeError("Cannot open pcapng file `%s' for write", filename.c_str());
-        ::printf("Recording pcapng to file `%s'...\n", filename.c_str());
-
-        //Write section header
-        struct block_header bh;
-        struct section_header_block shb;
-        struct block_trailer bt;
-
-        struct option_header oh;
-        struct option_header oh_end;
-        oh_end.option_code = OPT_ENDOFOPT;
-        oh_end.option_length = 0;
-
-        bh.block_type = BT_SHB;
-
-        shb.byte_order_magic = BYTE_ORDER_MAGIC;
-        shb.major_version = PCAP_NG_VERSION_MAJOR;
-        shb.minor_version = PCAP_NG_VERSION_MINOR;
-        shb.section_length = -1;
-
-
-        std::string appName = "OMNe";
-        oh.option_code = SEC_USERAPPL;
-        oh.option_length = appName.length();
-
-        bh.total_length = sizeof(bh) + sizeof(shb) + sizeof(oh) + oh.option_length + sizeof(oh_end) + sizeof(bt);
-        bt.total_length = bh.total_length;
-
-        fwrite(&bh, sizeof(bh), 1, pcapfile);
-        fwrite(&shb, sizeof(shb), 1, pcapfile);
-
-        fwrite(&oh, sizeof(oh), 1, pcapfile);
-        fwrite(appName.data(), oh.option_length, 1, pcapfile);
-        fwrite(&oh_end, sizeof(oh_end), 1, pcapfile);
-
-        fwrite(&bt, sizeof(bt), 1, pcapfile);
-
-        struct interface_description_block idb;
-        bh.block_type = BT_IDB;
-        idb.linktype = LINKTYPE_ETHERNET;
-        idb.snaplen = 1518;
-        bh.total_length = sizeof(bh) + sizeof(idb) + sizeof(bt);
-        bt.total_length = bh.total_length;
-
-        fwrite(&bh, sizeof(bh), 1, pcapfile);
-        fwrite(&idb, sizeof(idb), 1, pcapfile);
-        fwrite(&bt, sizeof(bt), 1, pcapfile);
-
-        struct enhanced_packet_block ehb;
-
-        bh.block_type = BT_EPB;
-        ehb.interface_id = 0;
-        ehb.timestamp_high = 0; //simtime 64bit
-        ehb.timestamp_low = 0; //simtime 64bit
-        ehb.caplen = 0;
-        ehb.len = 0;
-
-        bh.total_length = sizeof(bh) + sizeof(ehb) + sizeof(bt);
-        bt.total_length = bh.total_length;
-
-        fwrite(&bh, sizeof(bh), 1, pcapfile);
-        fwrite(&ehb, sizeof(ehb), 1, pcapfile);
-        fwrite(&bt, sizeof(bt), 1, pcapfile);
+        omnetpp::cModule *module = omnetpp::getSimulation()->getModuleByPath((*interfaceModule).c_str());
+        if (!module)
+        {
+            throw omnetpp::cRuntimeError("error in ini file (pcapng-interfaces option): Module \"%s\" cannot be found",
+                    (*interfaceModule).c_str());
+        }
+        interfaceMap[module] = pcapwriter->addInterface("", module->getFullPath(), capture_length,
+                static_cast<uint8_t>(abs(omnetpp::simTime().getScaleExp())));
     }
+    recordingStarted = true;
 }
 
 void PCAPNGEventlogManager::stopRecording()
 {
-    if (pcapfile)
+    if (recordingStarted)
     {
-        fflush(pcapfile);
-        fclose(pcapfile);
-
-        pcapfile = nullptr;
+        pcapwriter->closeSection();
+        recordingStarted = false;
     }
 }
 
 void PCAPNGEventlogManager::flush()
 {
-    if (recordEventlog)
-        fflush(pcapfile);
+
 }
 
-void PCAPNGEventlogManager::simulationEvent(__attribute__((__unused__))   omnetpp::cEvent *event)
+void PCAPNGEventlogManager::simulationEvent(__attribute__((__unused__))                   omnetpp::cEvent *event)
 {
 
 }
 
 void PCAPNGEventlogManager::beginSend(omnetpp::cMessage *msg)
 {
+    if (recordEventlog)
+    {
+        if (!recordingStarted)
+        {
+            startRecording();
+        }
 
-}
-
-void PCAPNGEventlogManager::connectionCreated(omnetpp::cGate *srcgate)
-{
-
+        if (omnetpp::cPacket* pkt = dynamic_cast<omnetpp::cPacket*>(msg))
+        {
+            if (dynamic_cast<omnetpp::cDatarateChannel*>(msg->getSenderGate()->findTransmissionChannel()))
+            {
+                if (interfaceMap.find(msg->getSenderModule()) != interfaceMap.end())
+                {
+                    char buffer[10000];
+                    inet::serializer::Buffer wb(buffer, sizeof(buffer));
+                    inet::serializer::Context c;
+                    c.throwOnSerializerNotFound = false;
+                    inet::serializer::SerializerBase::lookupAndSerialize(pkt, wb, c, inet::serializer::LINKTYPE,
+                            inet::serializer::LINKTYPE_ETHERNET, capture_length);
+                    EV << wb.getPos() << std::endl;
+                    pcapwriter->addEnhancedPacket(static_cast<uint32_t>(interfaceMap[msg->getSenderModule()]), true,
+                            static_cast<uint64_t>(msg->getSendingTime().raw()), pkt->getByteLength(), wb.getPos(),
+                            buffer);
+                }
+            }
+        }
+    }
 }

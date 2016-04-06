@@ -8,6 +8,9 @@
 #ifndef PCAPNG_H_
 #define PCAPNG_H_
 
+#include <sys/types.h>
+#include <stdint.h>
+
 /*
  * Block types.
  */
@@ -15,17 +18,17 @@
 /*
  * Common part at the beginning of all blocks.
  */
-struct block_header {
+typedef struct {
     uint32_t block_type;
     uint32_t total_length;
-};
+} block_header;
 
 /*
  * Common trailer at the end of all blocks.
  */
-struct block_trailer {
+typedef struct {
     uint32_t total_length;
-};
+} block_trailer;
 
 /*
  * Common options.
@@ -36,10 +39,10 @@ struct block_trailer {
 /*
  * Option header.
  */
-struct option_header {
+typedef struct {
     u_short     option_code;
     u_short     option_length;
-};
+} option_header;
 
 
 /*
@@ -52,13 +55,13 @@ struct option_header {
  */
 #define BT_SHB          0x0A0D0D0A
 
-struct section_header_block {
+typedef struct {
     uint32_t    byte_order_magic;
     u_short     major_version;
     u_short     minor_version;
     u_int64_t   section_length;
     /* followed by options and trailer */
-};
+} section_header_block;
 
 /*
  * Options in the SHB.
@@ -85,12 +88,12 @@ struct section_header_block {
  */
 #define BT_IDB          0x00000001
 
-struct interface_description_block {
+typedef struct {
     u_short     linktype;
     u_short     reserved;
     uint32_t    snaplen;
     /* followed by options and trailer */
-};
+} interface_description_block;
 
 /*
  * Options in the IDB.
@@ -112,21 +115,24 @@ struct interface_description_block {
 /*
  * Linktypes in the IDB.
  */
-#define LINKTYPE_ETHERNET   1
+#define IDB_LINKTYPE_ETHERNET   1
 
 /*
  * Enhanced Packet Block.
  */
 #define BT_EPB          0x00000006
 
-struct enhanced_packet_block {
+typedef struct {
     uint32_t interface_id;
     uint32_t timestamp_high;
     uint32_t timestamp_low;
     uint32_t caplen;
     uint32_t len;
     /* followed by packet data, options, and trailer */
-};
+} enhanced_packet_block;
 
+#define EP_FLAGS 2
+#define EP_HASH 3
+#define EP_DROPCOUNT 4
 
 #endif /* PCAPNG_H_ */

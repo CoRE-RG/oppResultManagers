@@ -2,8 +2,11 @@
 #define PCAPEVENTLOGMANAGER_H
 
 #include "omnetpp.h"
+#include "PCAPNGWriter.h"
 
 extern omnetpp::cConfigOption *CFGID_EVENTLOG_PCAPNG_FILE;
+extern omnetpp::cConfigOption *CFGID_EVENTLOG_PCAPNG_INTERFACES;
+extern omnetpp::cConfigOption *CFGID_EVENTLOG_PCAPNG_CAPTURELENGTH;
 
 /**
  * Responsible for writing the eventlog file.
@@ -12,8 +15,12 @@ class PCAPNGEventlogManager : public omnetpp::cIEventlogManager
 {
     private:
         omnetpp::opp_string filename;
-        FILE *pcapfile;
         bool recordEventlog;
+        void* buffer;
+        PCAPNGWriter *pcapwriter;
+        bool recordingStarted = false;
+        std::map<omnetpp::cModule*,size_t> interfaceMap;
+        size_t capture_length;
 
     public:
         PCAPNGEventlogManager();
@@ -47,7 +54,7 @@ class PCAPNGEventlogManager : public omnetpp::cIEventlogManager
         virtual void moduleDeleted(__attribute__((__unused__)) omnetpp::cModule *module) override {}
         virtual void gateCreated(__attribute__((__unused__)) omnetpp::cGate *newgate) override {}
         virtual void gateDeleted(__attribute__((__unused__)) omnetpp::cGate *gate) override {}
-        virtual void connectionCreated(__attribute__((__unused__)) omnetpp::cGate *srcgate) override;
+        virtual void connectionCreated(__attribute__((__unused__)) omnetpp::cGate *srcgate) override {}
         virtual void connectionDeleted(__attribute__((__unused__)) omnetpp::cGate *srcgate) override {}
         virtual void displayStringChanged(__attribute__((__unused__)) omnetpp::cComponent *component) override {}
         virtual void logLine(__attribute__((__unused__)) const char *prefix, __attribute__((__unused__)) const char *line, __attribute__((__unused__)) int lineLength) override {}

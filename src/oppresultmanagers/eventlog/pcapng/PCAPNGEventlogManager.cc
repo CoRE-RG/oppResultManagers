@@ -83,8 +83,8 @@ void PCAPNGEventlogManager::startRecording()
             throw omnetpp::cRuntimeError("error in ini file (pcapng-interfaces option): Module \"%s\" cannot be found",
                     (*interfaceModule).c_str());
         }
-        interfaceMap[module] = pcapwriter->addInterface("", module->getFullPath(), static_cast<uint32_t>(capture_length),
-                static_cast<uint8_t>(abs(omnetpp::simTime().getScaleExp())));
+        interfaceMap[module] = pcapwriter->addInterface("", module->getFullPath(),
+                static_cast<uint32_t>(capture_length), static_cast<uint8_t>(abs(omnetpp::simTime().getScaleExp())));
     }
     recordingStarted = true;
 }
@@ -103,9 +103,37 @@ void PCAPNGEventlogManager::flush()
 
 }
 
-void PCAPNGEventlogManager::simulationEvent(__attribute__((__unused__))                   omnetpp::cEvent *event)
+void PCAPNGEventlogManager::simulationEvent(omnetpp::cEvent *event)
 {
-
+    if (recordEventlog)
+    {
+        if (!recordingStarted)
+        {
+            startRecording();
+        }
+        if (event->isMessage())
+        {
+            if (omnetpp::cPacket* pkt = dynamic_cast<omnetpp::cPacket*>(event))
+            {
+                if (dynamic_cast<omnetpp::cDatarateChannel*>(pkt->getArrivalGate()->findIncomingTransmissionChannel()))
+                {
+                    //Refactor in method?
+                    if (interfaceMap.find(pkt->getArrivalModule()) != interfaceMap.end())
+                    {
+                        char serializeBuffer[10000];
+                        inet::serializer::Buffer wb(serializeBuffer, sizeof(serializeBuffer));
+                        inet::serializer::Context c;
+                        c.throwOnSerializerNotFound = false;
+                        inet::serializer::SerializerBase::lookupAndSerialize(pkt, wb, c, inet::serializer::LINKTYPE,
+                                inet::serializer::LINKTYPE_ETHERNET, static_cast<unsigned int>(capture_length));
+                        pcapwriter->addEnhancedPacket(static_cast<uint32_t>(interfaceMap[pkt->getArrivalModule()]),
+                                false, static_cast<uint64_t>(pkt->getArrivalTime().raw()),
+                                static_cast<uint32_t>(pkt->getByteLength()), wb.getPos(), serializeBuffer);
+                    }
+                }
+            }
+        }
+    }
 }
 
 void PCAPNGEventlogManager::beginSend(omnetpp::cMessage *msg)
@@ -129,10 +157,9 @@ void PCAPNGEventlogManager::beginSend(omnetpp::cMessage *msg)
                     c.throwOnSerializerNotFound = false;
                     inet::serializer::SerializerBase::lookupAndSerialize(pkt, wb, c, inet::serializer::LINKTYPE,
                             inet::serializer::LINKTYPE_ETHERNET, static_cast<unsigned int>(capture_length));
-                    EV << wb.getPos() << std::endl;
                     pcapwriter->addEnhancedPacket(static_cast<uint32_t>(interfaceMap[msg->getSenderModule()]), true,
-                            static_cast<uint64_t>(msg->getSendingTime().raw()), static_cast<uint32_t>(pkt->getByteLength()), wb.getPos(),
-                            serializeBuffer);
+                            static_cast<uint64_t>(msg->getSendingTime().raw()),
+                            static_cast<uint32_t>(pkt->getByteLength()), wb.getPos(), serializeBuffer);
                 }
             }
         }

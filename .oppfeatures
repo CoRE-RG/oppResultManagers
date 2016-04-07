@@ -49,7 +49,7 @@
         />
     <feature
         id="PCAPNGEventlog_common"
-        name="PCAP NG Eventlog Common"
+        name="PCAP NG Eventlog Common (requires INET Framework)"
         description = "The common part of the PCAPNG Eventlog output implementation"
         initiallyEnabled = "false"
         requires = ""

@@ -26,44 +26,25 @@
 //(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef CDATABASEOUTPUTVECTORMANAGER_H
-#define CDATABASEOUTPUTVECTORMANAGER_H
+#include "../features.h"
 
-#include "omnetpp.h"
+#ifdef WITH_PCAPNGEVENTLOG_COMMON
+#include "inet/common/INETDefs.h"
+#endif
 
-class cDatabaseOutputVectorManager : public omnetpp::cIOutputVectorManager
-{
-    protected:
-        struct sVectorData
-        {
-                long id;             // vector ID
-                omnetpp::opp_string modulename; // module of cOutVector object
-                omnetpp::opp_string vectorname; // cOutVector object name
-                omnetpp::opp_string_map attributes; // vector attributes
-                bool initialised;    // true if the "label" line is already written out
-                bool enabled;        // write to the output file can be enabled/disabled
-                bool recordEventNumbers;  // write to the output file can be enabled/disabled
-                std::vector<std::pair<simtime_t, simtime_t>> intervals; // write begins at starttime
-        };
+/**
+ * Check for minimal OMNeT++ Version requirements
+ */
+#if OMNETPP_VERSION < 0x0500
+#  error At least OMNeT++/OMNEST version 5.0 required
+#endif
 
-    public:
-
-        /**
-         * Registers a vector and returns a handle.
-         */
-        virtual void *registerVector(const char *modulename, const char *vectorname) override;
-
-        /**
-         * Deregisters the output vector.
-         */
-        virtual void deregisterVector(void *vectorhandle) override;
-
-        /**
-         * Sets an attribute of an output vector.
-         */
-        virtual void setVectorAttribute(void *vectorhandle, const char *name, const char *value) override;
-
-};
-
+#ifdef WITH_PCAPNGEVENTLOG_COMMON
+/**
+ * Check for minimal INET Version requirements
+ */
+#if INET_VERSION < 0x0302
+#  error At least INET version 3.2 required
+#endif
 #endif
 

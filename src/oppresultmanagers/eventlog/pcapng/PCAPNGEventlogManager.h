@@ -59,7 +59,7 @@ class PCAPNGEventlogManager : public omnetpp::cIEventlogManager
         virtual void startRecording() override;
         virtual void stopRecording() override;
 
-        virtual void flush() override;
+        virtual void flush() override {}
 
         /** @name Functions called from cEnvir's similar functions */
         //@{
@@ -67,7 +67,7 @@ class PCAPNGEventlogManager : public omnetpp::cIEventlogManager
         virtual void bubble(__attribute__((__unused__)) omnetpp::cComponent *component, __attribute__((__unused__)) const char *text) override {}
         virtual void messageScheduled(__attribute__((__unused__)) omnetpp::cMessage *msg) override {}
         virtual void messageCancelled(__attribute__((__unused__)) omnetpp::cMessage *msg) override {}
-        virtual void beginSend(__attribute__((__unused__)) omnetpp::cMessage *msg) override;
+        virtual void beginSend(__attribute__((__unused__)) omnetpp::cMessage *msg) override {}
         virtual void messageSendDirect(__attribute__((__unused__)) omnetpp::cMessage *msg, __attribute__((__unused__)) omnetpp::cGate *toGate,
                 __attribute__((__unused__)) simtime_t propagationDelay, __attribute__((__unused__)) simtime_t transmissionDelay) override {}
         virtual void messageSendHop(__attribute__((__unused__)) omnetpp::cMessage *msg, __attribute__((__unused__)) omnetpp::cGate *srcGate) override {}

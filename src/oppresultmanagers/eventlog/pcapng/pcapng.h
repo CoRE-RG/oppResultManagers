@@ -137,6 +137,7 @@ typedef struct {
  * Linktypes in the IDB.
  */
 #define IDB_LINKTYPE_ETHERNET   1
+#define IDB_LINKTYPE_NETANALYZER 240
 
 /*
  * Enhanced Packet Block.

@@ -31,6 +31,7 @@
 #include "oppresultmanagers/eventlog/pcapng/pcapng.h"
 
 #include "inet/common/serializer/SerializerBase.h"
+#include "inet/linklayer/ethernet/EtherFrame_m.h"
 
 Register_Class(PCAPNGEventlogManager);
 
@@ -126,22 +127,24 @@ void PCAPNGEventlogManager::simulationEvent(omnetpp::cEvent *event)
                         inet::serializer::Buffer wb(serializeBuffer, sizeof(serializeBuffer));
                         inet::serializer::Context c;
                         c.throwOnSerializerNotFound = false;
+                        c.throwOnSerializedSizeMissmatch = false;
                         inet::serializer::SerializerBase::lookupAndSerialize(pkt, wb, c, inet::serializer::LINKTYPE,
                                 inet::serializer::LINKTYPE_ETHERNET, static_cast<unsigned int>(capture_length));
+                        inet::EtherFrame * ethPkt = check_and_cast<inet::EtherFrame*>(pkt);
 
                         //write out if sender is in interfaces
                         if (senderModule != interfaceMap.end())
                         {
                             pcapwriter->addEnhancedPacket(static_cast<uint32_t>(interfaceMap[pkt->getSenderModule()]),
                                     true, static_cast<uint64_t>(pkt->getSendingTime().raw()),
-                                    static_cast<uint32_t>(pkt->getByteLength()), wb.getPos(), serializeBuffer);
+                                    static_cast<uint32_t>(ethPkt->getFrameByteLength()), wb.getPos(), serializeBuffer);
                         }
                         //write out if receiver is in interfaces
                         if (arrivalModule != interfaceMap.end())
                         {
                             pcapwriter->addEnhancedPacket(static_cast<uint32_t>(interfaceMap[pkt->getArrivalModule()]),
                                     false, static_cast<uint64_t>(pkt->getArrivalTime().raw()),
-                                    static_cast<uint32_t>(pkt->getByteLength()), wb.getPos(), serializeBuffer);
+                                    static_cast<uint32_t>(ethPkt->getFrameByteLength()), wb.getPos(), serializeBuffer);
                         }
                     }
                 }

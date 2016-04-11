@@ -49,7 +49,7 @@ class PCAPNGEventlogManager : public omnetpp::cIEventlogManager
         void* buffer;
         PCAPNGWriter *pcapwriter;
         bool recordingStarted = false;
-        std::map<omnetpp::cModule*,size_t> interfaceMap;
+        std::map<omnetpp::cGate*,size_t> interfaceMap;
         size_t capture_length;
 
     public:

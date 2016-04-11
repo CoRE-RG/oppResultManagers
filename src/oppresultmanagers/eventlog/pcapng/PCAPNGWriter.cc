@@ -181,7 +181,7 @@ void PCAPNGWriter::addInterfaceDescriptionHeader(uint32_t snaplen)
     interfaceDescription->snaplen = snaplen;
 }
 
-size_t PCAPNGWriter::addInterface(std::string name, std::string description, uint32_t snaplen, uint8_t tsresol)
+size_t PCAPNGWriter::addInterface(std::string name, std::string description, uint32_t snaplen, uint8_t tsresol, uint64_t speed)
 {
 
     addInterfaceDescriptionHeader(snaplen);
@@ -194,6 +194,9 @@ size_t PCAPNGWriter::addInterface(std::string name, std::string description, uin
         addPaddedStringOption(IF_DESCRIPTION, description);
     }
     addUint8Option(IF_TSRESOL, tsresol);
+    if(speed>0){
+        addUint64Option(IF_SPEED, speed);
+    }
     endOptions();
     closeBlock();
 

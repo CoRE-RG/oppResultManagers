@@ -87,7 +87,7 @@ class PCAPNGWriter
 
 
         void openSection(std::string hardware, std::string os, std::string application);
-        size_t addInterface(std::string name, std::string description, uint32_t snaplen, uint8_t tsresol);
+        size_t addInterface(std::string name, std::string description, uint32_t snaplen, uint8_t tsresol, uint64_t speed);
         void addEnhancedPacket(uint32_t interfaceId, bool sender, uint64_t timestamp, uint32_t len, uint32_t caplen, void* data);
 };
 

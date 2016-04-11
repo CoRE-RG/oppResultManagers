@@ -78,14 +78,50 @@ void PCAPNGEventlogManager::startRecording()
     for (std::vector<std::string>::const_iterator interfaceModule = interfaceModules.begin();
             interfaceModule != interfaceModules.end(); ++interfaceModule)
     {
-        omnetpp::cModule *module = omnetpp::getSimulation()->getModuleByPath((*interfaceModule).c_str());
+        std::size_t pos = (*interfaceModule).rfind('.');
+        std::string modulePath;
+        std::string gateName;
+        if (pos != std::string::npos)
+        {
+            modulePath = (*interfaceModule).substr(0, pos);
+            gateName = (*interfaceModule).substr(pos + 1);
+        }
+        else
+        {
+            //throw
+        }
+        //TODO: allow interfaces to be named with sim.mod.gate$i=eth1 This could be great to group things together!
+        //TODO: check if an interface already exists ($i/$o should be on the same interface!)
+        //TODO: allow kind of autodetection (e.g. find mac modules in nodes, have to find a clever way to do that)
+        omnetpp::cModule *module = omnetpp::getSimulation()->getModuleByPath(modulePath.c_str());
+        omnetpp::cGate *gate = module->gate(gateName.c_str());
         if (!module)
         {
-            throw omnetpp::cRuntimeError("error in ini file (pcapng-interfaces option): Module \"%s\" cannot be found",
-                    (*interfaceModule).c_str());
+            throw omnetpp::cRuntimeError(
+                    "PCAPEventlogManager: error in ini file (pcapng-interfaces option): Gate \"%s\" of module \"%s\" cannot be found",
+                    gateName.c_str(), modulePath.c_str());
         }
-        interfaceMap[module] = pcapwriter->addInterface("", module->getFullPath(),
-                static_cast<uint32_t>(capture_length), static_cast<uint8_t>(abs(omnetpp::simTime().getScaleExp())));
+        if(!module->isSimple()){
+            throw omnetpp::cRuntimeError(
+                    "PCAPEventlogManager: Sorry, module \"%s\" is no simple module. We can only capture packets at simple modules", modulePath.c_str());
+        }
+        uint64_t speed = 0;
+        omnetpp::cChannel* channel = nullptr;
+        if (gate->getType() == cGate::INPUT)
+        {
+            channel = gate->findIncomingTransmissionChannel();
+        }
+        else
+        {
+            channel = gate->findTransmissionChannel();
+        }
+        if (omnetpp::cDatarateChannel* datarateChannel = dynamic_cast<omnetpp::cDatarateChannel*>(channel))
+        {
+            speed = static_cast<uint64_t>(datarateChannel->getDatarate());
+            //TODO check if channel is an EtherLink, or other hints that we have an etherlink. getProperties and check type of frames for the gate
+        }
+        interfaceMap[gate] = pcapwriter->addInterface("", gate->getFullPath(), static_cast<uint32_t>(capture_length),
+                static_cast<uint8_t>(abs(omnetpp::simTime().getScaleExp())), speed);
     }
     recordingStarted = true;
 }
@@ -113,39 +149,33 @@ void PCAPNGEventlogManager::simulationEvent(omnetpp::cEvent *event)
             //Was it a Packet?
             if (omnetpp::cPacket* pkt = dynamic_cast<omnetpp::cPacket*>(event))
             {
-                //Was the Packet sent over an actual datarate channel
-                if (dynamic_cast<omnetpp::cDatarateChannel*>(pkt->getArrivalGate()->findIncomingTransmissionChannel()))
+                std::map<omnetpp::cGate*, size_t>::iterator senderGate = interfaceMap.find(pkt->getSenderGate());
+                std::map<omnetpp::cGate*, size_t>::iterator arrivalGate = interfaceMap.find(pkt->getArrivalGate());
+                //Serialize if sender or receiver is in capture interfaces
+                if (senderGate != interfaceMap.end() || arrivalGate != interfaceMap.end())
                 {
-                    std::map<omnetpp::cModule*, size_t>::iterator senderModule = interfaceMap.find(
-                            pkt->getSenderModule());
-                    std::map<omnetpp::cModule*, size_t>::iterator arrivalModule = interfaceMap.find(
-                            pkt->getArrivalModule());
-                    //Serialize if sender or receiver is in capture interfaces
-                    if (senderModule != interfaceMap.end() || arrivalModule != interfaceMap.end())
-                    {
-                        char serializeBuffer[10000];
-                        inet::serializer::Buffer wb(serializeBuffer, sizeof(serializeBuffer));
-                        inet::serializer::Context c;
-                        c.throwOnSerializerNotFound = false;
-                        c.throwOnSerializedSizeMissmatch = false;
-                        inet::serializer::SerializerBase::lookupAndSerialize(pkt, wb, c, inet::serializer::LINKTYPE,
-                                inet::serializer::LINKTYPE_ETHERNET, static_cast<unsigned int>(capture_length));
-                        inet::EtherFrame * ethPkt = check_and_cast<inet::EtherFrame*>(pkt);
+                    char serializeBuffer[10000];
+                    inet::serializer::Buffer wb(serializeBuffer, sizeof(serializeBuffer));
+                    inet::serializer::Context c;
+                    c.throwOnSerializerNotFound = false;
+                    c.throwOnSerializedSizeMissmatch = false;
+                    inet::serializer::SerializerBase::lookupAndSerialize(pkt, wb, c, inet::serializer::LINKTYPE,
+                            inet::serializer::LINKTYPE_ETHERNET, static_cast<unsigned int>(capture_length));
+                    inet::EtherFrame * ethPkt = check_and_cast<inet::EtherFrame*>(pkt);
 
-                        //write out if sender is in interfaces
-                        if (senderModule != interfaceMap.end())
-                        {
-                            pcapwriter->addEnhancedPacket(static_cast<uint32_t>(interfaceMap[pkt->getSenderModule()]),
-                                    true, static_cast<uint64_t>(pkt->getSendingTime().raw()),
-                                    static_cast<uint32_t>(ethPkt->getFrameByteLength()), wb.getPos(), serializeBuffer);
-                        }
-                        //write out if receiver is in interfaces
-                        if (arrivalModule != interfaceMap.end())
-                        {
-                            pcapwriter->addEnhancedPacket(static_cast<uint32_t>(interfaceMap[pkt->getArrivalModule()]),
-                                    false, static_cast<uint64_t>(pkt->getArrivalTime().raw()),
-                                    static_cast<uint32_t>(ethPkt->getFrameByteLength()), wb.getPos(), serializeBuffer);
-                        }
+                    //write out if sender is in interfaces
+                    if (senderGate != interfaceMap.end())
+                    {
+                        pcapwriter->addEnhancedPacket(static_cast<uint32_t>(senderGate->second), true,
+                                static_cast<uint64_t>(pkt->getSendingTime().raw()),
+                                static_cast<uint32_t>(ethPkt->getFrameByteLength()), wb.getPos(), serializeBuffer);
+                    }
+                    //write out if receiver is in interfaces
+                    if (arrivalGate != interfaceMap.end())
+                    {
+                        pcapwriter->addEnhancedPacket(static_cast<uint32_t>(arrivalGate->second), false,
+                                static_cast<uint64_t>(pkt->getArrivalTime().raw()),
+                                static_cast<uint32_t>(ethPkt->getFrameByteLength()), wb.getPos(), serializeBuffer);
                     }
                 }
             }

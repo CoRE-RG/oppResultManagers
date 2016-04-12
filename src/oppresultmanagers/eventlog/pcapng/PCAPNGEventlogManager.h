@@ -43,13 +43,24 @@ extern omnetpp::cConfigOption *CFGID_EVENTLOG_PCAPNG_CAPTURELENGTH;
  */
 class PCAPNGEventlogManager : public omnetpp::cIEventlogManager
 {
+        class Interface{
+                size_t id;
+                std::string name;
+                uint64_t speed;
+                std::list<omnetpp::cGate*> gates;
+
+                Interface(std::string newName, uint64_t newSpeed): name(newName), speed(newSpeed) {}
+
+                friend class PCAPNGEventlogManager;
+        };
     private:
         omnetpp::opp_string filename;
         bool recordEventlog;
         void* buffer;
         PCAPNGWriter *pcapwriter;
         bool recordingStarted = false;
-        std::map<omnetpp::cGate*,size_t> interfaceMap;
+        std::map<omnetpp::cGate*,Interface *> interfaceMap;
+        std::map<std::string, Interface*> interfaces;
         size_t capture_length;
 
     public:

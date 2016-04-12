@@ -21,7 +21,13 @@
 package oppresultmanagers.examples.pcapng;
 
 import inet.node.ethernet.EtherHost;
-import ned.DatarateChannel;
+import inet.node.ethernet.Eth100M;
+
+
+channel Eth100M50m extends Eth100M
+{
+    length = 50m;
+}
 
 //
 // Sample Ethernet LAN: two hosts directly connected to each other
@@ -39,5 +45,5 @@ network Network
                 @display("p=200,140");
         }
     connections:
-        node1.ethg <--> {  delay = 0.5us; datarate = 100Mbps; } <--> node2.ethg;
+        node1.ethg <--> Eth100M50m{} <--> node2.ethg;
 }

@@ -29,6 +29,7 @@
 #include "oppresultmanagers/eventlog/pcapng/PCAPNGEventlogManager.h"
 
 #include "oppresultmanagers/eventlog/pcapng/pcapng.h"
+#include "oppresultmanagers/utilities/fileutil.h"
 
 #include "inet/common/serializer/SerializerBase.h"
 #include "inet/linklayer/ethernet/EtherFrame_m.h"
@@ -53,6 +54,10 @@ PCAPNGEventlogManager::PCAPNGEventlogManager()
     recordEventlog = omnetpp::cConfiguration::parseBool(
             omnetpp::getEnvir()->getConfig()->getConfigEntry("record-eventlog").getValue(), "false");
     filename = omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_EVENTLOG_PCAPNG_FILE).c_str();
+
+    removeFile(filename.c_str(), "old pcapng file");
+    mkPath(directoryOf(filename.c_str()).c_str());
+
     pcapwriter->openFile(filename.c_str());
 
     recordingStarted = false;
@@ -113,18 +118,24 @@ void PCAPNGEventlogManager::startRecording()
         }
         //TODO: allow kind of autodetection (e.g. find mac modules in nodes, have to find a clever way to do that)
         omnetpp::cModule *module = omnetpp::getSimulation()->getModuleByPath(modulePath.c_str());
-        omnetpp::cGate *gate = module->gate(gateName.c_str());
         if (!module)
         {
             throw omnetpp::cRuntimeError(
-                    "PCAPEventlogManager: error in ini file (pcapng-interfaces option): Gate \"%s\" of module \"%s\" cannot be found",
-                    gateName.c_str(), modulePath.c_str());
+                    "PCAPEventlogManager: error in ini file (pcapng-interfaces option): Module \"%s\" cannot be found",
+                    modulePath.c_str());
         }
         if (!module->isSimple())
         {
             throw omnetpp::cRuntimeError(
                     "PCAPEventlogManager: Sorry, module \"%s\" is no simple module. We can only capture packets at simple modules",
                     modulePath.c_str());
+        }
+        omnetpp::cGate *gate = module->gate(gateName.c_str());
+        if (!gate)
+        {
+            throw omnetpp::cRuntimeError(
+                    "PCAPEventlogManager: error in ini file (pcapng-interfaces option): Gate \"%s\" of module \"%s\" cannot be found",
+                    gateName.c_str(), modulePath.c_str());
         }
         uint64_t speed = 0;
         omnetpp::cChannel* channel = nullptr;
@@ -217,7 +228,7 @@ void PCAPNGEventlogManager::simulationEvent(omnetpp::cEvent *event)
                     inet::serializer::Buffer wb(serializeBuffer, sizeof(serializeBuffer));
                     inet::serializer::Context c;
                     c.throwOnSerializerNotFound = false;
-//                    c.throwOnSerializedSizeMissmatch = false;
+                    c.throwOnSerializedSizeMissmatch = false;
                     inet::serializer::SerializerBase::lookupAndSerialize(pkt, wb, c, inet::serializer::LINKTYPE,
                             inet::serializer::LINKTYPE_ETHERNET, static_cast<unsigned int>(capture_length));
                     inet::EtherFrame * ethPkt = check_and_cast<inet::EtherFrame*>(pkt);
@@ -227,14 +238,14 @@ void PCAPNGEventlogManager::simulationEvent(omnetpp::cEvent *event)
                     {
                         pcapwriter->addEnhancedPacket(static_cast<uint32_t>(senderGate->second->id), true,
                                 static_cast<uint64_t>(pkt->getSendingTime().raw()),
-                                static_cast<uint32_t>(ethPkt->getFrameByteLength()), wb.getPos(), serializeBuffer);
+                                static_cast<uint32_t>(ethPkt->getFrameByteLength()), wb.getPos(), serializeBuffer, ethPkt->hasBitError());
                     }
                     //write out if receiver is in interfaces
                     if (arrivalGate != interfaceMap.end())
                     {
                         pcapwriter->addEnhancedPacket(static_cast<uint32_t>(arrivalGate->second->id), false,
                                 static_cast<uint64_t>(pkt->getArrivalTime().raw()),
-                                static_cast<uint32_t>(ethPkt->getFrameByteLength()), wb.getPos(), serializeBuffer);
+                                static_cast<uint32_t>(ethPkt->getFrameByteLength()), wb.getPos(), serializeBuffer, ethPkt->hasBitError());
                     }
                 }
             }

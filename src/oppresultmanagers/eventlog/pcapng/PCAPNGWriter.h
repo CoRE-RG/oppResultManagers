@@ -35,10 +35,9 @@
 #ifndef PCAPNGWRITER_H_
 #define PCAPNGWRITER_H_
 
-enum BlockType{
-    SectionHeader = BT_SHB,
-    InterfaceDescriptionHeader = BT_IDB,
-    EnhancedPacketHeader = BT_EPB,
+enum BlockType
+{
+    SectionHeader = BT_SHB, InterfaceDescriptionHeader = BT_IDB, EnhancedPacketHeader = BT_EPB,
 };
 
 class PCAPNGWriter
@@ -85,10 +84,12 @@ class PCAPNGWriter
 
         void addEnhancedPacketHeader(uint32_t interfaceId, uint64_t timestamp, uint32_t caplen, uint32_t len);
 
-
         void openSection(std::string hardware, std::string os, std::string application);
-        size_t addInterface(std::string name, std::string description, uint32_t snaplen, uint8_t tsresol, uint64_t speed);
-        void addEnhancedPacket(uint32_t interfaceId, bool sender, uint64_t timestamp, uint32_t len, uint32_t caplen, void* data);
+        size_t addInterface(std::string name, std::string description, uint32_t snaplen, uint8_t tsresol,
+                uint64_t speed);
+        void addEnhancedPacket(uint32_t interfaceId, bool sender, uint64_t timestamp, uint32_t len, uint32_t caplen,
+                void* data, bool bitError);
+
 };
 
 #endif /* PCAPNGWRITER_H_ */

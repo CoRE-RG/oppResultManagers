@@ -29,6 +29,7 @@
 #include "oppresultmanagers/check/cCheckOutputVectorManager.h"
 
 #include "oppresultmanagers/utilities/HelperFunctions.h"
+#include "oppresultmanagers/utilities/fileutil.h"
 
 #include <regex>
 #include <algorithm>
@@ -368,8 +369,8 @@ void cCheckOutputVectorManager::outputReport()
     std::string fileType = reportFilename.substr(std::max<size_t>(4, reportFilename.size()) - 4);
     if (fileType == ".csv")
     {
-        //omnetpp::common::removeFile(reportFilename.c_str(), "old eventlog file");
-        //omnetpp::common::mkPath(omnetpp::common::directoryOf(reportFilename.c_str()).c_str());
+        removeFile(reportFilename.c_str(), "old eventlog file");
+        mkPath(directoryOf(reportFilename.c_str()).c_str());
 
         std::fstream file;
         file.open(reportFilename, std::fstream::out);

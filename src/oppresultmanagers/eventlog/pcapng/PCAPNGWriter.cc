@@ -217,7 +217,7 @@ void PCAPNGWriter::addEnhancedPacketHeader(uint32_t interfaceId, uint64_t timest
 }
 
 void PCAPNGWriter::addEnhancedPacket(uint32_t interfaceId, bool sender, uint64_t timestamp, uint32_t len,
-        uint32_t caplen, void* data)
+        uint32_t caplen, void* data, bool bitError)
 {
     addEnhancedPacketHeader(interfaceId, timestamp, caplen, len);
     uint32_t flags = 0;
@@ -228,6 +228,10 @@ void PCAPNGWriter::addEnhancedPacket(uint32_t interfaceId, bool sender, uint64_t
     else
     {
         flags |= 0x00000001;
+    }
+    //Biterror
+    if(bitError){
+        flags |= 0x01000000;
     }
     std::memcpy((buffer + bufferPos), data, caplen);
     bufferPos += caplen;

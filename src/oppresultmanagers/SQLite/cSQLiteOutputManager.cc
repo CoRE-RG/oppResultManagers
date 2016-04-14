@@ -72,9 +72,7 @@ void cSQLiteOutputManager::startRun()
 {
     if (!connection)
     {
-        omnetpp::common::mkPath(
-                omnetpp::common::directoryOf(
-                        omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_SQLITEOUTMGR_FILE).c_str()).c_str());
+        mkPath(directoryOf(omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_SQLITEOUTMGR_FILE).c_str()).c_str());
 
         std::string cfgobj = omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_SQLITEOUTMGR_FILE);
         int rc = sqlite3_open(cfgobj.c_str(), &connection);

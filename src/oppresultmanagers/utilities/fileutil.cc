@@ -61,7 +61,7 @@ void splitFileName(const char *pathname, std::string& dir, std::string& fnameonl
     }
     else {
         fnameonly = s+1;
-        dir = std::string(pathname, s-pathname+1);
+        dir = std::string(pathname, static_cast<size_t>(s-pathname+1));
     }
 }
 

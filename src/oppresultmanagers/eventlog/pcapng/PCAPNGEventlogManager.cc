@@ -40,7 +40,7 @@ Register_PerRunConfigOption(CFGID_EVENTLOG_PCAPNG_FILE, "pcapng-file", CFG_FILEN
         "${resultdir}/${configname}-${runnumber}.pcapng", "Name of the PCAPNG file to generate.");
 
 Register_PerRunConfigOption(CFGID_EVENTLOG_PCAPNG_INTERFACES, "pcapng-interfaces", CFG_STRING, "\"\"",
-        "List of modules (comma or space separated) that appear as an interface in the pcapng file");
+        "List of gates (comma or space separated) that appear as an interface in the pcapng file, you can group gates together in one interface using = (e.g. net1.module1.mac.phys$i=eth0, net1.module1.mac.phys$o=eth0, net1.module2.mac.phys$i=eth1");
 
 Register_PerRunConfigOption(CFGID_EVENTLOG_PCAPNG_CAPTURELENGTH, "pcapng-capturelength", CFG_INT, "10000",
         "Maximum length of packet that is being captured (length will be still correct)");

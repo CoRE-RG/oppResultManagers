@@ -237,7 +237,7 @@ void cCheckOutputVectorManager::setVectorAttribute(__attribute__((__unused__)) v
 {
 }
 
-bool cCheckOutputVectorManager::record(void *vectorhandle, simtime_t t, double value)
+bool cCheckOutputVectorManager::record(void *vectorhandle, omnetpp::simtime_t t, double value)
 {
     sVectorData *vp = static_cast<sVectorData *>(vectorhandle);
 
@@ -338,7 +338,7 @@ bool cCheckOutputVectorManager::record(void *vectorhandle, simtime_t t, double v
 
             if (violationEnd)
             {
-                (*constraint)->intervals.push_back(std::pair<simtime_t, simtime_t>((*constraint)->intervallStart, t));
+                (*constraint)->intervals.push_back(std::pair<omnetpp::simtime_t, omnetpp::simtime_t>((*constraint)->intervallStart, t));
                 (*constraint)->intervallStart = 0;
             }
         }
@@ -409,7 +409,7 @@ void cCheckOutputVectorManager::outputReport()
                             break;
                     }
                     file << "," << (*constraint)->value << ",";
-                    for (std::vector<std::pair<simtime_t, simtime_t>>::const_iterator interval =
+                    for (std::vector<std::pair<omnetpp::simtime_t, omnetpp::simtime_t>>::const_iterator interval =
                             (*constraint)->intervals.begin(); interval != (*constraint)->intervals.end(); ++interval)
                     {
                         file << (*interval).first << ".." << (*interval).second << " ";

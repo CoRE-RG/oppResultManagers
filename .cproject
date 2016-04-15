@@ -27,14 +27,18 @@
 							</builder>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.791004234" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.364557831" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
-								<option id="gnu.cpp.compiler.option.preprocessor.def.196753503" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols"/>
+								<option id="gnu.cpp.compiler.option.preprocessor.def.196753503" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="WITH_PCAPNGEVENTLOG_COMMON"/>
+								</option>
 								<option id="gnu.cpp.compiler.option.include.paths.1507852063" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../../src"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1711841259" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1022967988" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
-								<option id="gnu.c.compiler.option.preprocessor.def.symbols.873421088" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols"/>
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.873421088" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="WITH_PCAPNGEVENTLOG_COMMON"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1221698086" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.343829242" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
@@ -50,9 +54,53 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<folderInfo id="org.omnetpp.cdt.gnu.config.debug.332447950.266277588" name="/" resourcePath="examples">
+						<toolChain id="org.omnetpp.cdt.gnu.toolchain.debug.2069664030" name="GCC for OMNeT++" superClass="org.omnetpp.cdt.gnu.toolchain.debug" unusedChildren="">
+							<tool id="cdt.managedbuild.tool.gnu.archiver.base.511501605" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base.791004234"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.348436494" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.364557831">
+								<option id="gnu.cpp.compiler.option.preprocessor.def.296618192" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="WITH_PCAPNGEVENTLOG_COMMON"/>
+								</option>
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1359319897" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1948308475" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base.1022967988">
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.616368850" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="WITH_PCAPNGEVENTLOG_COMMON"/>
+								</option>
+								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1972894230" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.1729231152" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base.343829242"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.957130333" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base.379338406"/>
+							<tool id="cdt.managedbuild.tool.gnu.assembler.base.1085369382" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base.106259804">
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1349701759" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+							</tool>
+						</toolChain>
+					</folderInfo>
+					<folderInfo id="org.omnetpp.cdt.gnu.config.debug.332447950.1456723620" name="/" resourcePath="src">
+						<toolChain id="org.omnetpp.cdt.gnu.toolchain.debug.780153532" name="GCC for OMNeT++" superClass="org.omnetpp.cdt.gnu.toolchain.debug" unusedChildren="">
+							<tool id="cdt.managedbuild.tool.gnu.archiver.base.737814980" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base.791004234"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.573711488" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.364557831">
+								<option id="gnu.cpp.compiler.option.preprocessor.def.696377021" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="WITH_PCAPNGEVENTLOG_COMMON"/>
+								</option>
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.909238670" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.467145020" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base.1022967988">
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1183803972" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="WITH_PCAPNGEVENTLOG_COMMON"/>
+								</option>
+								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.837050311" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.1073792497" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base.343829242"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.216544030" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base.379338406"/>
+							<tool id="cdt.managedbuild.tool.gnu.assembler.base.161648806" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base.106259804">
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.315609560" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+							</tool>
+						</toolChain>
+					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="examples"/>
-						<entry excluding="oppresultmanagers/eventlog/pcapng|oppresultmanagers/postgreSQL|oppresultmanagers/multiple|oppresultmanagers/eventlog/gcta|oppresultmanagers/SQLite" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
+						<entry excluding="oppresultmanagers/postgreSQL|oppresultmanagers/multiple|oppresultmanagers/eventlog/gcta|oppresultmanagers/SQLite" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -85,6 +133,7 @@
 									<listOptionValue builtIn="false" value="WITH_AS6802_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
+									<listOptionValue builtIn="false" value="WITH_PCAPNGEVENTLOG_COMMON"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.include.paths.193103377" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="../../src"/>
@@ -97,6 +146,7 @@
 									<listOptionValue builtIn="false" value="WITH_AS6802_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
+									<listOptionValue builtIn="false" value="WITH_PCAPNGEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.417557408" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -122,6 +172,7 @@
 									<listOptionValue builtIn="false" value="WITH_AS6802_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
+									<listOptionValue builtIn="false" value="WITH_PCAPNGEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1304493742" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -131,6 +182,7 @@
 									<listOptionValue builtIn="false" value="WITH_AS6802_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
+									<listOptionValue builtIn="false" value="WITH_PCAPNGEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.529357243" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -151,6 +203,7 @@
 									<listOptionValue builtIn="false" value="WITH_AS6802_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
+									<listOptionValue builtIn="false" value="WITH_PCAPNGEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.311188515" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -160,6 +213,7 @@
 									<listOptionValue builtIn="false" value="WITH_AS6802_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
+									<listOptionValue builtIn="false" value="WITH_PCAPNGEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.248185939" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -180,6 +234,7 @@
 									<listOptionValue builtIn="false" value="WITH_AS6802_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
+									<listOptionValue builtIn="false" value="WITH_PCAPNGEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.97415844" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -189,6 +244,7 @@
 									<listOptionValue builtIn="false" value="WITH_AS6802_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IEEE8021Q_COMMON"/>
 									<listOptionValue builtIn="false" value="WITH_IPORE"/>
+									<listOptionValue builtIn="false" value="WITH_PCAPNGEVENTLOG_COMMON"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.574586158" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>

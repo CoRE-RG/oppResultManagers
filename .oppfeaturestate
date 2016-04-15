@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<featurestates>
+    <feature enabled="false" id="PostgreSQL_common"/>
+    <feature enabled="false" id="SQLite_common"/>
+    <feature enabled="true" id="Multiple_common"/>
+    <feature enabled="false" id="GCTAEventlog_common"/>
+    <feature enabled="false" id="PCAPNGEventlog_common"/>
+</featurestates>

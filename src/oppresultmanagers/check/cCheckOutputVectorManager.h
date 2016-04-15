@@ -53,8 +53,8 @@ class cCheckOutputVectorManager : public omnetpp::cIOutputVectorManager
                 } type;
                 double value;
                 bool violation;
-                simtime_t intervallStart;
-                std::vector<std::pair<simtime_t, simtime_t>> intervals;
+                omnetpp::simtime_t intervallStart;
+                std::vector<std::pair<omnetpp::simtime_t, omnetpp::simtime_t>> intervals;
 
                 Constraint(Type t) :
                         type(t), value(0), violation(false), intervallStart(0)
@@ -65,7 +65,7 @@ class cCheckOutputVectorManager : public omnetpp::cIOutputVectorManager
         {
                 friend class cCheckOutputVectorManager;
             private:
-                simtime_t last;
+                omnetpp::simtime_t last;
 
                 IntervalConstraint(Type t) :
                         Constraint(t), last(0)
@@ -153,7 +153,7 @@ class cCheckOutputVectorManager : public omnetpp::cIOutputVectorManager
         /**
          * Writes the (time, value) pair into the output file.
          */
-        virtual bool record(void *vectorhandle, simtime_t t, double value) override;
+        virtual bool record(void *vectorhandle, omnetpp::simtime_t t, double value) override;
 
         /**
          * Returns nullptr, because this class doesn't use a file.

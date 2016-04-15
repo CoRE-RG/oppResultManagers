@@ -40,8 +40,8 @@ extern std::string directoryOf(const char *pathname);
 extern void removeFile(const char *fname, const char *descr);
 }}
 
-std::vector< std::pair< simtime_t, simtime_t > > parseIntervals(const char* text);
+std::vector< std::pair< omnetpp::simtime_t, omnetpp::simtime_t > > parseIntervals(const char* text);
 
-bool inIntervals(simtime_t t, std::vector< std::pair< simtime_t, simtime_t > > &intervals);
+bool inIntervals(omnetpp::simtime_t t, std::vector< std::pair< omnetpp::simtime_t, omnetpp::simtime_t > > &intervals);
 
 #endif /* HELPERFUNCTIONS_H_ */

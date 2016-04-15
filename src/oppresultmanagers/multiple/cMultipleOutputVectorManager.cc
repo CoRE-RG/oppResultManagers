@@ -120,7 +120,7 @@ void cMultipleOutputVectorManager::setVectorAttribute(void *vectorhandle, const 
         ++vectorOutputManagerHandle;
     }
 }
-bool cMultipleOutputVectorManager::record(void *vectorhandle, simtime_t t, double value)
+bool cMultipleOutputVectorManager::record(void *vectorhandle, omnetpp::simtime_t t, double value)
 {
     bool returnValue = false;
 

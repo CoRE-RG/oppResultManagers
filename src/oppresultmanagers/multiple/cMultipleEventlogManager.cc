@@ -136,8 +136,8 @@ void cMultipleEventlogManager::beginSend(omnetpp::cMessage *msg)
     }
 }
 
-void cMultipleEventlogManager::messageSendDirect(omnetpp::cMessage *msg, omnetpp::cGate *toGate, simtime_t propagationDelay,
-        simtime_t transmissionDelay)
+void cMultipleEventlogManager::messageSendDirect(omnetpp::cMessage *msg, omnetpp::cGate *toGate, omnetpp::simtime_t propagationDelay,
+        omnetpp::simtime_t transmissionDelay)
 {
     for (std::vector<omnetpp::cIEventlogManager*>::const_iterator eventlogManager = eventlogManagers.begin();
             eventlogManager != eventlogManagers.end(); ++eventlogManager)
@@ -155,8 +155,8 @@ void cMultipleEventlogManager::messageSendHop(omnetpp::cMessage *msg, omnetpp::c
     }
 }
 
-void cMultipleEventlogManager::messageSendHop(omnetpp::cMessage *msg, omnetpp::cGate *srcGate, simtime_t propagationDelay,
-        simtime_t transmissionDelay)
+void cMultipleEventlogManager::messageSendHop(omnetpp::cMessage *msg, omnetpp::cGate *srcGate, omnetpp::simtime_t propagationDelay,
+        omnetpp::simtime_t transmissionDelay)
 {
     for (std::vector<omnetpp::cIEventlogManager*>::const_iterator eventlogManager = eventlogManagers.begin();
             eventlogManager != eventlogManagers.end(); ++eventlogManager)

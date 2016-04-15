@@ -30,14 +30,14 @@
 
 #include <omnetpp.h>
 
-std::vector<std::pair<simtime_t, simtime_t> > parseIntervals(const char* text)
+std::vector<std::pair<omnetpp::simtime_t, omnetpp::simtime_t> > parseIntervals(const char* text)
 {
-    std::vector<std::pair<simtime_t, simtime_t>> parsedIntervals;
+    std::vector<std::pair<omnetpp::simtime_t, omnetpp::simtime_t>> parsedIntervals;
     std::vector<std::string> intervals = omnetpp::cStringTokenizer(text, ",").asVector();
     for (std::vector<std::string>::const_iterator interval = intervals.begin(); interval != intervals.end(); ++interval)
     {
-        simtime_t starttime = 0;
-        simtime_t endtime = 0;
+        omnetpp::simtime_t starttime = 0;
+        omnetpp::simtime_t endtime = 0;
         size_t pos = (*interval).find("..");
         if (pos == std::string::npos)
         {
@@ -61,18 +61,18 @@ std::vector<std::pair<simtime_t, simtime_t> > parseIntervals(const char* text)
                         (*interval).c_str());
             }
         }
-        parsedIntervals.push_back(std::pair<simtime_t, simtime_t>(starttime, endtime));
+        parsedIntervals.push_back(std::pair<omnetpp::simtime_t, omnetpp::simtime_t>(starttime, endtime));
     }
     return parsedIntervals;
 }
 
-bool inIntervals(simtime_t t, std::vector<std::pair<simtime_t, simtime_t> > &intervals)
+bool inIntervals(omnetpp::simtime_t t, std::vector<std::pair<omnetpp::simtime_t, omnetpp::simtime_t> > &intervals)
 {
     if (intervals.size() > 0)
     {
         //Check intervals
         bool inIntervals = false;
-        for (std::vector<std::pair<simtime_t, simtime_t>>::iterator interval = intervals.begin();
+        for (std::vector<std::pair<omnetpp::simtime_t, omnetpp::simtime_t>>::iterator interval = intervals.begin();
                 interval != intervals.end();)
         {
             if (t > (*interval).first && t < (*interval).second)

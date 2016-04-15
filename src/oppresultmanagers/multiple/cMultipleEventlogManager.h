@@ -86,9 +86,9 @@ class cMultipleEventlogManager : public omnetpp::cIEventlogManager
         virtual void messageScheduled(omnetpp::cMessage *msg);
         virtual void messageCancelled(omnetpp::cMessage *msg);
         virtual void beginSend(omnetpp::cMessage *msg);
-        virtual void messageSendDirect(omnetpp::cMessage *msg, omnetpp::cGate *toGate, simtime_t propagationDelay, simtime_t transmissionDelay);
+        virtual void messageSendDirect(omnetpp::cMessage *msg, omnetpp::cGate *toGate, omnetpp::simtime_t propagationDelay, omnetpp::simtime_t transmissionDelay);
         virtual void messageSendHop(omnetpp::cMessage *msg, omnetpp::cGate *srcGate);
-        virtual void messageSendHop(omnetpp::cMessage *msg, omnetpp::cGate *srcGate, simtime_t propagationDelay, simtime_t transmissionDelay);
+        virtual void messageSendHop(omnetpp::cMessage *msg, omnetpp::cGate *srcGate, omnetpp::simtime_t propagationDelay, omnetpp::simtime_t transmissionDelay);
         virtual void endSend(omnetpp::cMessage *msg);
         virtual void messageCreated(omnetpp::cMessage *msg);
         virtual void messageCloned(omnetpp::cMessage *msg, omnetpp::cMessage *clone);

@@ -32,10 +32,10 @@ class GCTAEventlogManager : public omnetpp::cIEventlogManager
         virtual void messageCancelled(__attribute__((__unused__)) omnetpp::cMessage *msg) override {}
         virtual void beginSend(__attribute__((__unused__)) omnetpp::cMessage *msg) override;
         virtual void messageSendDirect(__attribute__((__unused__)) omnetpp::cMessage *msg, __attribute__((__unused__)) omnetpp::cGate *toGate,
-                __attribute__((__unused__)) simtime_t propagationDelay, __attribute__((__unused__)) simtime_t transmissionDelay) override {}
+                __attribute__((__unused__)) omnetpp::simtime_t propagationDelay, __attribute__((__unused__)) omnetpp::simtime_t transmissionDelay) override {}
         virtual void messageSendHop(__attribute__((__unused__)) omnetpp::cMessage *msg, __attribute__((__unused__)) omnetpp::cGate *srcGate) override {}
         virtual void messageSendHop(__attribute__((__unused__)) omnetpp::cMessage *msg, __attribute__((__unused__)) omnetpp::cGate *srcGate,
-                __attribute__((__unused__)) simtime_t propagationDelay, __attribute__((__unused__)) simtime_t transmissionDelay) override {}
+                __attribute__((__unused__)) omnetpp::simtime_t propagationDelay, __attribute__((__unused__)) omnetpp::simtime_t transmissionDelay) override {}
         virtual void endSend(__attribute__((__unused__)) omnetpp::cMessage *msg) override {}
         virtual void messageCreated(__attribute__((__unused__)) omnetpp::cMessage *msg) override {}
         virtual void messageCloned(__attribute__((__unused__)) omnetpp::cMessage *msg, __attribute__((__unused__)) omnetpp::cMessage *clone) override {}

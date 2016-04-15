@@ -148,7 +148,7 @@ void cSQLiteOutputVectorManager::endRun()
     cSQLiteOutputManager::endRun();
 }
 
-bool cSQLiteOutputVectorManager::record(void *vectorhandle, simtime_t t, double value)
+bool cSQLiteOutputVectorManager::record(void *vectorhandle, omnetpp::simtime_t t, double value)
 {
     sVectorData *vp = static_cast<sVectorData *>(vectorhandle);
 

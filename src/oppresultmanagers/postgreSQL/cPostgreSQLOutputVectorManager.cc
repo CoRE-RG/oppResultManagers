@@ -86,7 +86,7 @@ void cPostgreSQLOutputVectorManager::endRun()
     cPorstgreSQLOutputManager::endRun();
 }
 
-bool cPostgreSQLOutputVectorManager::record(void *vectorhandle, simtime_t t, double value)
+bool cPostgreSQLOutputVectorManager::record(void *vectorhandle, omnetpp::simtime_t t, double value)
 {
     sVectorData *vp = static_cast<sVectorData *>(vectorhandle);
 

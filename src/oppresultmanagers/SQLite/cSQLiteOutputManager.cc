@@ -29,6 +29,7 @@
 #include "oppresultmanagers/SQLite/cSQLiteOutputManager.h"
 
 #include "oppresultmanagers/utilities/HelperFunctions.h"
+#include "oppresultmanagers/utilities/fileutil.h"
 
 Register_PerRunConfigOption(CFGID_SQLITEOUTMGR_FILE, "sqliteoutputmanager-file", CFG_FILENAME,
         "${resultdir}/${configname}-${runnumber}.sqlite3", "Object name of database connection parameters");

@@ -49,7 +49,7 @@ class cPostgreSQLOutputVectorManager : public cDatabaseOutputVectorManager, cPor
         /**
          * Writes the (time, value) pair into the output file.
          */
-        virtual bool record(void *vectorhandle, simtime_t t, double value) override;
+        virtual bool record(void *vectorhandle, omnetpp::simtime_t t, double value) override;
 
         /**
          * Returns nullptr, because this class doesn't use a file.

@@ -1,6 +1,7 @@
 #include "oppresultmanagers/eventlog/gcta/GCTAEventlogManager.h"
 
 #include "oppresultmanagers/utilities/HelperFunctions.h"
+#include "oppresultmanagers/utilities/fileutil.h"
 
 Register_Class(GCTAEventlogManager);
 

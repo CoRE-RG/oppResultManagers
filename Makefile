@@ -41,7 +41,7 @@ checkmakefiles:
 
 # generate an include file that contains all the WITH_FEATURE macros according to the current enablement of features
 src/oppresultmanagers/features.h: $(wildcard .oppfeaturestate) .oppfeatures
-	@./oppresultmanagers_featuretool defines >src/oppresultmanagers/features.h
+	@opp_featuretool defines >src/oppresultmanagers/features.h
 
 doxy:
 	doxygen doxy.cfg

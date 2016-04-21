@@ -61,8 +61,8 @@ typedef struct {
  * Option header.
  */
 typedef struct {
-    u_short     option_code;
-    u_short     option_length;
+    uint16_t     option_code;
+    uint16_t     option_length;
 } option_header;
 
 
@@ -78,8 +78,8 @@ typedef struct {
 
 typedef struct {
     uint32_t    byte_order_magic;
-    u_short     major_version;
-    u_short     minor_version;
+    uint16_t     major_version;
+    uint16_t     minor_version;
     u_int64_t   section_length;
     /* followed by options and trailer */
 } section_header_block;
@@ -110,8 +110,8 @@ typedef struct {
 #define BT_IDB          0x00000001
 
 typedef struct {
-    u_short     linktype;
-    u_short     reserved;
+    uint16_t     linktype;
+    uint16_t     reserved;
     uint32_t    snaplen;
     /* followed by options and trailer */
 } interface_description_block;

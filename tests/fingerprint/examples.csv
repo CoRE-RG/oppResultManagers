@@ -1,6 +1,6 @@
 #note that the fingerprints provided may not match your architecture. Thus the test may fail although everything is ok
 # workingdir,                                                     args,                                                  simtimelimit,    fingerprint
-/examples/check,                                                  -f omnetpp.ini -c General -r 0,                        100s,            3ce0-fc8f
-/examples/multiple/,                                              -f omnetpp.ini -c General -r 0,                        100s,            3ce0-fc8f
-/examples/postgreSQL/,                                            -f omnetpp.ini -c General -r 0,                        100s,            3ce0-fc8f
-/examples/SQLite/,                                                -f omnetpp.ini -c General -r 0,                        100s,            3ce0-fc8f
+/examples/check,                                                  -f omnetpp.ini -c General -r 0,                        100s,            7a78-b827
+/examples/multiple/,                                              -f omnetpp.ini -c General -r 0,                        100s,            7a78-b827
+/examples/postgreSQL/,                                            -f omnetpp.ini -c General -r 0,                        100s,            7a78-b827
+/examples/SQLite/,                                                -f omnetpp.ini -c General -r 0,                        100s,            7a78-b827

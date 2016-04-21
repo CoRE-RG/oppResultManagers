@@ -27,8 +27,9 @@ import csv
 
 oppresultmanagersRoot = os.path.abspath("../..")
 #TODO: Make test read paths from somewhere else
+inetRoot = os.path.abspath("../../../inet")
 sep = ";" if sys.platform == 'win32' else ':'
-nedPath = oppresultmanagersRoot + "/src" + sep + oppresultmanagersRoot + "/examples" + sep + oppresultmanagersRoot + "/tests/smoke"
+nedPath = inetRoot + "/src" + sep + oppresultmanagersRoot + "/src" + sep + oppresultmanagersRoot + "/examples" + sep + oppresultmanagersRoot + "/tests/smoke"
 oppresultmanagersLib = oppresultmanagersRoot + "/src/oppResultManagers"
 opp_run = "opp_run"
 cpuTimeLimit = "30s"

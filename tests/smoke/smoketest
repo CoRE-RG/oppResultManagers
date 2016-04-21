@@ -29,8 +29,9 @@ import unittest
 
 oppresultmanagersRoot = os.path.abspath("../..")
 #TODO: Make test read paths from somewhere else
+inetRoot = os.path.abspath("../../../inet")
 sep = ";" if sys.platform == 'win32' else ':'
-nedPath = oppresultmanagersRoot + os.sep + "src" + sep \
+nedPath = inetRoot + os.sep + "src" + sep + oppresultmanagersRoot + os.sep + "src" + sep \
     + oppresultmanagersRoot + os.sep + "examples" + sep + oppresultmanagersRoot + os.sep + "tests" + os.sep + "smoke"
 oppresultmanagersLib = oppresultmanagersRoot + os.sep + "src" + os.sep + "oppResultManagers"
 opp_run = "opp_run"

@@ -36,7 +36,7 @@ simple Node
     parameters:
         //Signal is emitted when when message is received. Contains the received message.
         @signal[rxMessageAge](type=simtime_t);
-        @statistic[rxMessageAge](title="Message Age"; unit=s; record=max,vector, stats, histogram; interpolationmode=none);
+        @statistic[rxMessageAge](title="Message Age"; unit=s; record=max, stats, histogram; interpolationmode=none);
         
         string stest = default("teststring");
     gates:

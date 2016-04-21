@@ -228,7 +228,7 @@ void PCAPNGEventlogManager::simulationEvent(omnetpp::cEvent *event)
                     inet::serializer::Buffer wb(serializeBuffer, sizeof(serializeBuffer));
                     inet::serializer::Context c;
                     c.throwOnSerializerNotFound = false;
-                    c.throwOnSerializedSizeMissmatch = false;
+//                    c.throwOnSerializedSizeMissmatch = false;
                     inet::serializer::SerializerBase::lookupAndSerialize(pkt, wb, c, inet::serializer::LINKTYPE,
                             inet::serializer::LINKTYPE_ETHERNET, static_cast<unsigned int>(capture_length));
                     inet::EtherFrame * ethPkt = check_and_cast<inet::EtherFrame*>(pkt);

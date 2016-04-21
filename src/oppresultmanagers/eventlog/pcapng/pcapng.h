@@ -80,7 +80,7 @@ typedef struct {
     uint32_t    byte_order_magic;
     uint16_t     major_version;
     uint16_t     minor_version;
-    u_int64_t   section_length;
+    uint64_t   section_length;
     /* followed by options and trailer */
 } section_header_block;
 

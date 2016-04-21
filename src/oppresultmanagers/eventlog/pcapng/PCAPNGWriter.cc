@@ -253,7 +253,7 @@ void PCAPNGWriter::addPaddedStringOption(uint16_t optionCode, std::string string
     option_header* option = reinterpret_cast<option_header*>(buffer + bufferPos);
     bufferPos += sizeof(option_header);
     option->option_code = optionCode;
-    option->option_length = static_cast<u_short>(string.length());
+    option->option_length = static_cast<uint16_t>(string.length());
     std::memcpy((buffer + bufferPos), string.data(), string.length());
     bufferPos += string.length();
     //Now we need to pad to 32bit boundary

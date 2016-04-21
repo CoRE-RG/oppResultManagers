@@ -34,6 +34,7 @@ sep = ";" if sys.platform == 'win32' else ':'
 nedPath = inetRoot + os.sep + "src" + sep + oppresultmanagersRoot + os.sep + "src" + sep \
     + oppresultmanagersRoot + os.sep + "examples" + sep + oppresultmanagersRoot + os.sep + "tests" + os.sep + "smoke"
 oppresultmanagersLib = oppresultmanagersRoot + os.sep + "src" + os.sep + "oppResultManagers"
+inetLib = inetRoot + os.sep + "src" + os.sep + "INET"
 opp_run = "opp_run"
 cpuTimeLimit = "3s"
 logFile = "test.out"
@@ -149,7 +150,7 @@ class SmokeTestCase(SimulationTestCase):
 
         # run the simulation
         workingdir = os.path.normpath(_iif(self.wd.startswith('/'), oppresultmanagersRoot + "/" + self.wd, self.wd))
-        command = opp_run + " -n " + nedPath + " -l " + oppresultmanagersLib + " -u Cmdenv " + self.args + \
+        command = opp_run + " -n " + nedPath + " -l " + oppresultmanagersLib + " -l " + inetLib + " -u Cmdenv " + self.args + \
             " --cpu-time-limit=" + cpuTimeLimit + \
             " --vector-recording=false --scalar-recording=false"
         

@@ -147,7 +147,9 @@ class SmokeTestCase(SimulationTestCase):
 
     def runTest(self):
         global oppresultmanagersRoot, opp_run, nedPath, cpuTimeLimit
-
+        
+		# add paths of other libraries
+        os.environ['LD_LIBRARY_PATH'] = inetRoot + os.sep + "src" 
         # run the simulation
         workingdir = os.path.normpath(_iif(self.wd.startswith('/'), oppresultmanagersRoot + "/" + self.wd, self.wd))
         command = opp_run + " -n " + nedPath + " -l " + oppresultmanagersLib + " -l " + inetLib + " -u Cmdenv " + self.args + \

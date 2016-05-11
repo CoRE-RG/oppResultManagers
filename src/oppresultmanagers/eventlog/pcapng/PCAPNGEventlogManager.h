@@ -37,6 +37,7 @@
 extern omnetpp::cConfigOption *CFGID_EVENTLOG_PCAPNG_FILE;
 extern omnetpp::cConfigOption *CFGID_EVENTLOG_PCAPNG_INTERFACES;
 extern omnetpp::cConfigOption *CFGID_EVENTLOG_PCAPNG_CAPTURELENGTH;
+extern omnetpp::cConfigOption *CFGID_EVENTLOG_PCAPNG_ETHERNETRAW;
 
 /**
  * Responsible for writing the eventlog file.
@@ -44,12 +45,14 @@ extern omnetpp::cConfigOption *CFGID_EVENTLOG_PCAPNG_CAPTURELENGTH;
 class PCAPNGEventlogManager : public omnetpp::cIEventlogManager
 {
         class Interface{
+                bool isInitialized;
                 size_t id;
                 std::string name;
                 uint64_t speed;
+                uint16_t linktype;
                 std::list<omnetpp::cGate*> gates;
 
-                Interface(std::string newName, uint64_t newSpeed): name(newName), speed(newSpeed) {}
+                Interface(std::string newName, uint64_t newSpeed, uint16_t newLinktype): isInitialized(false), id(0), name(newName), speed(newSpeed), linktype(newLinktype) {}
 
                 friend class PCAPNGEventlogManager;
         };
@@ -62,6 +65,7 @@ class PCAPNGEventlogManager : public omnetpp::cIEventlogManager
         std::map<omnetpp::cGate*,Interface *> interfaceMap;
         std::multimap<std::string, Interface*> interfaces;
         size_t capture_length;
+        bool ethernetRaw;
 
     public:
         PCAPNGEventlogManager();

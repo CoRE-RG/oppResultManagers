@@ -32,6 +32,8 @@
 #include <stdio.h>
 #include <string>
 
+#include <map>
+
 #ifndef PCAPNGWRITER_H_
 #define PCAPNGWRITER_H_
 
@@ -61,6 +63,8 @@ class PCAPNGWriter
 
         size_t numInterfaces;
 
+        std::map<size_t, fpos_t> interfacePos;
+
     public:
         PCAPNGWriter(void * setBuffer, size_t setBufferSize);
         virtual ~PCAPNGWriter();
@@ -80,12 +84,14 @@ class PCAPNGWriter
         void addUint8Option(uint16_t optionCode, uint8_t optionValue);
         void endOptions();
 
-        void addInterfaceDescriptionHeader(uint32_t snaplen);
+        void addInterfaceDescriptionHeader(uint16_t linktype, uint32_t snaplen);
+
+        void changeInterfaceDescriptionHeader(size_t interfaceId, uint16_t linktype, uint32_t snaplen);
 
         void addEnhancedPacketHeader(uint32_t interfaceId, uint64_t timestamp, uint32_t caplen, uint32_t len);
 
         void openSection(std::string hardware, std::string os, std::string application);
-        size_t addInterface(std::string name, std::string description, uint32_t snaplen, uint8_t tsresol,
+        size_t addInterface(std::string name, std::string description, uint16_t linktype, uint32_t snaplen, uint8_t tsresol,
                 uint64_t speed);
         void addEnhancedPacket(uint32_t interfaceId, bool sender, uint64_t timestamp, uint32_t len, uint32_t caplen,
                 void* data, bool bitError);

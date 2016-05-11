@@ -50,25 +50,22 @@ PCAPNGWriter::PCAPNGWriter(void * setBuffer, size_t setBufferSize)
 
 PCAPNGWriter::~PCAPNGWriter()
 {
-    if (file)
-    {
+    if (file) {
         closeFile();
     }
 }
 
 void PCAPNGWriter::openFile(const char *filename)
 {
-    if (file)
-    {
+    if (file) {
         throw std::invalid_argument("file is already open, try closeFile() first.");
     }
-    file = fopen(filename, "w");
+    file = fopen(filename, "wb");
 }
 
 void PCAPNGWriter::closeFile()
 {
-    if (!file)
-    {
+    if (!file) {
         throw std::invalid_argument("no file is open, try openFile() first.");
     }
     fclose(file);
@@ -77,8 +74,7 @@ void PCAPNGWriter::closeFile()
 
 void PCAPNGWriter::openBlock(BlockType type)
 {
-    if (isBlockOpen)
-    {
+    if (isBlockOpen) {
         throw std::invalid_argument("there is already an open block");
     }
 
@@ -92,8 +88,7 @@ void PCAPNGWriter::openBlock(BlockType type)
 }
 void PCAPNGWriter::closeBlock()
 {
-    if (!isBlockOpen)
-    {
+    if (!isBlockOpen) {
         throw std::invalid_argument("there is no open block");
     }
 
@@ -111,24 +106,20 @@ void PCAPNGWriter::closeBlock()
 
 void PCAPNGWriter::openSection(std::string hardware, std::string os, std::string application)
 {
-    if (isSectionOpen)
-    {
+    if (isSectionOpen) {
         throw std::invalid_argument("there is already an open section");
     }
 
     fgetpos(file, &sectionStart);
 
     addSectionHeader();
-    if (hardware.length() > 0)
-    {
+    if (hardware.length() > 0) {
         addPaddedStringOption(SEC_HARDWARE, hardware);
     }
-    if (os.length() > 0)
-    {
+    if (os.length() > 0) {
         addPaddedStringOption(SEC_OS, os);
     }
-    if (application.length() > 0)
-    {
+    if (application.length() > 0) {
         addPaddedStringOption(SEC_USERAPPL, application);
     }
     endOptions();
@@ -152,8 +143,7 @@ void PCAPNGWriter::addSectionHeader()
 }
 void PCAPNGWriter::closeSection()
 {
-    if (!isSectionOpen)
-    {
+    if (!isSectionOpen) {
         throw std::invalid_argument("there is no open section");
     }
 
@@ -162,8 +152,10 @@ void PCAPNGWriter::closeSection()
     fgetpos(file, &currentPosition);
     //go to start of section and set section length
     fsetpos(file, &sectionStart);
-    section_header_block* sectionHeader = reinterpret_cast<section_header_block*>(buffer + bufferPos);
-    sectionHeader->section_length = sectionSize;
+    //go to sectionSize
+    fseek(file, sizeof(block_header)+sizeof(uint32_t)+sizeof(uint16_t)+sizeof(uint16_t), SEEK_CUR);
+    //write sectionSize
+    fwrite(&sectionSize, sizeof(uint64_t),1,file);
     //go back to previous position
     fsetpos(file, &currentPosition);
 
@@ -171,30 +163,51 @@ void PCAPNGWriter::closeSection()
     numInterfaces = 0;
 }
 
-void PCAPNGWriter::addInterfaceDescriptionHeader(uint32_t snaplen)
+void PCAPNGWriter::addInterfaceDescriptionHeader(uint16_t linktype, uint32_t snaplen)
 {
     openBlock(InterfaceDescriptionHeader);
     interface_description_block* interfaceDescription = reinterpret_cast<interface_description_block*>(buffer
             + bufferPos);
     bufferPos += sizeof(interface_description_block);
-    interfaceDescription->linktype = IDB_LINKTYPE_ETHERNET;
+    interfaceDescription->linktype = linktype;
     interfaceDescription->snaplen = snaplen;
 }
 
-size_t PCAPNGWriter::addInterface(std::string name, std::string description, uint32_t snaplen, uint8_t tsresol, uint64_t speed)
+void PCAPNGWriter::changeInterfaceDescriptionHeader(size_t interfaceId, uint16_t linktype, uint32_t snaplen)
 {
+    //save current positon
+    fpos_t currentPosition;
+    fgetpos(file, &currentPosition);
+    //go to interface
+    fsetpos(file, &interfacePos[interfaceId]);
+    //Jump over blockheader
+    fseek(file, sizeof(block_header), SEEK_CUR);
 
-    addInterfaceDescriptionHeader(snaplen);
-    if (name.length() > 0)
-    {
+    //write linktype
+    fwrite(&linktype, sizeof(uint16_t),1,file);
+    //write snaplen
+    fwrite(&snaplen, sizeof(uint32_t),1,file);
+
+    //go back to previous position
+    fsetpos(file, &currentPosition);
+}
+
+size_t PCAPNGWriter::addInterface(std::string name, std::string description, uint16_t linktype, uint32_t snaplen,
+        uint8_t tsresol, uint64_t speed)
+{
+    fflush(file);
+    fpos_t currentPosition;
+    fgetpos(file, &currentPosition);
+    interfacePos[numInterfaces] = currentPosition;
+    addInterfaceDescriptionHeader(linktype, snaplen);
+    if (name.length() > 0) {
         addPaddedStringOption(IF_NAME, name);
     }
-    if (description.length() > 0)
-    {
+    if (description.length() > 0) {
         addPaddedStringOption(IF_DESCRIPTION, description);
     }
     addUint8Option(IF_TSRESOL, tsresol);
-    if(speed>0){
+    if (speed > 0) {
         addUint64Option(IF_SPEED, speed);
     }
     endOptions();
@@ -221,23 +234,21 @@ void PCAPNGWriter::addEnhancedPacket(uint32_t interfaceId, bool sender, uint64_t
 {
     addEnhancedPacketHeader(interfaceId, timestamp, caplen, len);
     uint32_t flags = 0;
-    if (sender)
-    {
+    if (sender) {
         flags |= 0x00000002;
     }
-    else
-    {
+    else {
         flags |= 0x00000001;
     }
     //Biterror
-    if(bitError){
+    if (bitError) {
         flags |= 0x01000000;
     }
     std::memcpy((buffer + bufferPos), data, caplen);
     bufferPos += caplen;
     //Now we need to pad to 32bit boundary
     size_t padSize = 4 - (caplen % 4);
-    if(padSize < 4){
+    if (padSize < 4) {
         std::memset((buffer + bufferPos), 0, padSize);
         bufferPos += padSize;
     }
@@ -258,7 +269,7 @@ void PCAPNGWriter::addPaddedStringOption(uint16_t optionCode, std::string string
     bufferPos += string.length();
     //Now we need to pad to 32bit boundary
     size_t padSize = 4 - (string.length() % 4);
-    if(padSize < 4){
+    if (padSize < 4) {
         std::memset((buffer + bufferPos), 0, padSize);
         bufferPos += padSize;
     }
@@ -309,8 +320,7 @@ void PCAPNGWriter::addUint8Option(uint16_t optionCode, uint8_t optionValue)
 
 void PCAPNGWriter::endOptions()
 {
-    if (hasOptions && !hasEndOption)
-    {
+    if (hasOptions && !hasEndOption) {
         option_header* optionEnd = reinterpret_cast<option_header*>(buffer + bufferPos);
         bufferPos += sizeof(option_header);
         optionEnd->option_code = OPT_ENDOFOPT;

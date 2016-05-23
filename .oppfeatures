@@ -6,7 +6,8 @@
         initiallyEnabled = "false"
         requires = ""
         labels = ""
-        nedPackages = "oppresultmanagers.postgreSQL"
+        nedPackages = "oppresultmanagers.postgreSQL
+                       oppresultmanagers.examples.postgreSQL"
         extraSourceFolders = ""
         compileFlags = "-DWITH_POSTGRESQL_COMMON"
         linkerFlags = "-lpqxx -lpq"
@@ -18,7 +19,8 @@
         initiallyEnabled = "false"
         requires = ""
         labels = ""
-        nedPackages = "oppresultmanagers.SQLite"
+        nedPackages = "oppresultmanagers.SQLite
+                       oppresultmanagers.examples.SQLite"
         extraSourceFolders = ""
         compileFlags = "-DWITH_SQLITE_COMMON"
         linkerFlags = "-lsqlite3"
@@ -30,7 +32,8 @@
         initiallyEnabled = "true"
         requires = ""
         labels = ""
-        nedPackages = "oppresultmanagers.multiple"
+        nedPackages = "oppresultmanagers.multiple
+                       oppresultmanagers.examples.multiple"
         extraSourceFolders = ""
         compileFlags = "-DWITH_MULTIPLE_COMMON"
         linkerFlags = ""
@@ -54,7 +57,8 @@
         initiallyEnabled = "false"
         requires = ""
         labels = ""
-        nedPackages = "oppresultmanagers.eventlog.pcapng"
+        nedPackages = "oppresultmanagers.eventlog.pcapng
+                       oppresultmanagers.examples.pcapng"
         extraSourceFolders = ""
         compileFlags = "-DWITH_PCAPNGEVENTLOG_COMMON"
         linkerFlags = "-lINET"

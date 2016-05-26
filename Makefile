@@ -15,19 +15,19 @@ MAKEMAKE_OPTIONS := -f --deep --no-deep-includes -I.
 
 OPPRESULTMANAGERS_PCAPNG_ENABLED := $(shell opp_featuretool -q isenabled PCAPNGEventlog_common; echo $$?)
 ifeq ($(OPPRESULTMANAGERS_PCAPNG_ENABLED),0)
-    MAKEMAKE_OPTIONS += -I$(INET_PROJ)/src/ -DINET_IMPORT -L$(INET_PROJ)/src -lINET -KINET_PROJ=$(INET_PROJ)
+    MAKEMAKE_OPTIONS += -I$(INET_PROJ)/src/ -L$(INET_PROJ)/src -lINET -KINET_PROJ=$(INET_PROJ)
 endif
 
 makefiles: src/oppresultmanagers/features.h makefiles-so
 
 makefiles-so:
-	@FEATURE_OPTIONS=$$(opp_featuretool options -f -l) && cd src && opp_makemake --make-so $(MAKEMAKE_OPTIONS) $$FEATURE_OPTIONS
+	@FEATURE_OPTIONS=$$(opp_featuretool options -f -l -c) && cd src && opp_makemake --make-so $(MAKEMAKE_OPTIONS) $$FEATURE_OPTIONS
 
 makefiles-lib:
-	@FEATURE_OPTIONS=$$(opp_featuretool options -f -l) && cd src && opp_makemake --make-lib $(MAKEMAKE_OPTIONS) $$FEATURE_OPTIONS
+	@FEATURE_OPTIONS=$$(opp_featuretool options -f -l -c) && cd src && opp_makemake --make-lib $(MAKEMAKE_OPTIONS) $$FEATURE_OPTIONS
 
 makefiles-exe:
-	@FEATURE_OPTIONS=$$(opp_featuretool options -f -l) && cd src && opp_makemake $(MAKEMAKE_OPTIONS) $$FEATURE_OPTIONS
+	@FEATURE_OPTIONS=$$(opp_featuretool options -f -l -c) && cd src && opp_makemake $(MAKEMAKE_OPTIONS) $$FEATURE_OPTIONS
 
 checkmakefiles:
 	@if [ ! -f src/Makefile ]; then \

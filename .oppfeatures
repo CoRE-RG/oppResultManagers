@@ -54,7 +54,8 @@
         initiallyEnabled = "false"
         requires = ""
         labels = ""
-        nedPackages = "oppresultmanagers.eventlog.pcapng"
+        nedPackages = "oppresultmanagers.eventlog.pcapng
+        				oppresultmanagers.examples.pcapng"
         extraSourceFolders = ""
         compileFlags = "-DWITH_PCAPNGEVENTLOG_COMMON"
         linkerFlags = "-lINET"

@@ -30,6 +30,14 @@
 
 #ifdef WITH_PCAPNGEVENTLOG_COMMON
 #include "inet/common/INETDefs.h"
+
+/**
+ * Check for minimal INET Version requirements
+ */
+#if INET_VERSION < 0x0303
+#  error At least INET version 3.3 required
+#endif
+
 #endif
 
 /**
@@ -37,14 +45,5 @@
  */
 #if OMNETPP_VERSION < 0x0500
 #  error At least OMNeT++/OMNEST version 5.0 required
-#endif
-
-#ifdef WITH_PCAPNGEVENTLOG_COMMON
-/**
- * Check for minimal INET Version requirements
- */
-#if INET_VERSION < 0x0302
-#  error At least INET version 3.2 required
-#endif
 #endif
 

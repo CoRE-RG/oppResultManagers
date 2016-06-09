@@ -31,6 +31,10 @@
 #ifdef WITH_PCAPNGEVENTLOG_COMMON
 #include "inet/common/INETDefs.h"
 
+#ifdef FICO4OMNET_PROJ
+#include "fico4omnet/base/FiCo4OMNeT_Defs.h"
+#endif
+
 /**
  * Check for minimal INET Version requirements
  */
@@ -47,3 +51,11 @@
 #  error At least OMNeT++/OMNEST version 5.0 required
 #endif
 
+/**
+ * Check for minimal FiCo4OMNeT Version requirements
+ */
+#ifdef FICO4OMNET_PROJ
+#if FICO4OMNET_VERSION < 0x0100
+#  error At least FICO4OMNET version 1.0 required
+#endif
+#endif

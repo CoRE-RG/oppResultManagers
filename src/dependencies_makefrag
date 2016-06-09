@@ -5,3 +5,8 @@ ifeq ($(OPPRESULTMANAGERS_PCAPNG_ENABLED),0)
         $(error "PCAPNGEventlog_common feature requires INET framework. Please select INET framework in the 'Project References' in the oppResultManager project properties. See INSTALL file for details.")
     endif
 endif
+
+
+ifdef FICO4OMNET_PROJ
+    CFLAGS += -DFICO4OMNET_PROJ
+endif

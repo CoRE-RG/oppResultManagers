@@ -32,7 +32,14 @@
 #include "oppresultmanagers/utilities/fileutil.h"
 
 #include "inet/common/serializer/SerializerBase.h"
+
+#ifdef WITH_ETHERNET
 #include "inet/linklayer/ethernet/EtherFrame.h"
+#endif
+
+#ifdef WITH_CAN_COMMON
+#include "fico4omnet/linklayer/can/messages/CanDataFrame_m.h"
+#endif
 
 Register_Class(PCAPNGEventlogManager);
 
@@ -71,13 +78,15 @@ PCAPNGEventlogManager::PCAPNGEventlogManager()
 
 PCAPNGEventlogManager::~PCAPNGEventlogManager()
 {
-    if (recordingStarted) {
+    if (recordingStarted)
+    {
         stopRecording();
     }
     pcapwriter->closeFile();
 
     for (std::map<std::string, Interface*>::iterator interface = interfaces.begin(); interface != interfaces.end();
-            ++interface) {
+            ++interface)
+    {
         delete (*interface).second;
     }
     interfaces.clear();
@@ -91,70 +100,85 @@ void PCAPNGEventlogManager::startRecording()
     std::string cfgobj = omnetpp::getEnvir()->getConfig()->getAsString(CFGID_EVENTLOG_PCAPNG_INTERFACES);
     std::vector<std::string> interfaceModules = omnetpp::cStringTokenizer(cfgobj.c_str(), ", ").asVector();
     for (std::vector<std::string>::const_iterator interfaceModule = interfaceModules.begin();
-            interfaceModule != interfaceModules.end(); ++interfaceModule) {
+            interfaceModule != interfaceModules.end(); ++interfaceModule)
+    {
         std::size_t pos = (*interfaceModule).rfind('=');
         std::string gatePath;
         std::string interfaceName;
-        if (pos != std::string::npos) {
+        if (pos != std::string::npos)
+        {
             gatePath = (*interfaceModule).substr(0, pos);
             interfaceName = (*interfaceModule).substr(pos + 1);
         }
-        else {
+        else
+        {
             gatePath = (*interfaceModule);
         }
 
         pos = gatePath.rfind('.');
         std::string modulePath;
         std::string gateName;
-        if (pos != std::string::npos) {
+        if (pos != std::string::npos)
+        {
             modulePath = gatePath.substr(0, pos);
             gateName = gatePath.substr(pos + 1);
         }
-        else {
+        else
+        {
             throw omnetpp::cRuntimeError("PCAPEventlogManager:  \"%s\" is no valid gate definition", gatePath.c_str());
         }
         //TODO: allow kind of autodetection (e.g. find mac modules in nodes, have to find a clever way to do that)
         omnetpp::cModule *module = omnetpp::getSimulation()->getModuleByPath(modulePath.c_str());
-        if (!module) {
+        if (!module)
+        {
             throw omnetpp::cRuntimeError(
                     "PCAPEventlogManager: error in ini file (pcapng-interfaces option): Module \"%s\" cannot be found",
                     modulePath.c_str());
         }
-        if (!module->isSimple()) {
+        if (!module->isSimple())
+        {
             throw omnetpp::cRuntimeError(
                     "PCAPEventlogManager: Sorry, module \"%s\" is no simple module. We can only capture packets at simple modules",
                     modulePath.c_str());
         }
         omnetpp::cGate *gate = module->gate(gateName.c_str());
-        if (!gate) {
+        if (!gate)
+        {
             throw omnetpp::cRuntimeError(
                     "PCAPEventlogManager: error in ini file (pcapng-interfaces option): Gate \"%s\" of module \"%s\" cannot be found",
                     gateName.c_str(), modulePath.c_str());
         }
         uint64_t speed = 0;
         omnetpp::cChannel* channel = nullptr;
-        if (gate->getType() == cGate::INPUT) {
+        if (gate->getType() == cGate::INPUT)
+        {
             channel = gate->findIncomingTransmissionChannel();
         }
-        else {
+        else
+        {
             channel = gate->findTransmissionChannel();
         }
-        if (omnetpp::cDatarateChannel* datarateChannel = dynamic_cast<omnetpp::cDatarateChannel*>(channel)) {
+        if (omnetpp::cDatarateChannel* datarateChannel = dynamic_cast<omnetpp::cDatarateChannel*>(channel))
+        {
             speed = static_cast<uint64_t>(datarateChannel->getDatarate());
         }
         Interface* newInterface = nullptr;
-        if (interfaceName.length() > 0) {
+        if (interfaceName.length() > 0)
+        {
             std::map<std::string, Interface*>::iterator interface = interfaces.find(interfaceName);
-            if (interface != interfaces.end()) {
+            if (interface != interfaces.end())
+            {
                 newInterface = (*interface).second;
                 newInterface->gates.push_back(gate);
                 //If this interface has gates with different speeds, we set the speed to zero
-                if (newInterface->speed != speed) {
+                if (newInterface->speed != speed)
+                {
                     newInterface->speed = 0;
                 }
             }
         }
-        if (!newInterface) {
+        if (!newInterface)
+        {
             newInterface = new Interface(interfaceName, speed, IDB_LINKTYPE_NULL);
             newInterface->gates.push_back(gate);
             interfaces.insert(std::pair<std::string, Interface*>(interfaceName, newInterface));
@@ -162,8 +186,10 @@ void PCAPNGEventlogManager::startRecording()
     }
     //now add interfaces
     for (std::map<std::string, Interface*>::iterator interface = interfaces.begin(); interface != interfaces.end();
-            ++interface) {
-        if ((*interface).second->name.length() == 0) {
+            ++interface)
+    {
+        if ((*interface).second->name.length() == 0)
+        {
             (*interface).second->name = (*(*interface).second->gates.begin())->getFullPath();
         }
 
@@ -171,7 +197,8 @@ void PCAPNGEventlogManager::startRecording()
                 static_cast<uint32_t>(capture_length), static_cast<uint8_t>(abs(omnetpp::simTime().getScaleExp())),
                 (*interface).second->speed);
         for (std::list<omnetpp::cGate*>::iterator ifGate = (*interface).second->gates.begin();
-                ifGate != (*interface).second->gates.end(); ++ifGate) {
+                ifGate != (*interface).second->gates.end(); ++ifGate)
+        {
             interfaceMap[*ifGate] = (*interface).second;
         }
     }
@@ -181,7 +208,8 @@ void PCAPNGEventlogManager::startRecording()
 
 void PCAPNGEventlogManager::stopRecording()
 {
-    if (recordingStarted) {
+    if (recordingStarted)
+    {
         pcapwriter->closeSection();
         recordingStarted = false;
     }
@@ -189,94 +217,125 @@ void PCAPNGEventlogManager::stopRecording()
 
 void PCAPNGEventlogManager::simulationEvent(omnetpp::cEvent *event)
 {
-    if (recordEventlog) {
-        if (!recordingStarted) {
+    if (recordEventlog)
+    {
+        if (!recordingStarted)
+        {
             startRecording();
         }
         //Was it a message?
-        if (event->isMessage()) {
+        if (event->isMessage())
+        {
             //Was it a Packet?
-            if (omnetpp::cPacket* pkt = dynamic_cast<omnetpp::cPacket*>(event)) {
+            if (omnetpp::cPacket* pkt = dynamic_cast<omnetpp::cPacket*>(event))
+            {
                 std::map<omnetpp::cGate*, Interface*>::iterator senderGate = interfaceMap.find(pkt->getSenderGate());
                 std::map<omnetpp::cGate*, Interface*>::iterator arrivalGate = interfaceMap.find(pkt->getArrivalGate());
 
-                if (inet::EtherPhyFrame* phyFrame = dynamic_cast<inet::EtherPhyFrame*>(pkt)) {
+                if (inet::EtherPhyFrame* phyFrame = dynamic_cast<inet::EtherPhyFrame*>(pkt))
+                {
                     //decapsulate a raw Ethernet frame if not in raw mode
-                    if (!ethernetRaw) {
+                    if (!ethernetRaw)
+                    {
                         pkt = phyFrame->getEncapsulatedPacket();
                     }
                 }
 
                 uint16_t linktype = 0;
-                if (dynamic_cast<inet::EtherFrame*>(pkt)) {
+#ifdef WITH_ETHERNET
+                if (dynamic_cast<inet::EtherFrame*>(pkt))
+                {
                     linktype = IDB_LINKTYPE_ETHERNET;
                 }
-                else if (dynamic_cast<inet::EtherPhyFrame*>(pkt)) {
+                else if (dynamic_cast<inet::EtherPhyFrame*>(pkt))
+                {
                     linktype = IDB_LINKTYPE_NETANALYZER_TRANSPARENT;
                 }
+#endif
+#ifdef WITH_CAN_COMMON
+                if (dynamic_cast<FiCo4OMNeT::CanDataFrame*>(pkt))
+                {
+                    linktype = IDB_LINKTYPE_SOCKETCAN;
+                }
+#endif
 
-                //Serialize if sender or receiver is in capture interfaces
-                if (senderGate != interfaceMap.end() || arrivalGate != interfaceMap.end()) {
-                    char serializeBuffer[10000];
-                    inet::serializer::Buffer wb(serializeBuffer, sizeof(serializeBuffer));
-                    inet::serializer::Context c;
-                    c.throwOnSerializerNotFound = false;
-                    size_t headerOverhead = 0;
-                    if (linktype == IDB_LINKTYPE_ETHERNET) {
-                        inet::serializer::SerializerBase::lookupAndSerialize(pkt, wb, c, inet::serializer::LINKTYPE,
-                                inet::serializer::LINKTYPE_ETHERNET, static_cast<unsigned int>(capture_length));
-                    }
-                    else if (linktype == IDB_LINKTYPE_NETANALYZER_TRANSPARENT) {
-                        uint32_t header = 0;
-                        //Header Version 1
-                        header |= (0x1 << 18);
-                        wb.writeUint32(header);
-                        headerOverhead = sizeof(uint32_t);
-                        inet::serializer::SerializerBase::lookupAndSerialize(pkt, wb, c, inet::serializer::PHYTYPE,
-                                inet::serializer::PHYTYPE_ETHERNET, static_cast<unsigned int>(capture_length));
-                    }
-                    else {
-                        inet::serializer::SerializerBase::lookupAndSerialize(pkt, wb, c, inet::serializer::UNKNOWN, 0,
-                                static_cast<unsigned int>(capture_length));
-                    }
+                if (linktype)
+                {
+                    //Serialize if sender or receiver is in capture interfaces
+                    if (senderGate != interfaceMap.end() || arrivalGate != interfaceMap.end())
+                    {
+                        char serializeBuffer[10000];
+                        inet::serializer::Buffer wb(serializeBuffer, sizeof(serializeBuffer));
+                        inet::serializer::Context c;
+                        c.throwOnSerializerNotFound = false;
+                        size_t headerOverhead = 0;
+                        if (linktype == IDB_LINKTYPE_ETHERNET)
+                        {
+                            inet::serializer::SerializerBase::lookupAndSerialize(pkt, wb, c, inet::serializer::LINKTYPE,
+                                    inet::serializer::LINKTYPE_ETHERNET, static_cast<unsigned int>(capture_length));
+                        }
+                        else if (linktype == IDB_LINKTYPE_NETANALYZER_TRANSPARENT)
+                        {
+                            uint32_t header = 0;
+                            //Header Version 1
+                            header |= (0x1 << 18);
+                            wb.writeUint32(header);
+                            headerOverhead = sizeof(uint32_t);
+                            inet::serializer::SerializerBase::lookupAndSerialize(pkt, wb, c, inet::serializer::PHYTYPE,
+                                    inet::serializer::PHYTYPE_ETHERNET, static_cast<unsigned int>(capture_length));
+                        }
+                        else
+                        {
+                            inet::serializer::SerializerBase::lookupAndSerialize(pkt, wb, c, inet::serializer::UNKNOWN,
+                                    0, static_cast<unsigned int>(capture_length));
+                        }
 
-                    //write out if sender is in interfaces
-                    if (senderGate != interfaceMap.end()) {
-                        if (!senderGate->second->isInitialized) {
-                            senderGate->second->linktype = linktype;
-                            pcapwriter->changeInterfaceDescriptionHeader(senderGate->second->id,
-                                    senderGate->second->linktype, static_cast<uint32_t>(capture_length));
-                            senderGate->second->isInitialized = true;
-                        }
-                        else {
-                            if (senderGate->second->linktype != linktype) {
-                                throw omnetpp::cRuntimeError(
-                                        "Module receives packets with incompatible linktypes, e.g. IP packets and Ethernet packets on the same gate. This is not allowed");
+                        //write out if sender is in interfaces
+                        if (senderGate != interfaceMap.end())
+                        {
+                            if (!senderGate->second->isInitialized)
+                            {
+                                senderGate->second->linktype = linktype;
+                                pcapwriter->changeInterfaceDescriptionHeader(senderGate->second->id,
+                                        senderGate->second->linktype, static_cast<uint32_t>(capture_length));
+                                senderGate->second->isInitialized = true;
                             }
-                        }
-                        pcapwriter->addEnhancedPacket(static_cast<uint32_t>(senderGate->second->id), true,
-                                static_cast<uint64_t>(pkt->getSendingTime().raw()),
-                                static_cast<uint32_t>(pkt->getByteLength()+headerOverhead), wb.getPos(), serializeBuffer,
-                                pkt->hasBitError());
-                    }
-                    //write out if receiver is in interfaces
-                    if (arrivalGate != interfaceMap.end()) {
-                        if (!arrivalGate->second->isInitialized) {
-                            arrivalGate->second->linktype = linktype;
-                            pcapwriter->changeInterfaceDescriptionHeader(arrivalGate->second->id,
-                                    arrivalGate->second->linktype, static_cast<uint32_t>(capture_length));
-                            arrivalGate->second->isInitialized = true;
-                        }
-                        else {
-                            if (arrivalGate->second->linktype != linktype) {
-                                throw omnetpp::cRuntimeError(
-                                        "Module receives packets with incompatible linktypes, e.g. IP packets and Ethernet packets on the same gate. This is not allowed");
+                            else
+                            {
+                                if (senderGate->second->linktype != linktype)
+                                {
+                                    throw omnetpp::cRuntimeError(
+                                            "Module receives packets with incompatible linktypes, e.g. IP packets and Ethernet packets on the same gate. This is not allowed");
+                                }
                             }
+                            pcapwriter->addEnhancedPacket(static_cast<uint32_t>(senderGate->second->id), true,
+                                    static_cast<uint64_t>(pkt->getSendingTime().raw()),
+                                    static_cast<uint32_t>(pkt->getByteLength() + headerOverhead), wb.getPos(),
+                                    serializeBuffer, pkt->hasBitError());
                         }
-                        pcapwriter->addEnhancedPacket(static_cast<uint32_t>(arrivalGate->second->id), false,
-                                static_cast<uint64_t>(pkt->getArrivalTime().raw()),
-                                static_cast<uint32_t>(pkt->getByteLength()+headerOverhead), wb.getPos(), serializeBuffer,
-                                pkt->hasBitError());
+                        //write out if receiver is in interfaces
+                        if (arrivalGate != interfaceMap.end())
+                        {
+                            if (!arrivalGate->second->isInitialized)
+                            {
+                                arrivalGate->second->linktype = linktype;
+                                pcapwriter->changeInterfaceDescriptionHeader(arrivalGate->second->id,
+                                        arrivalGate->second->linktype, static_cast<uint32_t>(capture_length));
+                                arrivalGate->second->isInitialized = true;
+                            }
+                            else
+                            {
+                                if (arrivalGate->second->linktype != linktype)
+                                {
+                                    throw omnetpp::cRuntimeError(
+                                            "Module receives packets with incompatible linktypes, e.g. IP packets and Ethernet packets on the same gate. This is not allowed");
+                                }
+                            }
+                            pcapwriter->addEnhancedPacket(static_cast<uint32_t>(arrivalGate->second->id), false,
+                                    static_cast<uint64_t>(pkt->getArrivalTime().raw()),
+                                    static_cast<uint32_t>(pkt->getByteLength() + headerOverhead), wb.getPos(),
+                                    serializeBuffer, pkt->hasBitError());
+                        }
                     }
                 }
             }

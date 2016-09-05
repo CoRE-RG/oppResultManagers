@@ -61,6 +61,6 @@
                        oppresultmanagers.examples.pcapng"
         extraSourceFolders = ""
         compileFlags = "-DWITH_PCAPNGEVENTLOG_COMMON"
-        linkerFlags = "-lINET"
+        linkerFlags = ""
         />
 </features>

@@ -53,7 +53,7 @@ void cPostgreSQLOutputVectorManager::startRun()
          CONSTRAINT vector_unique UNIQUE(runid, moduleid, nameid) \
       );");
     transaction->exec(
-                "CREATE OR REPLACE VIEW vector_names AS \
+            "CREATE OR REPLACE VIEW vector_names AS \
          SELECT vector.id AS id,runid,module.name AS module,name.name AS name FROM vector \
          JOIN module ON module.id = vector.moduleid \
          JOIN name ON name.id = vector.nameid;");
@@ -67,7 +67,7 @@ void cPostgreSQLOutputVectorManager::startRun()
          FOREIGN KEY (nameid) REFERENCES name(id) ON DELETE CASCADE\
       );");
     transaction->exec(
-                "CREATE OR REPLACE VIEW vectorattr_names AS \
+            "CREATE OR REPLACE VIEW vectorattr_names AS \
          SELECT vectorattr.id AS id, vectorattr.vectorid AS vectorid, \
          name.name AS name, vectorattr.value AS value FROM vectorattr \
          JOIN name ON name.id = vectorattr.nameid;");

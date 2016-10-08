@@ -307,33 +307,36 @@ void cSQLiteOutputScalarManager::recordScalar(omnetpp::cComponent *component, co
     size_t scalarId = static_cast<size_t>(sqlite3_last_insert_rowid(connection));
     sqlite3_reset(stmt);
 
-    for (omnetpp::opp_string_map::iterator it = attributes->begin(); it != attributes->end(); ++it)
+    if (attributes)
     {
-        rc = sqlite3_bind_int64(insertScalarAttrStmt, 1, static_cast<sqlite3_int64>(scalarId));
-        if (rc != SQLITE_OK)
+        for (omnetpp::opp_string_map::iterator it = attributes->begin(); it != attributes->end(); ++it)
         {
-            throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not bind vectorid.");
-        }
-        rc = sqlite3_bind_int64(insertScalarAttrStmt, 2, static_cast<sqlite3_int64>(getNameID(it->first.c_str())));
-        if (rc != SQLITE_OK)
-        {
-            throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not bind nameid.");
-        }
-        rc = sqlite3_bind_text(insertScalarAttrStmt, 3, it->second.c_str(), -1, SQLITE_STATIC);
-        if (rc != SQLITE_OK)
-        {
-            throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not bind value.");
-        }
+            rc = sqlite3_bind_int64(insertScalarAttrStmt, 1, static_cast<sqlite3_int64>(scalarId));
+            if (rc != SQLITE_OK)
+            {
+                throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not bind vectorid.");
+            }
+            rc = sqlite3_bind_int64(insertScalarAttrStmt, 2, static_cast<sqlite3_int64>(getNameID(it->first.c_str())));
+            if (rc != SQLITE_OK)
+            {
+                throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not bind nameid.");
+            }
+            rc = sqlite3_bind_text(insertScalarAttrStmt, 3, it->second.c_str(), -1, SQLITE_STATIC);
+            if (rc != SQLITE_OK)
+            {
+                throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not bind value.");
+            }
 
-        rc = sqlite3_step(insertScalarAttrStmt);
-        if (rc != SQLITE_DONE)
-        {
-            throw omnetpp::cRuntimeError(
-                    "cSQLiteOutputScalarManager:: Could not execute statement (SQL_INSERT_SCALAR_ATTR): %s",
-                    sqlite3_errmsg(connection));
+            rc = sqlite3_step(insertScalarAttrStmt);
+            if (rc != SQLITE_DONE)
+            {
+                throw omnetpp::cRuntimeError(
+                        "cSQLiteOutputScalarManager:: Could not execute statement (SQL_INSERT_SCALAR_ATTR): %s",
+                        sqlite3_errmsg(connection));
+            }
+            sqlite3_clear_bindings(insertScalarAttrStmt);
+            sqlite3_reset(insertScalarAttrStmt);
         }
-        sqlite3_clear_bindings(insertScalarAttrStmt);
-        sqlite3_reset(insertScalarAttrStmt);
     }
 }
 
@@ -348,7 +351,8 @@ void cSQLiteOutputScalarManager::recordStatistic(omnetpp::cComponent *component,
     // check that recording this statistic is not disabled as a whole
     std::string objectFullPath = component->getFullPath() + "." + name;
 
-    bool enabled = omnetpp::getEnvir()->getConfig()->getAsBool(objectFullPath.c_str(), omnetpp::envir::CFGID_SCALAR_RECORDING);
+    bool enabled = omnetpp::getEnvir()->getConfig()->getAsBool(objectFullPath.c_str(),
+            omnetpp::envir::CFGID_SCALAR_RECORDING);
     if (enabled)
     {
         int rc = sqlite3_bind_int64(insertStatisticStmt, 1, static_cast<sqlite3_int64>(runid));
@@ -371,7 +375,8 @@ void cSQLiteOutputScalarManager::recordStatistic(omnetpp::cComponent *component,
         rc = sqlite3_step(insertStatisticStmt);
         if (rc != SQLITE_DONE)
         {
-            throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not execute statement (SQL_INSERT_STATISTIC): %s",
+            throw omnetpp::cRuntimeError(
+                    "cSQLiteOutputScalarManager:: Could not execute statement (SQL_INSERT_STATISTIC): %s",
                     sqlite3_errmsg(connection));
         }
         size_t statisticId = static_cast<size_t>(sqlite3_last_insert_rowid(connection));

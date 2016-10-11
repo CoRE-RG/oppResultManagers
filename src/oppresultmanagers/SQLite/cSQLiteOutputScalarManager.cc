@@ -333,9 +333,14 @@ void cSQLiteOutputScalarManager::recordScalar(omnetpp::cComponent *component, co
             rc = sqlite3_step(insertScalarAttrStmt);
             if (rc != SQLITE_DONE)
             {
-                throw omnetpp::cRuntimeError(
-                        "cSQLiteOutputScalarManager:: Could not execute statement (%s): %s",
+#if SQLITE_VERSION_NUMBER >= 3014000
+                throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not execute statement (%s): %s",
                         sqlite3_expanded_sql(insertScalarAttrStmt), sqlite3_errmsg(connection));
+#else
+                throw omnetpp::cRuntimeError(
+                        "cSQLiteOutputScalarManager:: Could not execute statement (SQL_INSERT_SCALAR_ATTR): %s",
+                        sqlite3_errmsg(connection));
+#endif
             }
             sqlite3_clear_bindings(insertScalarAttrStmt);
             sqlite3_reset(insertScalarAttrStmt);
@@ -378,9 +383,14 @@ void cSQLiteOutputScalarManager::recordStatistic(omnetpp::cComponent *component,
         rc = sqlite3_step(insertStatisticStmt);
         if (rc != SQLITE_DONE)
         {
-            throw omnetpp::cRuntimeError(
-                    "cSQLiteOutputScalarManager:: Could not execute statement (%s): %s",
+#if SQLITE_VERSION_NUMBER >= 3014000
+            throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not execute statement (%s): %s",
                     sqlite3_expanded_sql(insertStatisticStmt), sqlite3_errmsg(connection));
+#else
+            throw omnetpp::cRuntimeError(
+                    "cSQLiteOutputScalarManager:: Could not execute statement (SQL_INSERT_STATISTIC): %s",
+                    sqlite3_errmsg(connection));
+#endif
         }
         size_t statisticId = static_cast<size_t>(sqlite3_last_insert_rowid(connection));
         sqlite3_clear_bindings(insertStatisticStmt);
@@ -425,9 +435,14 @@ void cSQLiteOutputScalarManager::recordStatistic(omnetpp::cComponent *component,
                 rc = sqlite3_step(insertStatisticAttrStmt);
                 if (rc != SQLITE_DONE)
                 {
-                    throw omnetpp::cRuntimeError(
-                            "cSQLiteOutputScalarManager:: Could not execute statement (%s): %s",
+#if SQLITE_VERSION_NUMBER >= 3014000
+                    throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not execute statement (%s): %s",
                             sqlite3_expanded_sql(insertStatisticAttrStmt), sqlite3_errmsg(connection));
+#else
+                    throw omnetpp::cRuntimeError(
+                            "cSQLiteOutputScalarManager:: Could not execute statement (SQL_INSERT_STATISTIC_ATTR): %s",
+                            sqlite3_errmsg(connection));
+#endif
                 }
                 sqlite3_clear_bindings(insertStatisticAttrStmt);
                 sqlite3_reset(insertStatisticAttrStmt);
@@ -494,8 +509,13 @@ void cSQLiteOutputScalarManager::insertField(size_t statisticId, size_t nameid, 
     rc = sqlite3_step(insertFieldStmt);
     if (rc != SQLITE_DONE)
     {
+#if SQLITE_VERSION_NUMBER >= 3014000
         throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not execute statement (%s): %s",
                 sqlite3_expanded_sql(insertFieldStmt), sqlite3_errmsg(connection));
+#else
+        throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not execute statement (SQL_INSERT_FIELD): %s",
+                sqlite3_errmsg(connection));
+#endif
     }
     sqlite3_clear_bindings(insertFieldStmt);
     sqlite3_reset(insertFieldStmt);
@@ -529,8 +549,13 @@ void cSQLiteOutputScalarManager::insertBin(size_t statisticId, double binlowerbo
     rc = sqlite3_step(insertBinStmt);
     if (rc != SQLITE_DONE)
     {
+#if SQLITE_VERSION_NUMBER >= 3014000
         throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not execute statement (%s): %s",
                 sqlite3_expanded_sql(insertBinStmt), sqlite3_errmsg(connection));
+#else
+        throw omnetpp::cRuntimeError("cSQLiteOutputScalarManager:: Could not execute statement (SQL_INSERT_BIN): %s",
+                sqlite3_errmsg(connection));
+#endif
     }
     sqlite3_clear_bindings(insertBinStmt);
     sqlite3_reset(insertBinStmt);

@@ -184,7 +184,8 @@ bool cSQLiteOutputVectorManager::record(void *vectorhandle, omnetpp::simtime_t t
 //                        "cSQLiteOutputVectorManager:: Could not execute statement (%s): %s",
 //                        sqlite3_expanded_sql(insertVectorStmt), sqlite3_errmsg(connection));
             }
-            else{
+            else
+            {
                 vp->id = sqlite3_last_insert_rowid(connection);
                 sqlite3_clear_bindings(insertVectorStmt);
                 sqlite3_reset(insertVectorStmt);
@@ -212,9 +213,14 @@ bool cSQLiteOutputVectorManager::record(void *vectorhandle, omnetpp::simtime_t t
                 rc = sqlite3_step(insertVectorAttrStmt);
                 if (rc != SQLITE_DONE)
                 {
-                    throw omnetpp::cRuntimeError(
-                            "cSQLiteOutputVectorManager:: Could not execute statement (%s): %s",
+#if SQLITE_VERSION_NUMBER >= 3014000
+                    throw omnetpp::cRuntimeError("cSQLiteOutputVectorManager:: Could not execute statement (%s): %s",
                             sqlite3_expanded_sql(insertVectorAttrStmt), sqlite3_errmsg(connection));
+#else
+                    throw omnetpp::cRuntimeError(
+                            "cSQLiteOutputScalarManager:: Could not execute statement (SQL_INSERT_VECTOR_ATTR): %s",
+                            sqlite3_errmsg(connection));
+#endif
                 }
                 sqlite3_clear_bindings(insertVectorAttrStmt);
                 sqlite3_reset(insertVectorAttrStmt);
@@ -241,9 +247,14 @@ bool cSQLiteOutputVectorManager::record(void *vectorhandle, omnetpp::simtime_t t
         rc = sqlite3_step(insertVectorDataStmt);
         if (rc != SQLITE_DONE)
         {
-            throw omnetpp::cRuntimeError(
-                    "cSQLiteOutputVectorManager:: Could not execute statement (%s): %s",
+#if SQLITE_VERSION_NUMBER >= 3014000
+            throw omnetpp::cRuntimeError("cSQLiteOutputVectorManager:: Could not execute statement (%s): %s",
                     sqlite3_expanded_sql(insertVectorDataStmt), sqlite3_errmsg(connection));
+#else
+            throw omnetpp::cRuntimeError(
+                    "cSQLiteOutputScalarManager:: Could not execute statement (SQL_INSERT_VECTOR_DATA): %s",
+                    sqlite3_errmsg(connection));
+#endif
         }
         sqlite3_clear_bindings(insertVectorDataStmt);
         sqlite3_reset(insertVectorDataStmt);

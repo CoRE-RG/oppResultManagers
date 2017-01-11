@@ -1,4 +1,4 @@
-<features cppSourceRoots="src">
+<features cppSourceRoots="src"  definesFile="src/oppresultmanager/features.h">
     <feature
         id="PostgreSQL_common"
         name="PostgreSQL Common (requires libpqxx)"

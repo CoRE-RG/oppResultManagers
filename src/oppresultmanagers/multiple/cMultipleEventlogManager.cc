@@ -99,6 +99,7 @@ const char *cMultipleEventlogManager::getFileName() const
     {
         return (*eventlogManager)->getFileName();
     }
+    return nullptr;
 }
 #endif
 

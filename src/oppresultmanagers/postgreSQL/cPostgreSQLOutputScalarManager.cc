@@ -156,9 +156,13 @@ void cPostgreSQLOutputScalarManager::recordScalar(omnetpp::cComponent *component
     }
     size_t scalarId = result[0][0].as<size_t>();
 
-    for (omnetpp::opp_string_map::const_iterator it = attributes->begin(); it != attributes->end(); ++it)
+    if (attributes)
     {
-        transaction->parameterized(SQL_INSERT_SCALAR_ATTR)(scalarId)(getNameID(it->first.c_str()))(it->second.c_str()).exec();
+        for (omnetpp::opp_string_map::const_iterator it = attributes->begin(); it != attributes->end(); ++it)
+        {
+            transaction->parameterized(SQL_INSERT_SCALAR_ATTR)(scalarId)(getNameID(it->first.c_str()))(
+                    it->second.c_str()).exec();
+        }
     }
 
     // commit every once in a while
@@ -182,7 +186,8 @@ void cPostgreSQLOutputScalarManager::recordStatistic(omnetpp::cComponent *compon
     // check that recording this statistic is not disabled as a whole
     std::string objectFullPath = component->getFullPath() + "." + name;
 
-    bool enabled = omnetpp::getEnvir()->getConfig()->getAsBool(objectFullPath.c_str(), omnetpp::envir::CFGID_SCALAR_RECORDING);
+    bool enabled = omnetpp::getEnvir()->getConfig()->getAsBool(objectFullPath.c_str(),
+            omnetpp::envir::CFGID_SCALAR_RECORDING);
     if (enabled)
     {
         pqxx::result result = transaction->parameterized(SQL_INSERT_STATISTIC)(runid)(

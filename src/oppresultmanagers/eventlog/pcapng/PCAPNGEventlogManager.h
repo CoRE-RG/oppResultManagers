@@ -29,8 +29,6 @@
 #ifndef OPPRESULTMANAGERS_PCAPEVENTLOGMANAGER_H
 #define OPPRESULTMANAGERS_PCAPEVENTLOGMANAGER_H
 
-#include "omnetpp.h"
-
 #include "oppresultmanagers/base/oppResultManagers_Defs.h"
 #include "oppresultmanagers/eventlog/pcapng/PCAPNGWriter.h"
 

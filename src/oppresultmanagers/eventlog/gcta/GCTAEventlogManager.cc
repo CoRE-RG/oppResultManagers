@@ -55,6 +55,13 @@ void GCTAEventlogManager::flush()
         fflush(feventlog);
 }
 
+#if OMNETPP_VERSION >= 0x0501
+const char *GCTAEventlogManager::getFileName() const
+{
+    return filename.c_str();
+}
+#endif
+
 void GCTAEventlogManager::simulationEvent(__attribute__((__unused__))   omnetpp::cEvent *event)
 {
 

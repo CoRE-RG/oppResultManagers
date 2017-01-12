@@ -91,6 +91,18 @@ void cMultipleEventlogManager::flush()
     }
 }
 
+#if OMNETPP_VERSION >= 0x0501
+const char *cMultipleEventlogManager::getFileName() const
+{
+    for (std::vector<omnetpp::cIEventlogManager*>::const_iterator eventlogManager = eventlogManagers.begin();
+                eventlogManager != eventlogManagers.end(); ++eventlogManager)
+    {
+        return (*eventlogManager)->getFileName();
+    }
+    return nullptr;
+}
+#endif
+
 void cMultipleEventlogManager::simulationEvent(omnetpp::cEvent *event)
 {
     for (std::vector<omnetpp::cIEventlogManager*>::const_iterator eventlogManager = eventlogManagers.begin();
@@ -155,13 +167,22 @@ void cMultipleEventlogManager::messageSendHop(omnetpp::cMessage *msg, omnetpp::c
     }
 }
 
+#if OMNETPP_VERSION >= 0x0501
+void cMultipleEventlogManager::messageSendHop(omnetpp::cMessage *msg, omnetpp::cGate *srcGate, omnetpp::simtime_t propagationDelay,
+        omnetpp::simtime_t transmissionDelay, bool discard)
+#else
 void cMultipleEventlogManager::messageSendHop(omnetpp::cMessage *msg, omnetpp::cGate *srcGate, omnetpp::simtime_t propagationDelay,
         omnetpp::simtime_t transmissionDelay)
+#endif
 {
     for (std::vector<omnetpp::cIEventlogManager*>::const_iterator eventlogManager = eventlogManagers.begin();
             eventlogManager != eventlogManagers.end(); ++eventlogManager)
     {
+#if OMNETPP_VERSION >= 0x0501
+        (*eventlogManager)->messageSendHop(msg, srcGate, propagationDelay, transmissionDelay, discard);
+#else
         (*eventlogManager)->messageSendHop(msg, srcGate, propagationDelay, transmissionDelay);
+#endif
     }
 }
 

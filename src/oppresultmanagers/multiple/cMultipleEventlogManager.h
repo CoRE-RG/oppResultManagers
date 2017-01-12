@@ -77,6 +77,14 @@ class cMultipleEventlogManager : public omnetpp::cIEventlogManager
          * Forces writing out all buffered output.
          */
         virtual void flush();
+
+#if OMNETPP_VERSION >= 0x0501
+        /**
+         * Returns the output scalar file name. Returns nullptr if this object is not
+         * producing file output.
+         */
+        virtual const char *getFileName() const;
+#endif
         //@}
 
         /** @name Functions called from cEnvir's similar functions */
@@ -88,7 +96,11 @@ class cMultipleEventlogManager : public omnetpp::cIEventlogManager
         virtual void beginSend(omnetpp::cMessage *msg);
         virtual void messageSendDirect(omnetpp::cMessage *msg, omnetpp::cGate *toGate, omnetpp::simtime_t propagationDelay, omnetpp::simtime_t transmissionDelay);
         virtual void messageSendHop(omnetpp::cMessage *msg, omnetpp::cGate *srcGate);
+#if OMNETPP_VERSION >= 0x0501
+        virtual void messageSendHop(omnetpp::cMessage *msg, omnetpp::cGate *srcGate, omnetpp::simtime_t propagationDelay, omnetpp::simtime_t transmissionDelay, bool discard);
+#else
         virtual void messageSendHop(omnetpp::cMessage *msg, omnetpp::cGate *srcGate, omnetpp::simtime_t propagationDelay, omnetpp::simtime_t transmissionDelay);
+#endif
         virtual void endSend(omnetpp::cMessage *msg);
         virtual void messageCreated(omnetpp::cMessage *msg);
         virtual void messageCloned(omnetpp::cMessage *msg, omnetpp::cMessage *clone);

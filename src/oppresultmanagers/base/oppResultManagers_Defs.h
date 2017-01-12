@@ -29,10 +29,10 @@
 #ifndef OPPRESULTMANAGERS_DEFS_H
 #define OPPRESULTMANAGERS_DEFS_H
 
+#include "oppresultmanagers/base/Dependencies.h"
+
 //OMNeT++
 #include "omnetpp.h"
-
-#include "oppresultmanagers/base/Dependencies.h"
 
 /**
  * Definition of oppResultManagers version

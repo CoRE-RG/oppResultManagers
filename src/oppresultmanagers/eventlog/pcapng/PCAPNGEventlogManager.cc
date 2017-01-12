@@ -93,6 +93,13 @@ PCAPNGEventlogManager::~PCAPNGEventlogManager()
     interfaceMap.clear();
 }
 
+#if OMNETPP_VERSION >= 0x0501
+const char *PCAPNGEventlogManager::getFileName() const
+{
+    return filename.c_str();
+}
+#endif
+
 void PCAPNGEventlogManager::startRecording()
 {
     pcapwriter->openSection("Simulation (no real Hardware)", "", "OMNeT++");

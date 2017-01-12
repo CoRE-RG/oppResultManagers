@@ -24,6 +24,14 @@ class GCTAEventlogManager : public omnetpp::cIEventlogManager
 
         virtual void flush() override;
 
+#if OMNETPP_VERSION >= 0x0501
+        /**
+         * Returns the output file name. Returns nullptr if this object is not
+         * producing file output.
+         */
+        virtual const char *getFileName() const override;
+#endif
+
         /** @name Functions called from cEnvir's similar functions */
         //@{
         virtual void simulationEvent(omnetpp::cEvent *event) override;
@@ -34,8 +42,13 @@ class GCTAEventlogManager : public omnetpp::cIEventlogManager
         virtual void messageSendDirect(__attribute__((__unused__)) omnetpp::cMessage *msg, __attribute__((__unused__)) omnetpp::cGate *toGate,
                 __attribute__((__unused__)) omnetpp::simtime_t propagationDelay, __attribute__((__unused__)) omnetpp::simtime_t transmissionDelay) override {}
         virtual void messageSendHop(__attribute__((__unused__)) omnetpp::cMessage *msg, __attribute__((__unused__)) omnetpp::cGate *srcGate) override {}
+#if OMNETPP_VERSION >= 0x0501
+        virtual void messageSendHop(__attribute__((__unused__)) omnetpp::cMessage *msg, __attribute__((__unused__)) omnetpp::cGate *srcGate,
+                __attribute__((__unused__)) omnetpp::simtime_t propagationDelay, __attribute__((__unused__)) omnetpp::simtime_t transmissionDelay, __attribute__((__unused__)) bool discard) override {}
+#else
         virtual void messageSendHop(__attribute__((__unused__)) omnetpp::cMessage *msg, __attribute__((__unused__)) omnetpp::cGate *srcGate,
                 __attribute__((__unused__)) omnetpp::simtime_t propagationDelay, __attribute__((__unused__)) omnetpp::simtime_t transmissionDelay) override {}
+#endif
         virtual void endSend(__attribute__((__unused__)) omnetpp::cMessage *msg) override {}
         virtual void messageCreated(__attribute__((__unused__)) omnetpp::cMessage *msg) override {}
         virtual void messageCloned(__attribute__((__unused__)) omnetpp::cMessage *msg, __attribute__((__unused__)) omnetpp::cMessage *clone) override {}

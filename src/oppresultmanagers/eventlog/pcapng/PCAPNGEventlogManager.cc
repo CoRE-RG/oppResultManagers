@@ -317,7 +317,7 @@ void PCAPNGEventlogManager::simulationEvent(omnetpp::cEvent *event)
                             }
                             pcapwriter->addEnhancedPacket(static_cast<uint32_t>(senderGate->second->id), true,
                                     static_cast<uint64_t>(pkt->getSendingTime().raw()),
-                                    static_cast<uint32_t>(pkt->getByteLength() + headerOverhead), wb.getPos(),
+                                    static_cast<uint32_t>(static_cast<size_t>(pkt->getByteLength()) + headerOverhead), wb.getPos(),
                                     serializeBuffer, pkt->hasBitError());
                         }
                         //write out if receiver is in interfaces
@@ -340,7 +340,7 @@ void PCAPNGEventlogManager::simulationEvent(omnetpp::cEvent *event)
                             }
                             pcapwriter->addEnhancedPacket(static_cast<uint32_t>(arrivalGate->second->id), false,
                                     static_cast<uint64_t>(pkt->getArrivalTime().raw()),
-                                    static_cast<uint32_t>(pkt->getByteLength() + headerOverhead), wb.getPos(),
+                                    static_cast<uint32_t>(static_cast<size_t>(pkt->getByteLength()) + headerOverhead), wb.getPos(),
                                     serializeBuffer, pkt->hasBitError());
                         }
                     }

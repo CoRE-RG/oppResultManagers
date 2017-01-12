@@ -4,10 +4,23 @@ ifeq ($(OPPRESULTMANAGERS_PCAPNG_ENABLED),0)
     ifndef INET_PROJ
         $(error "PCAPNGEventlog_common feature requires INET framework. Please select INET framework in the 'Project References' in the oppResultManager project properties. See INSTALL file for details.")
     endif
+    #check for existing INET-Framework
+    ifeq ("$(wildcard $(INET_PROJ)/src/inet/common/INETDefs.h)","")
+        $(error "Cannot find INET-Framework in the provided path: $(INET_PROJ). \
+        If you need to set the location of the INET-Framework set INET_PROJ variable accordingly (e.g. "make makefiles INET_PROJ=../../path/to/inet"). \
+        INET_PROJ path must be an absolute path, or a path relative to SignalAndGateways src directory")
+    endif
 endif
 
 
 ifdef FICO4OMNET_PROJ
+    #check for existing FiCo4OMNeT
+    ifeq ("$(wildcard $(FICO4OMNET_PROJ)/src/fico4omnet/base/FiCo4OMNeT_Defs.h)","")
+        $(error "Cannot find FiCo4OMNeT in the provided path: $(FICO4OMNET_PROJ). \
+        If you need to set the location of FiCo4OMNeT set FICO4OMNET_PROJ variable accordingly (e.g. "make makefiles FICO4OMNET_PROJ=../../path/to/inet"). \
+        FICO4OMNET_PROJ path must be an absolute path, or a path relative to SignalAndGateways src directory")
+    endif
+
     CFLAGS += -DFICO4OMNET_PROJ
     #Required as makemake does not find the include due to the define
     INCLUDE_PATH += -I$(FICO4OMNET_PROJ)/src

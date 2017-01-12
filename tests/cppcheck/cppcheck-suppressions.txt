@@ -5,3 +5,5 @@ unmatchedSuppression:*_m.cc
 unmatchedSuppression:*_m.h
 
 missingInclude
+
+variableScope:src/oppresultmanagers/check/cCheckOutputVectorManager.cc

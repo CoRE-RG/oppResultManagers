@@ -243,7 +243,7 @@ size_t cPorstgreSQLOutputManager::getModuleID(std::string module)
             transaction->exec("COMMIT; BEGIN;");
             return id;
         }
-        catch (pqxx::unique_violation e)
+        catch (const pqxx::unique_violation& e)
         {
             transaction->exec("COMMIT; BEGIN;");
             pqxx::result result = transaction->parameterized(SQL_SELECT_MODULE_BYNAME)(module).exec();
@@ -282,7 +282,7 @@ size_t cPorstgreSQLOutputManager::getNameID(std::string name)
             transaction->exec("COMMIT; BEGIN;");
             return id;
         }
-        catch (pqxx::unique_violation e)
+        catch (const pqxx::unique_violation& e)
         {
             transaction->exec("COMMIT; BEGIN;");
             pqxx::result result = transaction->parameterized(SQL_SELECT_NAME_BYNAME)(name).exec();

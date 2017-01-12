@@ -94,10 +94,9 @@ void cMultipleEventlogManager::flush()
 #if OMNETPP_VERSION >= 0x0501
 const char *cMultipleEventlogManager::getFileName() const
 {
-    for (std::vector<omnetpp::cIEventlogManager*>::const_iterator eventlogManager = eventlogManagers.begin();
-                eventlogManager != eventlogManagers.end(); ++eventlogManager)
+    if (eventlogManagers.size() > 0)
     {
-        return (*eventlogManager)->getFileName();
+        return eventlogManagers.front()->getFileName();
     }
     return nullptr;
 }

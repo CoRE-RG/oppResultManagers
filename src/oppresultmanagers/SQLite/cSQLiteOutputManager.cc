@@ -34,7 +34,9 @@
 Register_PerRunConfigOption(CFGID_SQLITEOUTMGR_FILE, "sqliteoutputmanager-file", CFG_FILENAME,
         "${resultdir}/${configname}-${runnumber}.sqlite3", "Object name of database connection parameters");
 Register_PerRunConfigOption(CFGID_SQLITEMGR_COMMIT_FREQ, "sqliteoutputmanager-commit-freq", CFG_INT, "10000",
-        "COMMIT every n INSERTs, default=10");
+        "COMMIT every n INSERTs, default=10000");
+Register_PerRunConfigOption(CFGID_SQLITEMGR_DROP, "sqliteoutputmanager-drop", CFG_BOOL, "false",
+        "Drop database before launch, default=false");
 
 #define SQL_SELECT_SCHEMAVERSION "SELECT value FROM metadata WHERE key='schemaversion';"
 #define SQL_INSERT_SCHEMAVERSION "INSERT INTO metadata(key, value) VALUES('schemaversion', ?);"
@@ -73,9 +75,13 @@ void cSQLiteOutputManager::startRun()
 {
     if (!connection)
     {
-        mkPath(directoryOf(omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_SQLITEOUTMGR_FILE).c_str()).c_str());
-
         std::string cfgobj = omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_SQLITEOUTMGR_FILE);
+        if(omnetpp::getEnvir()->getConfig()->getAsBool(CFGID_SQLITEMGR_DROP))
+        {
+            removeFile(cfgobj.c_str(), "SQLite Database");
+        }
+        mkPath(directoryOf(cfgobj.c_str()).c_str());
+
         int rc = sqlite3_open(cfgobj.c_str(), &connection);
         if (rc)
         {

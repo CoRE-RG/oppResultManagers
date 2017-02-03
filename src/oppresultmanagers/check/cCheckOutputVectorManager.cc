@@ -48,12 +48,10 @@ Register_PerRunConfigOption(CFGID_CHECKOUTPUTVECTORMANAGER_REPORTFILE, "checkout
 
 cCheckOutputVectorManager::cCheckOutputVectorManager()
 {
-    xmlConfiguration = omnetpp::getEnvir()->getXMLDocument(
-            omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_CHECKOUTPUTVECTORMANAGER_CONFIGFILE).c_str(),
-            "/constraints");
-    endSimulation = omnetpp::getEnvir()->getConfig()->getAsBool(CFGID_CHECKOUTPUTVECTORMANAGER_ENDSIM);
-    report = omnetpp::getEnvir()->getConfig()->getAsBool(CFGID_CHECKOUTPUTVECTORMANAGER_REPORT);
-    reportFilename = omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_CHECKOUTPUTVECTORMANAGER_REPORTFILE);
+    xmlConfiguration = nullptr;
+    endSimulation = false;
+    report = true;
+    reportFilename = "";
 }
 
 cCheckOutputVectorManager::~cCheckOutputVectorManager()
@@ -63,6 +61,12 @@ cCheckOutputVectorManager::~cCheckOutputVectorManager()
 
 void cCheckOutputVectorManager::startRun()
 {
+    xmlConfiguration = omnetpp::getEnvir()->getXMLDocument(
+                omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_CHECKOUTPUTVECTORMANAGER_CONFIGFILE).c_str(),
+                "/constraints");
+    endSimulation = omnetpp::getEnvir()->getConfig()->getAsBool(CFGID_CHECKOUTPUTVECTORMANAGER_ENDSIM);
+    report = omnetpp::getEnvir()->getConfig()->getAsBool(CFGID_CHECKOUTPUTVECTORMANAGER_REPORT);
+    reportFilename = omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_CHECKOUTPUTVECTORMANAGER_REPORTFILE);
 }
 
 void cCheckOutputVectorManager::endRun()

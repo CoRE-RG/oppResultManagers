@@ -30,7 +30,7 @@
 
 Register_Class(cMultipleOutputVectorManager);
 
-Register_PerRunConfigOption(CFGID_OUTPUTVECTORMANAGER_CLASSES, "outputvectormanager-classes", CFG_STRING, "\"\"",
+Register_GlobalConfigOption(CFGID_OUTPUTVECTORMANAGER_CLASSES, "outputvectormanager-classes", CFG_STRING, "\"\"",
         "List of OutputVectorManager Classes (comma or space separated)");
 
 cMultipleOutputVectorManager::cMultipleOutputVectorManager()

@@ -40,7 +40,7 @@ extern omnetpp::cConfigOption *CFGID_EVENTLOG_PCAPNG_ETHERNETRAW;
 /**
  * Responsible for writing the eventlog file.
  */
-class PCAPNGEventlogManager : public omnetpp::cIEventlogManager
+class PCAPNGEventlogManager : public omnetpp::cIEventlogManager, public omnetpp::cISimulationLifecycleListener
 {
         class Interface{
                 bool isInitialized;
@@ -55,6 +55,7 @@ class PCAPNGEventlogManager : public omnetpp::cIEventlogManager
                 friend class PCAPNGEventlogManager;
         };
     private:
+        omnetpp::cEnvir *envir;
         omnetpp::opp_string filename;
         bool recordEventlog;
         void* buffer;
@@ -65,9 +66,17 @@ class PCAPNGEventlogManager : public omnetpp::cIEventlogManager
         size_t capture_length;
         bool ethernetRaw;
 
+    protected:
+        /**
+         * A cISimulationLifecycleListener method.
+         */
+        virtual void lifecycleEvent(SimulationLifecycleEventType eventType, cObject *details) override;
+
     public:
         PCAPNGEventlogManager();
         virtual ~PCAPNGEventlogManager();
+
+        virtual void configure();
 
         virtual void startRecording() override;
         virtual void stopRecording() override;

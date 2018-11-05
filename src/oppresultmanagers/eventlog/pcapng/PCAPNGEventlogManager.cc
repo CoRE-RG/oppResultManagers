@@ -57,23 +57,8 @@ Register_PerRunConfigOption(CFGID_EVENTLOG_PCAPNG_ETHERNETRAW, "pcapng-ethernet-
 
 PCAPNGEventlogManager::PCAPNGEventlogManager()
 {
-    recordEventlog = false;
-    buffer = malloc(60000);
-    pcapwriter = new PCAPNGWriter(buffer, 60000);
-
-    recordEventlog = omnetpp::cConfiguration::parseBool(
-            omnetpp::getEnvir()->getConfig()->getConfigEntry("record-eventlog").getValue(), "false");
-    filename = omnetpp::getEnvir()->getConfig()->getAsFilename(CFGID_EVENTLOG_PCAPNG_FILE).c_str();
-    ethernetRaw = omnetpp::getEnvir()->getConfig()->getAsBool(CFGID_EVENTLOG_PCAPNG_ETHERNETRAW, false);
-
-    removeFile(filename.c_str(), "old pcapng file");
-    mkPath(directoryOf(filename.c_str()).c_str());
-
-    pcapwriter->openFile(filename.c_str());
-
-    recordingStarted = false;
-    capture_length =
-            static_cast<size_t>(omnetpp::getEnvir()->getConfig()->getAsInt(CFGID_EVENTLOG_PCAPNG_CAPTURELENGTH));
+    envir = omnetpp::getEnvir();
+    envir->addLifecycleListener(this);
 }
 
 PCAPNGEventlogManager::~PCAPNGEventlogManager()
@@ -91,6 +76,36 @@ PCAPNGEventlogManager::~PCAPNGEventlogManager()
     }
     interfaces.clear();
     interfaceMap.clear();
+}
+
+void PCAPNGEventlogManager::configure()
+{
+    recordEventlog = false;
+    buffer = malloc(60000);
+    pcapwriter = new PCAPNGWriter(buffer, 60000);
+
+    recordEventlog = omnetpp::cConfiguration::parseBool(
+            envir->getConfig()->getConfigEntry("record-eventlog").getValue(), "false");
+    filename = envir->getConfig()->getAsFilename(CFGID_EVENTLOG_PCAPNG_FILE).c_str();
+    ethernetRaw = envir->getConfig()->getAsBool(CFGID_EVENTLOG_PCAPNG_ETHERNETRAW, false);
+
+    removeFile(filename.c_str(), "old pcapng file");
+    mkPath(directoryOf(filename.c_str()).c_str());
+
+    pcapwriter->openFile(filename.c_str());
+
+    recordingStarted = false;
+    capture_length =
+            static_cast<size_t>(envir->getConfig()->getAsInt(CFGID_EVENTLOG_PCAPNG_CAPTURELENGTH));
+}
+
+void PCAPNGEventlogManager::lifecycleEvent(SimulationLifecycleEventType eventType, cObject *details)
+{
+    switch (eventType) {
+        case omnetpp::LF_PRE_NETWORK_SETUP:
+            configure();
+            break;
+    }
 }
 
 #if OMNETPP_VERSION >= 0x0501

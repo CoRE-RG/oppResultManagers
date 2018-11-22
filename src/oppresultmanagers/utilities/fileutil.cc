@@ -86,7 +86,11 @@ void mkPath(const char *pathname)
         mkPath(pathprefix.c_str());
         // note: anomaly with slash-terminated dirnames: stat("foo/") says
         // it does not exist, and mkdir("foo/") says cannot create (EEXIST):
+#if defined(_WIN32) && (OMNETPP_VERSION > 0x0500)
+        if (mkdir(pathname) != 0 && errno != EEXIST)
+#else
         if (mkdir(pathname, ACCESSPERMS) != 0 && errno != EEXIST)
+#endif
             throw omnetpp::cRuntimeError("cannot create directory `%s': %s", pathname, strerror(errno));
     }
 }

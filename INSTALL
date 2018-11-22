@@ -1,4 +1,9 @@
 INSTALLATION INSTRUCTIONS
 =========================
 
-TODO
+PREREQUISITES
+
+OMNeT++ (5.0 - 5.1.1)
+PostgreSQL Recoder feature requires libpqxx
+SQLite Recoder feature  requires libsqlite3
+PCAPNG Recorder feature requires INET-Framework

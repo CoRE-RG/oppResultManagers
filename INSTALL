@@ -1,9 +1,37 @@
 INSTALLATION INSTRUCTIONS
 =========================
 
-PREREQUISITES
 
-OMNeT++ (5.0 - 5.1.1)
-PostgreSQL Recoder feature requires libpqxx
-SQLite Recoder feature  requires libsqlite3
-PCAPNG Recorder feature requires INET-Framework
+
+PREREQUISITES
+-------------
+
+- OMNeT++ (5.0 - 5.1.1)
+
+
+FEATURES
+
+PostgreSQL:
+- requires libpqxx
+
+SQLite:
+- requires sqlite3 lib
+
+PCAPNG:
+- requires inet framework
+- Check inet framework under project [Preferences -> Project References]
+
+
+UBUNTU
+
+SQLite:
+- Install SQLite3: apt install sqlite3
+
+
+WINDOWS
+
+SQLite:
+- Download SQLite3 binaries for Windows
+- In the mingwenv export PATH=$PATH:<path to folder containing sqlite3.dll>
+- Start OMNeT++ from mingwenv
+- In OMNeT++ in project [Preferences -> C++ General -> Paths and Symbols -> Library Paths] add <path to folder containing sqlite3.dll>

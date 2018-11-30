@@ -12,13 +12,13 @@ PREREQUISITES
 FEATURES
 
 PostgreSQL:
-- requires libpqxx
+- Requires libpqxx
 
 SQLite:
-- requires sqlite3 lib
+- Requires sqlite3 lib
 
 PCAPNG:
-- requires inet framework
+- Requires inet framework
 - Check inet framework under project [Preferences -> Project References]
 
 

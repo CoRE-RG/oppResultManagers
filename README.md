@@ -2,7 +2,7 @@
 
 ## Continuous Integration
 
-The build state of the master branch is monitored for Windows 10, OS X and Linux:
+The build state of the master branch is monitored:
 * Building:
 <a href="https://jenkins.core-rg.de/job/oppResultManagers/job/oppResultManagers/lastBuild/"><img src="https://jenkins.core-rg.de/buildStatus/icon?job=oppResultManagers/oppResultManagers"></a>
 * Tests:

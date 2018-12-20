@@ -2,4 +2,4 @@
 /examples/check,                                                  -f omnetpp.ini -c General -r 0
 /examples/multiple/,                                              -f omnetpp.ini -c General -r 0
 #/examples/postgreSQL/,                                            -f omnetpp.ini -c General -r 0
-/examples/SQLite/,                                                -f omnetpp.ini -c General -r 0
+#/examples/SQLite/,                                                -f omnetpp.ini -c General -r 0

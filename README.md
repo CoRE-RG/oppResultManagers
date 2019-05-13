@@ -1,5 +1,32 @@
 # oppResultManagers
 
+oppResultManagers aims to simplify result recording and analysis of [OMNEST/OMNeT++](https://omnetpp.org/) simulations. 
+
+<img src="/doc/images/oppresultmanagers.png" alt="oppResultManagers Environment" width="35%">
+
+
+## Components and Features
+
+### Check Vector Manager
+A vector manager to check vectors of modules against an XML constraint specification 
+
+### Database Manager
+Records into Databases instead of .vec and .sca files. Supports:
+* postgreSQL
+* SQLite 
+
+Databases can be analyzed with SQL statements or attached to other tools (e.g. R) 
+
+### PCAPng Manager
+Records PCAPng files instead of .elog format. PCAPng files can be opened with [Wireshark](https://www.wireshark.org/download.html). PCAPng supports multiple interfaces.
+
+### GCTA Eventlog Manager
+Records an eventlog in the .tlog format for the analysis using the Gantt Chart Timing Analyzer (additional OMNeT++ Plugin)
+
+### Multiple Manager
+Allows to use multiple Vector, Scalar or Eventlog Managers in parallel 
+
+
 ## Continuous Integration
 
 The build state of the master branch is monitored:

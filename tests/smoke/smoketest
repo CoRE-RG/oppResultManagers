@@ -26,6 +26,7 @@ import subprocess
 import sys
 import time
 import unittest
+from distutils import spawn
 
 oppresultmanagersRoot = os.path.abspath("../..")
 #TODO: Make test read paths from somewhere else
@@ -36,8 +37,16 @@ nedPath = inetRoot + os.sep + "src" + sep + oppresultmanagersRoot + os.sep + "sr
 oppresultmanagersLib = oppresultmanagersRoot + os.sep + "src" + os.sep + "oppResultManagers"
 inetLib = inetRoot + os.sep + "src" + os.sep + "INET"
 opp_run = "opp_run"
+
 cpuTimeLimit = "3s"
 logFile = "test.out"
+
+if spawn.find_executable("opp_run_dbg"):
+    opp_run = "opp_run_dbg"
+elif spawn.find_executable("opp_run"):
+    opp_run = "opp_run"
+elif spawn.find_executable("opp_run_release"):
+    opp_run = "opp_run_release"
 
 class SmokeTestCaseGenerator():
     fileToSimulationsMap = {}

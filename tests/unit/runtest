@@ -6,7 +6,7 @@
 
 MAKE="make MODE=debug"
 
-DBG_SUFFIX="_dbg"
+DBG_SUFFIX=""
 
 TESTFILES=$*
 if [ "x$TESTFILES" = "x" ]; then TESTFILES='*.test'; fi

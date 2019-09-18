@@ -5,6 +5,10 @@ oppResultManagers aims to simplify result recording and analysis of [OMNEST/OMNe
 <img src="/doc/images/oppresultmanagers.png" alt="oppResultManagers Environment" width="35%">
 
 
+## News
+* Update dependencies to OMNeT++ 5.5.1 and INET 3.6.6
+
+
 ## Components and Features
 
 ### Check Vector Manager
@@ -31,9 +35,9 @@ Allows to use multiple Vector, Scalar or Eventlog Managers in parallel
 
 The build state of the master branch is monitored:
 * Building:
-<a href="https://jenkins.core-rg.de/job/oppResultManagers/job/oppResultManagers/lastBuild/"><img src="https://jenkins.core-rg.de/buildStatus/icon?job=oppResultManagers/oppResultManagers"></a>
+<p><img src="https://jenkins.core-rg.de/buildStatus/icon?job=oppResultManagers/oppResultManagers"></p>
 * Tests:
-<a href="https://jenkins.core-rg.de/job/oppResultManagers/job/oppResultManagers_tests/lastBuild/"><img src="https://jenkins.core-rg.de/buildStatus/icon?job=oppResultManagers/oppResultManagers_tests"></a>
+<p><img src="https://jenkins.core-rg.de/buildStatus/icon?job=oppResultManagers/oppResultManagers_tests"></p>
 
 <table>
   <tr>
@@ -43,13 +47,13 @@ The build state of the master branch is monitored:
   </tr>
   <tr>
     <td>Building</td>
-    <td><a href="https://jenkins.core-rg.de/job/oppResultManagers/job/oppResultManagers/Nodes=Ubuntu_18.04/lastBuild/"><img src="https://jenkins.core-rg.de/buildStatus/icon?job=oppResultManagers/oppResultManagers/Nodes=Ubuntu_18.04"></a></td>
-    <td><a href="https://jenkins.core-rg.de/job/oppResultManagers/job/oppResultManagers/Nodes=Windows_10/lastBuild/"><img src="https://jenkins.core-rg.de/buildStatus/icon?job=oppResultManagers/oppResultManagers/Nodes=Windows_10"></a></td>
+    <td><img src="https://jenkins.core-rg.de/buildStatus/icon?job=oppResultManagers/oppResultManagers/Nodes=Ubuntu_18.04"></td>
+    <td><img src="https://jenkins.core-rg.de/buildStatus/icon?job=oppResultManagers/oppResultManagers/Nodes=Windows_10"></td>
   </tr>
   <tr>
     <td>Tests</td>
-    <td><a href="https://jenkins.core-rg.de/job/oppResultManagers/job/oppResultManagers_tests/Nodes=Ubuntu_18.04/lastBuild/"><img src="https://jenkins.core-rg.de/buildStatus/icon?job=oppResultManagers/oppResultManagers_tests/Nodes=Ubuntu_18.04"></a></td>
-    <td><a href="https://jenkins.core-rg.de/job/oppResultManagers/job/oppResultManagers_tests/Nodes=Windows_10/lastBuild/"><img src="https://jenkins.core-rg.de/buildStatus/icon?job=oppResultManagers/oppResultManagers_tests/Nodes=Windows_10"></a></td>
+    <td><img src="https://jenkins.core-rg.de/buildStatus/icon?job=oppResultManagers/oppResultManagers_tests/Nodes=Ubuntu_18.04"></td>
+    <td><img src="https://jenkins.core-rg.de/buildStatus/icon?job=oppResultManagers/oppResultManagers_tests/Nodes=Windows_10"></td>
   </tr>
 </table>
 

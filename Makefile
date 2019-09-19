@@ -22,9 +22,10 @@ cleanall: checkmakefiles
 	cd src && $(MAKE) MODE=debug clean
 	rm -f src/Makefile src/oppresultmanagers/features.h
 	
-DBG_SUFFIX=""
-ifneq (,$(findstring debug, $(MODE)))
-	DBG_SUFFIX="_dbg"
+ifeq ($(MODE), debug)
+    DBG_SUFFIX=_dbg
+else
+    DBG_SUFFIX=
 endif
 
 MAKEMAKE_OPTIONS := -f --deep --no-deep-includes -I.

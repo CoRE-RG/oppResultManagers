@@ -21,17 +21,22 @@ cleanall: checkmakefiles
 	cd src && $(MAKE) MODE=release clean
 	cd src && $(MAKE) MODE=debug clean
 	rm -f src/Makefile src/oppresultmanagers/features.h
+	
+DBG_SUFFIX=""
+ifneq (,$(findstring debug, $(MODE)))
+	DBG_SUFFIX="_dbg"
+endif
 
 MAKEMAKE_OPTIONS := -f --deep --no-deep-includes -I.
 
 OPPRESULTMANAGERS_PCAPNG_ENABLED := $(shell opp_featuretool -q isenabled PCAPNGEventlog_common; echo $$?)
 ifeq ($(OPPRESULTMANAGERS_PCAPNG_ENABLED),0)
     ifdef INET_PROJ
-        MAKEMAKE_OPTIONS += -I$(INET_PROJ)/src/ -L$(INET_PROJ)/src -lINET_dbg -KINET_PROJ=$(INET_PROJ)
+        MAKEMAKE_OPTIONS += -I$(INET_PROJ)/src/ -L$(INET_PROJ)/src -lINET$(DBG_SUFFIX) -KINET_PROJ=$(INET_PROJ)
     endif
 
     ifdef FICO4OMNET_PROJ
-        MAKEMAKE_OPTIONS += -I$(FICO4OMNET_PROJ)/src/ -L$(FICO4OMNET_PROJ)/src -lFiCo4OMNeT_dbg -KFICO4OMNET_PROJ=$(FICO4OMNET_PROJ)
+        MAKEMAKE_OPTIONS += -I$(FICO4OMNET_PROJ)/src/ -L$(FICO4OMNET_PROJ)/src -lFiCo4OMNeT$(DBG_SUFFIX) -KFICO4OMNET_PROJ=$(FICO4OMNET_PROJ)
     endif
 endif
 

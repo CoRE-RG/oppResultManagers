@@ -9,7 +9,7 @@ oppResultManagers aims to simplify result recording and analysis of [OMNEST/OMNe
 * Update dependencies to OMNeT++ 5.5.1 and INET 3.6.6
 
 
-## Components and Features
+## Features
 
 ### Check Vector Manager
 A vector manager to check vectors of modules against an XML constraint specification 
@@ -59,6 +59,8 @@ The build state of the master branch is monitored:
 
 
 ## Further Information
+* [CoRE simulation models overview](https://core-researchgroup.de/projects/simulation.html)
+* [Abstract Network Description Language (ANDL) overview](https://core-researchgroup.de/projects/simulation/abstract-network-description-language.html)
 
 ### Installation
 Please see [INSTALL](/INSTALL)

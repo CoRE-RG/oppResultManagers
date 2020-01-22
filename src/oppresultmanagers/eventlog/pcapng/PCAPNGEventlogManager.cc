@@ -105,6 +105,8 @@ void PCAPNGEventlogManager::lifecycleEvent(SimulationLifecycleEventType eventTyp
         case omnetpp::LF_PRE_NETWORK_SETUP:
             configure();
             break;
+        default:
+            break;
     }
 }
 

@@ -70,11 +70,11 @@ class PCAPNGEventlogManager : public omnetpp::cIEventlogManager, public omnetpp:
         /**
          * A cISimulationLifecycleListener method.
          */
-        virtual void lifecycleEvent(SimulationLifecycleEventType eventType, cObject *details) override;
+        virtual void lifecycleEvent(SimulationLifecycleEventType eventType, __attribute__((__unused__)) cObject *details) override;
 
     public:
         PCAPNGEventlogManager();
-        virtual ~PCAPNGEventlogManager();
+        virtual ~PCAPNGEventlogManager() override;
 
         virtual void configure();
 

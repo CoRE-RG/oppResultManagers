@@ -2,7 +2,8 @@
 
 oppResultManagers aims to simplify result recording and analysis of [OMNEST/OMNeT++](https://omnetpp.org/) simulations. 
 
-<img src="/doc/images/oppresultmanagers.png" alt="oppResultManagers Environment" width="35%">
+<img src="/doc/images/oppresultmanagers.png#gh-light-mode-only" alt="oppResultManagers Environment" width="35%">
+<img src="/doc/images/oppresultmanagers_dark.png#gh-dark-mode-only" alt="oppResultManagers Environment" width="35%">
 
 
 ## News
